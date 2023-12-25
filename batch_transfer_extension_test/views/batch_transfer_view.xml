@@ -30,10 +30,10 @@
                 <field name="situation" required="1"/>
                 <field name="airtag_url" widget="url" options="{'no_open': True}" readonly="1" />
             </xpath>
-            <xpath expr="//notebook/page[1]" position="after">
-                <page string="Drivers" name="driver_ids">
-                    <field name="driver_ids" domain="[('type','=','driver')]" 
-                        attrs="{'invisible': [('edespatch_delivery_type', '!=', 'edespatch')]}" >
+            <xpath expr="//notebook/page[3]" position="after">
+                <page string="Drivers" name="driver_ids"
+                attrs="{'invisible': [('edespatch_delivery_type', '!=', 'edespatch')]}" >
+                    <field name="driver_ids" domain="[('type','=','driver')]" >
                         <tree create="true" edit="false" delete="true" editable="bottom" string="Drivers">
                             <field name="function"/>
                             <field name="name"/>
