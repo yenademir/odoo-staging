@@ -51,9 +51,12 @@
             <xpath expr="//field[@name='receipt_document_number']" position="attributes">
                 <attribute name="string">Receipt Doc. No (Accept or Reject)</attribute>
             </xpath>
+            <xpath expr="//field[@name='import_decleration_number']" position="attributes">
+                <attribute name="string">Custom Decleration</attribute>
+            </xpath>
         </field>
     </record>
-    <record id="view_transfer_form_inherit_foreign_trade" model="ir.ui.view">
+    <!--<record id="view_transfer_form_inherit_foreign_trade" model="ir.ui.view">
         <field name="name">transfer.form.inherit.yena.foreign.trade</field>
         <field name="model">stock.picking</field>
         <field name="inherit_id" ref="stock_foreign_trade_info.view_picking_form_foreign_trade" />
@@ -62,7 +65,7 @@
                 <attribute name="string">Custom Decleration</attribute>
             </xpath>
         </field> 
-    </record>
+    </record>-->
     <record id="product_template_main_form_inherit_yena" model="ir.ui.view">
         <field name="name">product.template.form.inherit.yena</field>
         <field name="model">product.template</field>
