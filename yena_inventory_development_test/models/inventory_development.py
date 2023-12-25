@@ -13,13 +13,11 @@ class Picking(models.Model):
         ("on_the_way", "On the way"),
         ("arrived", "Arrived")
     ], string="Situation")
+    transportation_code = fields.Char(string="Transportation Code")
     sale_id=fields.Many2one("sale.order",string="Sale Order")
     purchase_id=fields.Many2one("purchase.order",string="Purchase Order")
     sequence_code = fields.Char(string='Sequence Code', related='picking_type_id.sequence_code', store=True)
-    tags=fields.Char(string="tags")
-    document_number=fields.Char(string="Document Number")
-    transportation_code = fields.Char(related="batch_id.transportation_code", string="Transportation Code")
-
+    
 class StockMove(models.Model):
     _inherit = "stock.move"
 
@@ -27,7 +25,7 @@ class StockMove(models.Model):
     project_transfer = fields.Many2many('project.project', related="picking_id.project_transfer", string="Project Number")
     situation = fields.Selection(related="picking_id.situation", string="Situation")
     transportation_code = fields.Char(related="picking_id.transportation_code", string="Transportation Code")
-
+    
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
@@ -64,33 +62,6 @@ class ProductTemplate(models.Model):
         ], limit=1)
         self.hs_code = hs_code_record.name if hs_code_record else False
 
- 
-    def write(self, values):
-        res = super(ProductTemplate, self).write(values)
-        if 'categ_id' in values or 'customer' in values:
-            self._update_hs_code()
-        return res
- 
-    def _update_hs_code(self):
-        for record in self:
-            if record.categ_id and record.customer and record.customer.industry_id:
-                hs_code_record = self.env['yena.hscode'].search([
-                    ('category', '=', record.categ_id.id),
-                    ('industry', '=', record.customer.industry_id.id),
-                ], limit=1)
-                if hs_code_record:
-                    record.hs_code = hs_code_record.name
-                    record.description = hs_code_record.product_description
-                    record.description_sale = hs_code_record.customs_description_en
-                    record.description_purchase = hs_code_record.customs_description_tr
-                    record.hs_code_description = hs_code_record.example_description
-                else:
-                    record.hs_code = False
-                    record.description = ''
-                    record.description_sale = ''
-                    record.description_purchase = ''
-                    record.hs_code_description = ''
-                    
     @api.onchange('hs_code')
     def _onchange_hs_code_details(self):
         if self.hs_code:
