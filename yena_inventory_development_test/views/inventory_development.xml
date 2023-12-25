@@ -37,10 +37,11 @@
                 <field name="arrival_date" />
                 <field name="situation" />
             </xpath>
-            <xpath expr="//field[@name='partner_id']" position="after">
-                <field name="transportation_code" attrs="{'required': [(True, '=', True)]}" />
-                <field name="project_transfer" widget="many2many_tags" attrs="{'required': [(True, '=', True)]}"/>
+           <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="transportation_code" attrs="{'required': True}" />
+                <field name="project_transfer" widget="many2many_tags" attrs="{'required': True}"/>
             </xpath>
+
             <xpath expr="//field[@name='edespatch_date']" position="attributes">
                 <attribute name="string">Actual Departure Date</attribute>
             </xpath>
