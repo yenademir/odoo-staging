@@ -32,9 +32,9 @@
             </xpath>
             <xpath expr="//notebook/page[1]" position="after">
                 <page string="Drivers" name="driver_ids">
-                    <field name="driver_ids" domain="[('type','=','driver')]">
+                    <field name="driver_ids" domain="[('type','=','driver')]" 
+                        attrs="{'invisible': [('edespatch_delivery_type', '!=', 'edespatch')]}" >
                         <tree create="true" edit="false" delete="true" editable="bottom" string="Drivers">
-                            <!--<field name="nationality_id" string="Nationality Id"/>-->
                             <field name="function"/>
                             <field name="name"/>
                         </tree>
