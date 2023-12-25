@@ -53,8 +53,8 @@
             </xpath>
         </field>
     </record>
-    <record id="view_transfer_form_inherit" model="ir.ui.view">
-        <field name="name">transfer.form.inherit.yena</field>
+    <record id="view_transfer_form_inherit_foreign_trade" model="ir.ui.view">
+        <field name="name">transfer.form.inherit.yena.foreign.trade</field>
         <field name="model">stock.picking</field>
         <field name="inherit_id" ref="stock.form.foreign.trade" />
         <field name="arch" type="xml">
