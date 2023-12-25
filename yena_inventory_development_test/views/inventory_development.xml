@@ -45,16 +45,7 @@
             <xpath expr="//field[@name='edespatch_date']" position="attributes">
                 <attribute name="string">Actual Departure Date</attribute>
             </xpath>
-            <xpath expr="//field[@name='edespatch_move_id']" position="attributes">
-                <attribute name="string">Vendor E-Despatch Number</attribute>
-                <attribute name="readonly">1</attribute>
-            </xpath>
-            <xpath expr="//field[@name='import_decleration_number']" position="attributes">
-                <attribute name="string">Custom Decleration</attribute>
-            </xpath>
-            <xpath expr="//field[@name='receipt_document_number']" position="attributes">
-                <attribute name="string">Receipt Doc. No (Accept or Reject)</attribute>
-            </xpath>
+
         </field>
     </record>
     <record id="product_template_main_form_inherit_yena" model="ir.ui.view">
