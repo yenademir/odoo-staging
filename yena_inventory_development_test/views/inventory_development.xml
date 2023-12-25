@@ -45,6 +45,12 @@
             <xpath expr="//field[@name='edespatch_date']" position="attributes">
                 <attribute name="string">Actual Departure Date</attribute>
             </xpath>
+            <xpath expr="//field[@name='scheduled_date']" position="attributes">
+                <attribute name="string">Scheduled Departure Date</attribute>
+            </xpath>
+            <xpath expr="//field[@name='currency_rate']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
         </field>
     </record>
     <record id="product_template_main_form_inherit_yena" model="ir.ui.view">
