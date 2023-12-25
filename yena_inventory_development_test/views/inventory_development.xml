@@ -33,11 +33,16 @@
             <xpath expr="//field[@name='picking_type_id']" position="after">
                 <field name="origin"/>
             </xpath>
-            <xpath expr="//field[@name='origin']" position="after">
+             <xpath expr="//field[@name='origin']" position="after">
                 <field name="arrival_date" />
-                <field name="transportation_code" />
                 <field name="situation" />
-                <field name="project_transfer"  widget="many2many_tags"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="transportation_code" attrs="{'required': [('required_condition', '=', True)]}" />
+                <field name="project_transfer" widget="many2many_tags" attrs="{'required': [('required_condition', '=', True)]}"/>
+            </xpath>
+            <xpath expr="//field[@name='edespatch_date']" position="attributes">
+                <attribute name="string">Actual Departure Date</attribute>
             </xpath>
         </field>
     </record>
