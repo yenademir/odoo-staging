@@ -208,6 +208,9 @@
             <xpath expr="//field[@name='date_done']"  position="after">
                 <field name="arrival_date" attrs="{'invisible': [('sequence_code', '!=', 'OUT')]}"/>
             </xpath>
+            <xpath expr="//field[@name='edespatch_date']"  position="before">
+                <field name="purchase_required_delivery_date" readonly="1"/>
+            </xpath>
         </field>
     </record>
  
