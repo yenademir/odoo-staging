@@ -189,31 +189,6 @@
             </tree>
         </field>
     </record>
-    <record id="transfer_view_form_yena" model="ir.ui.view">
-        <field name="name">transfer.view.yena.form</field>
-        <field name="model">stock.picking</field>
-        <field name="inherit_id" ref="stock.view_picking_form"/>
-        <field name="arch" type="xml">
-            <!-- <xpath expr="//field[@name='document_number']" position="replace"/>          -->
-            <xpath expr="//page[@name='extra']//field[@name='company_id']" position="after">
-                <field name="document_number"/>
-            </xpath>
-            <xpath expr="//field[@name='picking_type_id']"  position="after">
-                <field name="sequence_code"  attrs="{'invisible': 1}"/>
-                <field name="sale_id" attrs="{'invisible': [('sequence_code', '!=', 'OUT')]}"/>
-                <field name="purchase_id" attrs="{'invisible': [('sequence_code', '!=', 'IN')]}"/>
-            </xpath>
-            <xpath expr="//field[@name='origin']" position="replace"/>
-           
-            <xpath expr="//field[@name='date_done']"  position="after">
-                <field name="arrival_date" attrs="{'invisible': [('sequence_code', '!=', 'OUT')]}"/>
-            </xpath>
-            <xpath expr="//field[@name='arrival_date']"  position="before">
-                <field name="purchase_required_delivery_date" readonly="1"/>
-            </xpath>
-        </field>
-    </record>
- 
     <record id="inventory_transfer_stock_vpicking_yena" model="ir.ui.view">
         <field name="name">stock.vpicking.tree.yena</field>
         <field name="model">stock.picking</field>
