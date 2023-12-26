@@ -42,6 +42,16 @@ class Picking(models.Model):
             if sale_order:
                 vals['scheduled_date'] = sale_order.commitment_date
 
+    def default_get(self, fields_list):
+        defaults = super(Picking, self).default_get(fields_list)
+
+        if self.env.user.company_id.id == 1 and self.env.context.get('default_picking_type_id'):
+            picking_type = self.env['stock.picking.type'].browse(self.env.context['default_picking_type_id'])
+            if picking_type.sequence_code == 'OUT':
+                defaults['edespatch_delivery_type'] = 'edespatch'
+
+        return defaults
+
     
 class StockMove(models.Model):
     _inherit = "stock.move"
