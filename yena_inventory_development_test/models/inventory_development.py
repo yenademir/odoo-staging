@@ -37,7 +37,7 @@ class Picking(models.Model):
             vals['edespatch_delivery_type'] = 'edespatch'
         else:
             vals['edespatch_delivery_type'] = 'printed'
-        return super(CustomStockPicking, self).create(vals)
+        return super(Picking, self).create(vals)
 
     def write(self, vals):
         if 'picking_type_id' in vals or 'edespatch_delivery_type' not in vals:
@@ -46,7 +46,7 @@ class Picking(models.Model):
                 vals['edespatch_delivery_type'] = 'edespatch'
             else:
                 vals['edespatch_delivery_type'] = 'printed'
-        return super(CustomStockPicking, self).write(vals)
+        return super(Picking, self).write(vals)
     
     def create(self, vals):
         self._update_scheduled_date(vals)
