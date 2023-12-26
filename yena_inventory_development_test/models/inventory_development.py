@@ -17,12 +17,7 @@ class Picking(models.Model):
     sale_id=fields.Many2one("sale.order",string="Sale Order")
     purchase_id=fields.Many2one("purchase.order",string="Purchase Order")
     sequence_code = fields.Char(string='Sequence Code', related='picking_type_id.sequence_code', store=True)
-    purchase_required_delivery_date = fields.Date(
-        string='Required Delivery Date',
-        related='purchase_id.delivery_date',
-        store=True,
-        readonly=True
-    )
+
     
 class StockMove(models.Model):
     _inherit = "stock.move"
