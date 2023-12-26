@@ -18,8 +18,19 @@ class Picking(models.Model):
     purchase_id=fields.Many2one("purchase.order",string="Purchase Order")
     sequence_code = fields.Char(string='Sequence Code', related='picking_type_id.sequence_code', store=True)
     logistic_company = fields.Char (string="Logistic Company")
+    edespatch_delivery_type = fields.Selection(
+        [('printed', 'Printed'), ('edespatch', 'E-Despatch')],
+        string='E-Despatch Delivery Type',
+        default=lambda self: self._default_edespatch_delivery_type()
+    )
 
     @api.model
+    def _default_edespatch_delivery_type(self):
+        # Eğer sequence_id.prefix 'TR/OUT/' ile başlıyorsa, default olarak 'edespatch' döndür
+        if self.sequence_id and self.sequence_id.prefix and self.sequence_id.prefix.startswith('TR/OUT/'):
+            return 'edespatch'
+        return 'printed'  # Varsayılan olarak 'printed' ayarlayın
+    
     def create(self, vals):
         self._update_scheduled_date(vals)
         return super(Picking, self).create(vals)
