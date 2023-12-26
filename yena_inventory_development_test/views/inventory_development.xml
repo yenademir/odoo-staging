@@ -54,6 +54,9 @@
             <xpath expr="//label[@for='scheduled_date']" position="attributes">
                 <attribute name="string">Scheduled Departure/Delivery Date</attribute>
             </xpath>
+            <xpath expr="//label[@for='location_dest_id']" position="after">
+                <field name="logistic_company" />
+            </xpath>
         </field>
     </record>
     <!--<record id="view_transfer_form_inherit_foreign_trade" model="ir.ui.view">
