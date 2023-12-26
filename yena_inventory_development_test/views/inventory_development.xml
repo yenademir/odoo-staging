@@ -52,6 +52,9 @@
             <xpath expr="//field[@name='receipt_document_number']" position="attributes">
                 <attribute name="string">Receipt Doc. No (Accept or Reject)</attribute>
             </xpath>
+            <xpath expr="//field[@name='currency_rate']"  position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
         </field>
     </record>
     <record id="view_transfer_form_inherit_foreign_trade" model="ir.ui.view">
