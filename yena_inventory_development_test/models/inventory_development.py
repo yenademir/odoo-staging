@@ -24,12 +24,29 @@ class Picking(models.Model):
         default=lambda self: self._default_edespatch_delivery_type()
     )
 
+        edespatch_delivery_type = fields.Selection(
+        [('printed', 'Printed'), ('edespatch', 'E-Despatch')],
+        string='E-Despatch Delivery Type',
+        default='edespatch'
+    )
+
     @api.model
-    def _default_edespatch_delivery_type(self):
-        # Eğer sequence_id.prefix 'TR/OUT/' ile başlıyorsa, default olarak 'edespatch' döndür
-        if self.sequence_id and self.sequence_id.prefix and self.sequence_id.prefix.startswith('TR/OUT/'):
-            return 'edespatch'
-        return 'printed'  # Varsayılan olarak 'printed' ayarlayın
+    def create(self, vals):
+        picking_type = self.env['stock.picking.type'].browse(vals.get('picking_type_id'))
+        if picking_type.sequence_id.prefix('TR/OUT/'):
+            vals['edespatch_delivery_type'] = 'edespatch'
+        else:
+            vals['edespatch_delivery_type'] = 'printed'
+        return super(CustomStockPicking, self).create(vals)
+
+    def write(self, vals):
+        if 'picking_type_id' in vals or 'edespatch_delivery_type' not in vals:
+            picking_type = self.env['stock.picking.type'].browse(vals.get('picking_type_id', self.picking_type_id.id))
+            if picking_type.sequence_id.prefix('TR/OUT/'):
+                vals['edespatch_delivery_type'] = 'edespatch'
+            else:
+                vals['edespatch_delivery_type'] = 'printed'
+        return super(CustomStockPicking, self).write(vals)
     
     def create(self, vals):
         self._update_scheduled_date(vals)
