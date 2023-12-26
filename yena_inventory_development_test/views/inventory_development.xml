@@ -54,7 +54,7 @@
             <xpath expr="//label[@for='scheduled_date']" position="attributes">
                 <attribute name="string">Scheduled Departure/Delivery Date</attribute>
             </xpath>
-            <xpath expr="//label[@for='picking_type_id']" position="after">
+            <xpath expr="//field[@name='location_dest_id']" position="after">
                 <field name="logistic_company" />
             </xpath>
         </field>
