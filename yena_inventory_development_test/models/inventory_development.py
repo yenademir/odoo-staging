@@ -18,18 +18,18 @@ class Picking(models.Model):
     purchase_id=fields.Many2one("purchase.order",string="Purchase Order")
     sequence_code = fields.Char(string='Sequence Code', related='picking_type_id.sequence_code', store=True)
 
- @api.model
+    @api.model
     def create(self, vals):
         self._update_scheduled_date(vals)
         return super(Picking, self).create(vals)
-
+    
     def write(self, vals):
         self._update_scheduled_date(vals)
         return super(Picking, self).write(vals)
-
+    
     def _update_scheduled_date(self, vals):
         picking_type = self.env['stock.picking.type'].browse(vals.get('picking_type_id', self.picking_type_id.id))
-
+    
         if picking_type.sequence_code == 'IN':  # Receipts
             # purchase_id.delivery_date değerini kullan
             purchase_order = self.env['purchase.order'].search([('name', '=', self.origin)], limit=1)
