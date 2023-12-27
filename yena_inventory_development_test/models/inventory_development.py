@@ -21,16 +21,6 @@ class Picking(models.Model):
 
     @api.model
 
-    def button_validate(self, *args, **kwargs):
-        # Öncelikle orijinal button_validate fonksiyonunu çağır
-        res = super(Picking, self).button_validate(*args, **kwargs)
-
-        # Eğer transfer başarıyla validate edildiyse, scheduled activity oluştur
-        if res:
-            self._create_scheduled_activity()
-
-        return res
-
     def _create_scheduled_activity(self):
         # Activity'nin oluşturulma tarihini belirle (şu anki zamandan 3 saniye sonrası)
         activity_date_deadline = datetime.datetime.now() + datetime.timedelta(seconds=3)
