@@ -59,6 +59,16 @@
             </xpath>
         </field>
     </record>
+    <record id="view_transfer_form_waybill" model="ir.ui.view">
+        <field name="name">transfer.form.inherit.waybill.yena</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="l10n_tr_prenumbered_waybill.waybill_stock_picking_form" />
+        <field name="arch" type="xml">
+             <xpath expr="//field[@name='waybill_lot_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+             </xpath>
+        </field>
+    </record>
     <!--<record id="view_transfer_form_inherit_foreign_trade" model="ir.ui.view">
         <field name="name">transfer.form.inherit.yena.foreign.trade</field>
         <field name="model">stock.picking</field>
