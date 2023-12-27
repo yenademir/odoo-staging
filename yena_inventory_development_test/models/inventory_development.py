@@ -21,7 +21,7 @@ class Picking(models.Model):
 
     @api.model
 
-    def _create_scheduled_activity(self):
+    def _create_scheduled_activity(self, vals):
         # Activity'nin oluşturulma tarihini belirle (şu anki zamandan 3 saniye sonrası)
         activity_date_deadline = datetime.datetime.now() + datetime.timedelta(seconds=3)
 
