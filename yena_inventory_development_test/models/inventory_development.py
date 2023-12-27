@@ -34,12 +34,9 @@ class Picking(models.Model):
         return super(Picking, self).write(vals)
 
     def _update_edespatch_delivery_type(self, vals):
-        # Burada, vals sözlüğünü güncelleyin
-        picking_type = self.env['stock.picking.type'].browse(vals.get('picking_type_id', self.picking_type_id.id))
-        if picking_type and picking_type.sequence_id.prefix.startswith('TR/OUT/'):
+        # Eğer picking_type_id'nin id'si 2 ise 'edespatch' olarak ayarlayın
+        if vals.get('picking_type_id') == 2 or (not vals.get('picking_type_id') and self.picking_type_id.id == 2):
             vals['edespatch_delivery_type'] = 'edespatch'
-        else:
-            vals.setdefault('edespatch_delivery_type', 'printed')
     
     def create(self, vals):
         self._update_scheduled_date(vals)
