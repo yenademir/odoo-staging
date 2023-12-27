@@ -22,29 +22,30 @@ class Picking(models.Model):
     @api.model
 
     def button_validate(self):
-        # Öncelikle orijinal button_validate işlevini çalıştır
-        res = super(CustomStockPicking, self).button_validate()
+        # Öncelikle orijinal button_validate fonksiyonunu çağır
+        res = super(StockPicking, self).button_validate()
 
-        # Ardından, arka planda 3 saniye sonra scheduled activity oluşturmak için bir thread başlat
-        current_user = self.env.user
-        current_picking = self
-        threading.Thread(target=self._create_scheduled_activity, args=(current_picking, current_user)).start()
+        # Eğer transfer başarıyla validate edildiyse, scheduled activity oluştur
+        if res:
+            self._create_scheduled_activity()
 
         return res
 
-    def _create_scheduled_activity(self, picking, user):
-        # 3 saniye bekleyin
-        time.sleep(3)
+    def _create_scheduled_activity(self):
+        # Activity'nin oluşturulma tarihini belirle (şu anki zamandan 3 saniye sonrası)
+        activity_date_deadline = datetime.datetime.now() + datetime.timedelta(seconds=3)
 
-        # Scheduled activity oluştur
-        activity_type = self.env.ref('mail.mail_activity_data_todo')  # Varsayılan bir aktivite tipi
-        self.env['mail.activity'].create({
-            'activity_type_id': activity_type.id,
-            'note': 'Beyannemeyi yüklemeyi unutma!',
-            'res_id': picking.id,
-            'res_model_id': self.env['ir.model']._get('stock.picking').id,
-            'user_id': user.id,
-        })
+        for record in self:
+            activity_vals = {
+                'res_model_id': self.env.ref('stock.model_stock_picking').id,
+                'res_id': record.id,
+                'activity_type_id': self.env.ref('mail.mail_activity_data_todo').id,
+                'summary': 'Beyannemeyi Yükleme',
+                'note': 'Beyannemeyi yüklemeyi unutma!',
+                'user_id': record.env.uid,
+                'date_deadline': activity_date_deadline.date()
+            }
+            self.env['mail.activity'].create(activity_vals)
         
     def create(self, vals):
         self._update_scheduled_date(vals)
