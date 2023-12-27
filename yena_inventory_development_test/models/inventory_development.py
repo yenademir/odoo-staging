@@ -21,22 +21,23 @@ class Picking(models.Model):
     edespatch_delivery_type = fields.Selection(
         [('printed', 'Printed'), ('edespatch', 'E-Despatch')],
         string='E-Despatch Delivery Type',
-        default='edespatch'
+        default='printed'  # Varsayılan değer olarak 'printed' belirliyoruz
     )
 
     @api.model
     def create(self, vals):
-        self._update_edespatch_delivery_type(vals)
+        vals = self._update_edespatch_delivery_type(vals)
         return super(Picking, self).create(vals)
     
     def write(self, vals):
-        self._update_edespatch_delivery_type(vals)
+        vals = self._update_edespatch_delivery_type(vals)
         return super(Picking, self).write(vals)
 
     def _update_edespatch_delivery_type(self, vals):
         # Eğer picking_type_id'nin id'si 2 ise 'edespatch' olarak ayarlayın
-        if vals.get('picking_type_id') == 2 or (not vals.get('picking_type_id') and self.picking_type_id.id == 2):
+        if vals.get('picking_type_id') == 2:
             vals['edespatch_delivery_type'] = 'edespatch'
+        return vals
     
     def create(self, vals):
         self._update_scheduled_date(vals)
