@@ -18,26 +18,8 @@ class Picking(models.Model):
     purchase_id=fields.Many2one("purchase.order",string="Purchase Order")
     sequence_code = fields.Char(string='Sequence Code', related='picking_type_id.sequence_code', store=True)
     logistic_company = fields.Char (string="Logistic Company")
-    edespatch_delivery_type = fields.Selection(
-        [('printed', 'Printed'), ('edespatch', 'E-Despatch')],
-        string='E-Despatch Delivery Type',
-        default='printed'  # Varsayılan değer olarak 'printed' belirliyoruz
-    )
 
     @api.model
-    def create(self, vals):
-        vals = self._update_edespatch_delivery_type(vals)
-        return super(Picking, self).create(vals)
-    
-    def write(self, vals):
-        vals = self._update_edespatch_delivery_type(vals)
-        return super(Picking, self).write(vals)
-
-    def _update_edespatch_delivery_type(self, vals):
-        # Eğer picking_type_id'nin id'si 2 ise 'edespatch' olarak ayarlayın
-        if vals.get('picking_type_id') == 2:
-            vals['edespatch_delivery_type'] = 'edespatch'
-        return vals
     
     def create(self, vals):
         self._update_scheduled_date(vals)
