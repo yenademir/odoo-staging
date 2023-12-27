@@ -21,9 +21,9 @@ class Picking(models.Model):
 
     @api.model
 
-    def button_validate(self):
+    def button_validate(self, *args, **kwargs):
         # Öncelikle orijinal button_validate fonksiyonunu çağır
-        res = super(StockPicking, self).button_validate()
+        res = super(StockPicking, self).button_validate(*args, **kwargs)
 
         # Eğer transfer başarıyla validate edildiyse, scheduled activity oluştur
         if res:
