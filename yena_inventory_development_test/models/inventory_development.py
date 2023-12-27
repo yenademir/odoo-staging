@@ -21,13 +21,11 @@ class Picking(models.Model):
 
     @api.model
     def create(self, vals):
-        # Burada _update_scheduled_date metodunu çağırın
-        vals = self._update_scheduled_date(vals)
+        self._update_scheduled_date(vals)
         return super(Picking, self).create(vals)
     
     def write(self, vals):
-        # Burada _update_scheduled_date metodunu çağırın
-        vals = self._update_scheduled_date(vals)
+        self._update_scheduled_date(vals)
         return super(Picking, self).write(vals)
     
     def _update_scheduled_date(self, vals):
