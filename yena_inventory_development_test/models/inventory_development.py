@@ -21,32 +21,26 @@ class Picking(models.Model):
     edespatch_delivery_type = fields.Selection(
         [('printed', 'Printed'), ('edespatch', 'E-Despatch')],
         string='E-Despatch Delivery Type',
-        default=lambda self: self._default_edespatch_delivery_type()
-    )
-
-        edespatch_delivery_type = fields.Selection(
-        [('printed', 'Printed'), ('edespatch', 'E-Despatch')],
-        string='E-Despatch Delivery Type',
         default='edespatch'
     )
 
     @api.model
     def create(self, vals):
-        picking_type = self.env['stock.picking.type'].browse(vals.get('picking_type_id'))
-        if picking_type.sequence_id.prefix('TR/OUT/'):
+        self._update_edespatch_delivery_type(vals)
+        self._update_scheduled_date(vals)
+        return super(Picking, self).create(vals)
+    
+    def write(self, vals):
+        self._update_edespatch_delivery_type(vals)
+        self._update_scheduled_date(vals)
+        return super(Picking, self).write(vals)
+
+    def _update_edespatch_delivery_type(self, vals):
+        picking_type = self.env['stock.picking.type'].browse(vals.get('picking_type_id', self.picking_type_id.id))
+        if picking_type.sequence_id.prefix.startswith('TR/OUT/'):
             vals['edespatch_delivery_type'] = 'edespatch'
         else:
             vals['edespatch_delivery_type'] = 'printed'
-        return super(Picking, self).create(vals)
-
-    def write(self, vals):
-        if 'picking_type_id' in vals or 'edespatch_delivery_type' not in vals:
-            picking_type = self.env['stock.picking.type'].browse(vals.get('picking_type_id', self.picking_type_id.id))
-            if picking_type.sequence_id.prefix('TR/OUT/'):
-                vals['edespatch_delivery_type'] = 'edespatch'
-            else:
-                vals['edespatch_delivery_type'] = 'printed'
-        return super(Picking, self).write(vals)
     
     def create(self, vals):
         self._update_scheduled_date(vals)
