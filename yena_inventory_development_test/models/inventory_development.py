@@ -19,19 +19,17 @@ class Picking(models.Model):
     sequence_code = fields.Char(string='Sequence Code', related='picking_type_id.sequence_code', store=True)
     logistic_company = fields.Char (string="Logistic Company")
 
-    @api.model
 
+   def button_validate(self):
+    # Öncelikle orijinal button_validate fonksiyonunu çağır
+    res = super(Picking, self).button_validate()
 
-    def button_validate(self):
-        # Öncelikle orijinal button_validate fonksiyonunu çağır
-        res = super(Picking, self).button_validate()
+    # Eğer transfer başarıyla validate edildiyse, scheduled activity oluştur
+    if res:
+        # Odoo'nun işlem yönetimini bozmamak için commit kullanımından kaçının
+        self._create_scheduled_activity()
 
-        # Eğer transfer başarıyla validate edildiyse, scheduled activity oluştur
-        if res:
-            self.env.cr.commit()  # Mevcut işlemi veritabanına işle
-            self._create_scheduled_activity()
-
-        return res
+    return res
             
     def _create_scheduled_activity(self):
         # Activity'nin oluşturulma tarihini belirle (şu anki zamandan 3 saniye sonrası)
@@ -48,13 +46,16 @@ class Picking(models.Model):
                 'date_deadline': activity_date_deadline.date()
             }
             self.env['mail.activity'].create(activity_vals)
-        
+
+    @api.model
     def create(self, vals):
-        self._update_scheduled_date(vals)
+        # Burada _update_scheduled_date metodunu çağırın
+        vals = self._update_scheduled_date(vals)
         return super(Picking, self).create(vals)
     
     def write(self, vals):
-        self._update_scheduled_date(vals)
+        # Burada _update_scheduled_date metodunu çağırın
+        vals = self._update_scheduled_date(vals)
         return super(Picking, self).write(vals)
     
     def _update_scheduled_date(self, vals):
