@@ -27,20 +27,19 @@ class Picking(models.Model):
     @api.model
     def create(self, vals):
         self._update_edespatch_delivery_type(vals)
-        self._update_scheduled_date(vals)
         return super(Picking, self).create(vals)
     
     def write(self, vals):
         self._update_edespatch_delivery_type(vals)
-        self._update_scheduled_date(vals)
         return super(Picking, self).write(vals)
 
     def _update_edespatch_delivery_type(self, vals):
+        # Burada, vals sözlüğünü güncelleyin
         picking_type = self.env['stock.picking.type'].browse(vals.get('picking_type_id', self.picking_type_id.id))
-        if picking_type.sequence_id.prefix.startswith('TR/OUT/'):
+        if picking_type and picking_type.sequence_id.prefix.startswith('TR/OUT/'):
             vals['edespatch_delivery_type'] = 'edespatch'
         else:
-            vals['edespatch_delivery_type'] = 'printed'
+            vals.setdefault('edespatch_delivery_type', 'printed')
     
     def create(self, vals):
         self._update_scheduled_date(vals)
