@@ -5,7 +5,7 @@ class StockPickingBatch(models.Model):
     _inherit = 'stock.picking.batch'
     _description = "Batch Transfer"
     _order = "name desc"
-    edespatch_date = fields.Date(string="Real Departure Date")
+    edespatch_date = fields.Datetime(string="Real Departure Date")
     situation = fields.Selection(
         [("to_be_planned", "To Be Planned"),
          ("on_the_way", "On The Way"),
@@ -27,8 +27,8 @@ class StockPickingBatch(models.Model):
     )
     project_ids = fields.Many2many('project.project', string='Projects', compute='_compute_projects', store=True)
     purchase_count = fields.Integer(string='Purchases', compute='_compute_purchase_count')
-    scheduled_date = fields.Date(string='Scheduled Date')
-    arrival_date = fields.Date(string='Arrival Date')
+    scheduled_date = fields.Datetime(string='Scheduled Date')
+    arrival_date = fields.Datetime(string='Arrival Date')
     # shipping_type = fields.Selection([
     #   ('air', 'Airline'),
     #  ('road', 'Highway'),
