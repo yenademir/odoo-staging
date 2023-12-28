@@ -23,6 +23,27 @@ class Picking(models.Model):
     def create(self, vals):
         self._update_scheduled_date(vals)
         return super(Picking, self).create(vals)
+
+    def write(self, vals):
+        self._update_scheduled_date(vals)
+        return super(Picking, self).write(vals)
+
+    def _update_scheduled_date(self, vals):
+        for record in self:
+            picking_type = record.env['stock.picking.type'].browse(vals.get('picking_type_id', record.picking_type_id.id))
+
+            if picking_type.sequence_code == 'IN':  # Receipts
+                purchase_order = record.env['purchase.order'].search([('name', '=', record.origin)], limit=1)
+                if purchase_order:
+                    vals['scheduled_date'] = purchase_order.delivery_date
+            elif picking_type.sequence_code == 'OUT':  # Delivery Orders
+                sale_order = record.env['sale.order'].search([('name', '=', record.origin)], limit=1)
+                if sale_order:
+                    vals['scheduled_date'] = sale_order.commitment_date
+    @api.model
+    def create(self, vals):
+        self._update_scheduled_date(vals)
+        return super(Picking, self).create(vals)
     
     def write(self, vals):
         self._update_scheduled_date(vals)
