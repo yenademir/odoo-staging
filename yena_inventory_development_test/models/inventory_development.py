@@ -60,6 +60,14 @@ class StockMove(models.Model):
     project_transfer = fields.Many2many('project.project', related="picking_id.project_transfer", string="Project Number")
     situation = fields.Selection(related="picking_id.situation", string="Situation")
     transportation_code = fields.Char(related="picking_id.transportation_code", string="Transportation Code")
+    batch_id = fields.Many2one('stock.picking.batch', string='Batch', related='picking_id.batch_id', store=True, readonly=True)
+    edespatch_delivery_type = fields.Selection(related="picking_id.edespatch_delivery_type", string="Delivery Type")
+    scheduled_date = fields.Datetime(related='picking_id.scheduled_date', store=True, readonly=True)
+    arrival_date = fields.Date(related='picking_id.arrival_date', store=True, readonly=True)
+    purchase_id=fields.Many2one(related='picking_id.purchase_id',string="Purchase Order")
+    edespatch_date=fields.Datetime(related='picking_id.edespatch_date',string="Purchase Order")
+    airtag_url = fields.Char(string='Airtag Link', related='picking_id.batch_id.airtag_url', store=True, readonly=True)
+    vehicle_type_id = fields.Many2one(string='Vehicle Type', related='picking_id.batch_id.vehicle_type_id', store=True, readonly=True)
     
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
