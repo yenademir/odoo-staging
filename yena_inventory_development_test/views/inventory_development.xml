@@ -36,7 +36,7 @@
              </xpath>
            <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="transportation_code" attrs="{'required': True}" />
-                <field name="project_transfer" widget="many2many_tags" attrs="{'required': True}"/>
+                <field name="project_transfer" attrs="{'required': True}"/>
             </xpath>
             <xpath expr="//field[@name='edespatch_date']" position="attributes">
                 <attribute name="string">Actual Departure Date</attribute>
@@ -210,7 +210,7 @@
                 <field name="batch_id" optional="show"/>
                 <field name="edespatch_delivery_type" optional="hide"/>
                 <field name="picking_id"/>
-                <field name="project_transfer" widget="many2many_tags" optional="hide"/>
+                <field name="project_transfer" optional="hide"/>
                 <field name="product_id" optional="hide"/>
                 <field name="partner_id" string="Receive From / Delivery Adress"/>
                 <field name="product_uom_qty"/>
@@ -235,7 +235,7 @@
         <field name="inherit_id" ref="delivery.vpicktree_view_tree"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='name']" position="after"> <!-- kontrol burası da gerçekten geliyor mu bi bak -->
-                <field name="project_transfer" widget="many2many_tags"/>
+                <field name="project_transfer" />
                 <field name="transportation_code"/>
             </xpath>
         </field>
