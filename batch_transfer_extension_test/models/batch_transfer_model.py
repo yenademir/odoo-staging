@@ -153,7 +153,7 @@ class Picking(models.Model):
     edespatch_date = fields.Date(related='batch_id.edespatch_date', store=True, readonly=False)
     effective_date = fields.Date(string="Effective Date")
     arrival_date = fields.Date(related="batch_id.arrival_date", string='Arrival Date')
-    project_transfer = fields.Many2many("project.project", string="Project Number")
+    project_transfer = fields.Many2one("project.project", string="Project Number")
     situation = fields.Selection(
         [("to_be_planned", "To Be Planned"),
          ("on_the_way", "On The Way"),
