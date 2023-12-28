@@ -188,20 +188,31 @@
             </xpath>
         </field>
     </record>
-    <record id="transporatation_follow_up" model="ir.ui.view">
+<record id="transporatation_follow_up" model="ir.ui.view">
         <field name="name">transportation.follow.up.tree</field>
         <field name="model">stock.move</field>
         <field name="arch" type="xml">
             <tree string="Operations" delete="0" multi_edit="1" sample="1" default_order="transportation_code" decoration-info="situation=='to_be_planned'" decoration-danger="situation=='on_the_way'" decoration-success="situation=='arrived'">
-                <field name="product_id"/>
-                <field name="is_locked" invisible="1"/>
-                <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,assigned,done" invisible="1"/>
-                <field name="partner_id" attrs="{'readonly': ['&amp;', ('state', '=', 'done'), ('is_locked', '=', True)]}"/>
-                <field name="product_uom_qty"/>
-                <field name="project_transfer" widget="many2many_tags"/>
-                <field name="arrive_date"/>
                 <field name="transportation_code" groupby="transportation_code"/>
+                <field name="batch_id" optional="show"/>
+                <field name="edespatch_delivery_type" optional="hide"/>
+                <field name="picking_id"/>
+                <field name="project_transfer" widget="many2many_tags" optional="hide"/>
+                <field name="product_id" optional="hide"/>
+                <field name="partner_id" string="Receive From / Delivery Adress"/>
+                <field name="product_uom_qty"/>
+                <field name="quantity_done"/>
+                <!-- <field name="package_types" Alperenin geliştirdiği packaging ile alakalı/>-->
+                <!-- <field name="net_weight" Alperenin geliştirdiği packaging ile alakalı/>-->
+                <field name="weight"/>
+                <field name="scheduled_date" optional="hide"/>
+                <field name="arrival_date" optional="hide"/>
+                <field name="purchase_id" optional="show"/>
+                <field name="edespatch_date" optional="hide"/>
                 <field name="situation" />
+                <field name="vehicle_type_id" optional="hide"/>
+                <field name="state" />
+                <field name="airtag_url" optional="hide"/>
             </tree>
         </field>
     </record>
