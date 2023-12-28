@@ -31,27 +31,6 @@ class Picking(models.Model):
 
                     
     @api.model
-    def create(self, vals):
-        self._update_scheduled_date(vals)
-        return super(Picking, self).create(vals)
-    
-    def write(self, vals):
-        self._update_scheduled_date(vals)
-        return super(Picking, self).write(vals)
-    
-    def _update_scheduled_date(self, vals):
-        picking_type = self.env['stock.picking.type'].browse(vals.get('picking_type_id', self.picking_type_id.id))
-    
-        if picking_type.sequence_code == 'IN':  # Receipts
-            # purchase_id.delivery_date değerini kullan
-            purchase_order = self.env['purchase.order'].search([('name', '=', self.origin)], limit=1)
-            if purchase_order:
-                vals['scheduled_date'] = purchase_order.delivery_date
-        elif picking_type.sequence_code == 'OUT':  # Delivery Orders
-            # sale_id.commitment_date değerini kullan
-            sale_order = self.env['sale.order'].search([('name', '=', self.origin)], limit=1)
-            if sale_order:
-                vals['scheduled_date'] = sale_order.commitment_date
 
     def default_get(self, fields_list):
         defaults = super(Picking, self).default_get(fields_list)
