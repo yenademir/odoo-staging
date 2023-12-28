@@ -61,8 +61,11 @@ class StockPickingBatch(models.Model):
     @api.depends('picking_ids.project_transfer')
     def _compute_projects(self):
         for record in self:
-            projects = record.picking_ids.mapped('project_transfer')  # Tüm transferlerin proje referanslarını al
-            record.project_ids = projects
+            # Her bir picking kaydındaki project_transfer alanını topla
+            projects = record.picking_ids.mapped('project_transfer')
+            # Many2many alanına bu projelerin ID'lerini ata
+            project_ids = projects.ids if projects else []
+            record.project_ids = [(6, 0, project_ids)]
 
     def action_show_purchases(self):
         self.ensure_one()
@@ -141,7 +144,7 @@ class StockPickingBatch(models.Model):
 class StockMoveLine(models.Model):
     _inherit = 'stock.move.line'
 
-    project_ids = fields.Many2many('project.project', string='Projects', compute='_compute_project_transfer', store=True)
+    project_ids = fields.Many2one('project.project', string='Projects', compute='_compute_project_transfer', store=True)
 
     @api.depends('picking_id.project_transfer')
     def _compute_project_transfer(self):
