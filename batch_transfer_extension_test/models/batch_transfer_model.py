@@ -37,6 +37,7 @@ class StockPickingBatch(models.Model):
     vehicle_type_id = fields.Many2one('vehicle.type', string='Araç Türü')
     airtag_url = fields.Char(string='Airtag URL', compute='_compute_airtag_url', store=True)  # Hesaplanmış URL alanı
     transportation_code = fields.Char(string='Transportation Code')
+    import_decleration_number = fields.Char(string='Custom Decleration No', inverse='_inverse_import_decleration_number', store=True)
     edespatch_delivery_type = fields.Selection(
         [
             ("edespatch", "E-Despatch"),
@@ -122,6 +123,12 @@ class StockPickingBatch(models.Model):
             # ilişkili picking_ids kayıtlarına yazabilirsiniz.
             edespatch_delivery_type = batch.edespatch_delivery_type
             batch.picking_ids.write({'edespatch_delivery_type': edespatch_delivery_type})
+
+    def _inverse_import_decleration_number(self):
+        for batch in self:
+            # Batch modelindeki import_decleration_number değeri değiştiğinde, bu değeri tüm ilişkili picking kayıtlarına yaz.
+            if batch.import_decleration_number:
+                batch.picking_ids.write({'import_decleration_number': batch.import_decleration_number})
 
     @api.depends('picking_ids.driver_ids')
     def _inverse_driver_ids(self):
