@@ -28,7 +28,7 @@ class StockPickingBatch(models.Model):
     project_ids = fields.Many2many('project.project', string='Projects', compute='_compute_projects', store=True)
     purchase_count = fields.Integer(string='Purchases', compute='_compute_purchase_count')
     scheduled_date = fields.Datetime(string='Scheduled Date')
-    arrival_date = fields.Datetime(string='Arrival Date')
+    arrival_date = fields.Date(string='Arrival Date')
     # shipping_type = fields.Selection([
     #   ('air', 'Airline'),
     #  ('road', 'Highway'),
