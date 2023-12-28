@@ -54,7 +54,7 @@
             <xpath expr="//field[@name='document_number']"  position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="(//page)[2]//field[@name='company_id']" position="before">
+            <xpath expr="//page[@name='extra']//group[@name='other_infos']/field[@name='company_id']" position="before">
                 <field name="document_number"/>
             </xpath>
             <xpath expr="//label[@for='scheduled_date']" position="attributes">
