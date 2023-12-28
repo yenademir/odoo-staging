@@ -29,6 +29,7 @@
                 <field name="vendor_ids" widget="many2many_tags" options="{'no_create': True}" required="1"/>
                 <field name="situation" required="1"/>
                 <field name="airtag_url" widget="url" options="{'no_open': True}" readonly="1" />
+                <field name="import_decleration_number"/>
             </xpath>
             <xpath expr="//notebook/page[3]" position="after">
                 <page string="Drivers" name="driver_ids"
