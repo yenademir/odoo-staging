@@ -33,7 +33,7 @@
              <xpath expr="//field[@name='picking_type_id']" position="after">
                 <field name="origin"/>
              </xpath>
-             <xpath expr="//field[@name='origin']" position="after">
+             <xpath expr="//field[@name='currency_id']" position="before">
                 <field name="arrival_date" />
                 <field name="situation" />
              </xpath>
