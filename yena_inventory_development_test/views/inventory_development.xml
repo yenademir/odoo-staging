@@ -258,6 +258,11 @@
                 <field name="project_transfer" />
                 <field name="transportation_code"/>
             </xpath>
+            <xpath expr="//field[@name='state']" position="before">
+                <field name="delivery_performance_supplier" />
+                <field name="delivery_performance_customer"/>
+            </xpath>
+
         </field>
     </record>
     <record id="transportation_follow_up" model="ir.actions.act_window">
