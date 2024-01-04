@@ -43,18 +43,17 @@
                 </page>
             </xpath>
             <xpath expr="//notebook/page[4]" position="after">
-                <page string="Transport" name="transport_info"
-                attrs="{'invisible': [('edespatch_delivery_type', '!=', 'edespatch')]}" >
+                <page string="Transport" name="transport_info" attrs="{'invisible': [('edespatch_delivery_type', '!=', 'edespatch')]}">
+                    <group>
                         <group>
-                            <group>
-                                <field name="edespatch_carrier_id" string="Carrier Partner" attrs="{ domain="[(&quot;industry_id.id&quot;, &quot;=&quot;, &quot;139&quot;)]"/>
-                                <field name="transport_type" string="Transport Type"/>
-                                <field name="vehicle_id" string="Vehicle Id" attrs="{required': [('edespatch_delivery_type','=','edespatch'), ('picking_type_code','in',['outgoing'])]}" help="AirTransport: aircraft Id - RoadTransport: plate Id - Train: train id - MaritimeTransport: vessel id"/>
-                            </group>
-                            <group name="roadtransport" attrs="{'invisible':[('transport_type','!=','roadtransport')]}">
-                                <field name="transport_equipment_id" string="Transport Equipment 'Trailer' Plate Id" attrs="{help="Road Transport Trailer Plate Id"/>
-                            </group>   
+                            <field name="edespatch_carrier_id" string="Carrier Partner" domain="[('industry_id.id', '=', 139)]"/>
+                            <field name="transport_type" string="Transport Type"/>
+                            <field name="vehicle_id" string="Vehicle Id" attrs="{'required': [('edespatch_delivery_type','=','edespatch'), ('picking_type_code','in',['outgoing'])]}" help="AirTransport: aircraft Id - RoadTransport: plate Id - Train: train id - MaritimeTransport: vessel id"/>
                         </group>
+                        <group name="roadtransport" attrs="{'invisible': [('transport_type','!=','roadtransport')]}">
+                            <field name="transport_equipment_id" string="Transport Equipment 'Trailer' Plate Id" help="Road Transport Trailer Plate Id"/>
+                        </group>
+                    </group>
                 </page>
             </xpath>
         </field>
