@@ -24,7 +24,12 @@ class Picking(models.Model):
         if not scheduled_date or not comparison_date:
             return 0
     
-        # Zaten tarih türündeyse, ek bir işlem yapmaya gerek yok
+        # Her iki tarihi de date türüne dönüştür
+        if isinstance(scheduled_date, datetime.datetime):
+            scheduled_date = scheduled_date.date()
+        if isinstance(comparison_date, datetime.datetime):
+            comparison_date = comparison_date.date()
+    
         diff = scheduled_date - comparison_date
         days = diff.days
     
@@ -33,20 +38,17 @@ class Picking(models.Model):
     @api.depends('scheduled_date', 'edespatch_date')
     def _compute_despatch_date_difference(self):
         for record in self:
-            # fields.Datetime.from_string() çağrısı zaten bir datetime döndürür
             despatch_date = fields.Datetime.from_string(record.edespatch_date) if record.edespatch_date else None
             scheduled_date_diff = fields.Datetime.from_string(record.scheduled_date) if record.scheduled_date else None
-            # Eğer tarihler datetime ise, .date() otomatik çağrılır
             record.delivery_performance_supplier = self.compute_days_difference(scheduled_date_diff, despatch_date)
     
     @api.depends('scheduled_date', 'arrival_date')
     def _compute_arrival_date_difference(self):
         for record in self:
-            # arrival_date zaten bir date türünde olduğu için direkt kullanılabilir
             arrival_date = fields.Date.from_string(record.arrival_date) if record.arrival_date else None
             scheduled_date_diff = fields.Datetime.from_string(record.scheduled_date) if record.scheduled_date else None
-            # Eğer tarihler datetime ise, .date() otomatik çağrılır
             record.delivery_performance_customer = self.compute_days_difference(scheduled_date_diff, arrival_date)
+
 
     
     @api.model
