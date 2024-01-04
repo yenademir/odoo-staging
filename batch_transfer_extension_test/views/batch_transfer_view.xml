@@ -50,7 +50,7 @@
         <field name="inherit_id" ref="stock_picking_batch.view_picking_tree_batch"/>
         <field name="arch" type="xml">
             <xpath expr="//tree/field[@name='name']" position="after">
-                <field name="partner_id"/>
+                <field name="project_transfer"/>
             </xpath>
         </field>
     </record>
