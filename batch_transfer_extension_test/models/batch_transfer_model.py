@@ -57,7 +57,7 @@ class StockPickingBatch(models.Model):
         inverse='_inverse_driver_ids',
         store=True, 
     )
-        edespatch_carrier_id = fields.Many2one('res.partner', string='Carrier Partner', domain=[('industry_id.id', '=', 139)])
+    edespatch_carrier_id = fields.Many2one('res.partner', string='Carrier Partner', domain=[('industry_id.id', '=', 139)])
     transport_type = fields.Selection([
         ('airtransport', 'Air Transport'),
         ('roadtransport', 'Road Transport'),
