@@ -47,26 +47,13 @@
                 attrs="{'invisible': [('edespatch_delivery_type', '!=', 'edespatch')]}" >
                         <group>
                             <group>
-                                <field name="edespatch_carrier_id" string="Carrier Partner" attrs="{'readonly': [('edespatch_state','!=','draft')]}" domain="[(&quot;industry_id.id&quot;, &quot;=&quot;, &quot;139&quot;)]"/>
-                                <field name="transport_type" string="Transport Type" attrs="{'readonly': [('edespatch_state','!=','draft')]}"/>
-
-                                <field name="vehicle_id" string="Vehicle Id" attrs="{'readonly': [('edespatch_state','!=','draft')], 'required': [('edespatch_delivery_type','=','edespatch'), ('picking_type_code','in',['outgoing'])]}" help="AirTransport: aircraft Id - RoadTransport: plate Id - Train: train id - MaritimeTransport: vessel id"/>
+                                <field name="edespatch_carrier_id" string="Carrier Partner" attrs="{ domain="[(&quot;industry_id.id&quot;, &quot;=&quot;, &quot;139&quot;)]"/>
+                                <field name="transport_type" string="Transport Type"/>
+                                <field name="vehicle_id" string="Vehicle Id" attrs="{required': [('edespatch_delivery_type','=','edespatch'), ('picking_type_code','in',['outgoing'])]}" help="AirTransport: aircraft Id - RoadTransport: plate Id - Train: train id - MaritimeTransport: vessel id"/>
                             </group>
                             <group name="roadtransport" attrs="{'invisible':[('transport_type','!=','roadtransport')]}">
-                                <field name="transport_equipment_id" string="Transport Equipment 'Trailer' Plate Id" attrs="{'readonly': [('edespatch_state','!=','draft')]}" help="Road Transport Trailer Plate Id"/>
-                            </group>
-                            <group name="railtransport" attrs="{'invisible':[('transport_type','!=','railtransport')]}">
-                                <field name="rail_car_id" attrs="{'readonly': [('edespatch_state','!=','draft')],'required': [('transport_type','=','railtransport')]}"/>
-                            </group>
-                            <group name="maritimetransport" attrs="{'readonly': [('edespatch_state','!=','draft')],'invisible':[('transport_type','!=','maritimetransport')]}">
-                                <field name="vessel_name" attrs="{'readonly': [('edespatch_state','!=','draft')]}"/>
-                                <field name="radio_call_sign_id" attrs="{'readonly': [('edespatch_state','!=','draft')]}"/>
-                                <field name="ships_requirements" attrs="{'readonly': [('edespatch_state','!=','draft')]}"/>
-                                <field name="gross_tonnage_measure" attrs="{'readonly': [('edespatch_state','!=','draft')]}"/>
-                                <field name="net_tonnage_measure" attrs="{'readonly': [('edespatch_state','!=','draft')]}"/>
-                                <field name="registry_cert_doc_ref" attrs="{'readonly': [('edespatch_state','!=','draft')]}"/>
-                                <field name="registry_port_location" attrs="{'readonly': [('edespatch_state','!=','draft')]}"/>
-                            </group>
+                                <field name="transport_equipment_id" string="Transport Equipment 'Trailer' Plate Id" attrs="{help="Road Transport Trailer Plate Id"/>
+                            </group>   
                         </group>
                 </page>
             </xpath>
