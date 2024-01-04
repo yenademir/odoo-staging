@@ -17,7 +17,6 @@ class Picking(models.Model):
     sequence_code = fields.Char(string='Sequence Code', related='picking_type_id.sequence_code', store=True)
     logistic_company = fields.Char (string="Logistic Company", store=True)
     
-
     @api.model
     def create(self, vals):
         self._update_scheduled_date(vals)
@@ -28,6 +27,9 @@ class Picking(models.Model):
         return super(Picking, self).write(vals)
 
     def _update_scheduled_date(self, vals):
+        if 'scheduled_date' not in vals:
+            return
+
         for record in self:
             picking_type = record.env['stock.picking.type'].browse(vals.get('picking_type_id', record.picking_type_id.id))
 
@@ -39,7 +41,7 @@ class Picking(models.Model):
                 sale_order = record.env['sale.order'].search([('name', '=', record.origin)], limit=1)
                 if sale_order:
                     vals['scheduled_date'] = sale_order.commitment_date
-
+                    
     def default_get(self, fields_list):
         defaults = super(Picking, self).default_get(fields_list)
 
