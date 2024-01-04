@@ -34,7 +34,7 @@
                 <field name="origin"/>
              </xpath>
              <xpath expr="//field[@name='currency_id']" position="before">
-                <field name="arrival_date" attrs="{'invisible': [('sequence_code', '!=', 'OUT')]}"/>
+                <field name="arrival_date"/>
                 <field name="situation" />
              </xpath>
            <xpath expr="//field[@name='partner_id']" position="after">
