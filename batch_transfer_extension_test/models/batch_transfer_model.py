@@ -38,6 +38,24 @@ class StockPickingBatch(models.Model):
     airtag_url = fields.Char(string='Airtag URL', compute='_compute_airtag_url', store=True)  # Hesaplanmış URL alanı
     transportation_code = fields.Char(string='Transportation Code')
     import_decleration_number = fields.Char(string='Custom Decleration No', inverse='_inverse_import_decleration_number', store=True)
+    edespatch_carrier_id = fields.Many2one('res.partner', string='Carrier Partner', domain=[('industry_id.id', '=', 139)])
+    transport_type = fields.Selection([
+        ('airtransport', 'Air Transport'),
+        ('roadtransport', 'Road Transport'),
+        ('railtransport', 'Rail Transport'),
+        ('maritimetransport', 'Maritime Transport'),
+    ], string='Transport Type')
+    vehicle_id = fields.Char(string='Vehicle Id')
+    transport_equipment_id = fields.Char(string='Transport Equipment "Trailer" Plate Id')
+    rail_car_id = fields.Char(string='Rail Car Id')
+    maritimetransport = fields.Boolean(string='Maritime Transport')
+    vessel_name = fields.Char(string='Vessel Name')
+    radio_call_sign_id = fields.Char(string='Radio Call Sign ID')
+    ships_requirements = fields.Text(string='Ships Requirements')
+    gross_tonnage_measure = fields.Float(string='Gross Tonnage Measure')
+    net_tonnage_measure = fields.Float(string='Net Tonnage Measure')
+    registry_cert_doc_ref = fields.Char(string='Registry Certificate Document Reference')
+    registry_port_location = fields.Char(string='Registry Port Location')
     edespatch_delivery_type = fields.Selection(
         [
             ("edespatch", "E-Despatch"),
@@ -57,24 +75,7 @@ class StockPickingBatch(models.Model):
         inverse='_inverse_driver_ids',
         store=True, 
     )
-    edespatch_carrier_id = fields.Many2one('res.partner', string='Carrier Partner', domain=[('industry_id.id', '=', 139)])
-    transport_type = fields.Selection([
-        ('airtransport', 'Air Transport'),
-        ('roadtransport', 'Road Transport'),
-        ('railtransport', 'Rail Transport'),
-        ('maritimetransport', 'Maritime Transport'),
-    ], string='Transport Type')
-    vehicle_id = fields.Char(string='Vehicle Id')
-    transport_equipment_id = fields.Char(string='Transport Equipment "Trailer" Plate Id')
-    rail_car_id = fields.Char(string='Rail Car Id')
-    maritimetransport = fields.Boolean(string='Maritime Transport')
-    vessel_name = fields.Char(string='Vessel Name')
-    radio_call_sign_id = fields.Char(string='Radio Call Sign ID')
-    ships_requirements = fields.Text(string='Ships Requirements')
-    gross_tonnage_measure = fields.Float(string='Gross Tonnage Measure')
-    net_tonnage_measure = fields.Float(string='Net Tonnage Measure')
-    registry_cert_doc_ref = fields.Char(string='Registry Certificate Document Reference')
-    registry_port_location = fields.Char(string='Registry Port Location')
+
 
     @api.depends('picking_ids.project_transfer')
     def _compute_projects(self):
