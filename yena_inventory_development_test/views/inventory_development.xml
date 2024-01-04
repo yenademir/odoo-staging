@@ -246,11 +246,6 @@
                 <field name="sale_id" attrs="{'invisible': [('sequence_code', '!=', 'OUT')]}"/>
                 <field name="purchase_id" attrs="{'invisible': [('sequence_code', '!=', 'IN')]}"/>
             </xpath>
-            <xpath expr="//field[@name='picking_type_id']"  position="after">
-                <field name="sequence_code"  attrs="{'invisible': 1}"/>
-                <field name="sale_id" attrs="{'invisible': [('sequence_code', '!=', 'OUT')]}"/>
-                <field name="purchase_id" attrs="{'invisible': [('sequence_code', '!=', 'IN')]}"/>
-            </xpath>
         </field>
     </record>
     <record id="inventory_transfer_stock_vpicking_yena" model="ir.ui.view">
