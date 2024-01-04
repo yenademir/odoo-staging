@@ -55,6 +55,9 @@ class Picking(models.Model):
         return super(Picking, self).write(vals)
 
     def _update_scheduled_date(self, vals):
+        if 'scheduled_date' not in vals:
+            return
+
         for record in self:
             picking_type = record.env['stock.picking.type'].browse(vals.get('picking_type_id', record.picking_type_id.id))
 
