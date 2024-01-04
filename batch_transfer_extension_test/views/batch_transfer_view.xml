@@ -20,7 +20,7 @@
                 <field name="project_ids" widget="many2many_tags" options="{'no_create': True}" />
                 <field name="transportation_code" required="1"/>
                 <field name="edespatch_delivery_type" required="1"/>
-                <field name="arrival_date" />
+                <field name="arrival_date" required="1"/>
                 <field name="vehicle_type_id" required="1"/>
             </field>
             <xpath expr="//field[@name='scheduled_date']" position="after">
