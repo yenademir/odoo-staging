@@ -90,4 +90,16 @@
             </xpath>
         </field>
     </record>
+    <record id="stock_picking_form_inherit_edespatch" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit.custom.edespatch</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="l10n_tr_stock_edespatch.stock_picking_edespatch_form_inherit"/>
+        <field name="arch" type="xml">
+            <field name="vehicle_id" position="attributes">
+                <attribute name="attrs">{
+                    'readonly': [(0, '=', 1)], <!-- Burada readonly koşulunu değiştirin -->
+                }</attribute>
+            </field>
+        </field>
+    </record>
 </odoo>
