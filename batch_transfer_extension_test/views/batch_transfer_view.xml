@@ -96,7 +96,7 @@
         <field name="inherit_id" ref="l10n_tr_stock_edespatch.stock_picking_edespatch_form_inherit"/>
         <field name="arch" type="xml">
                 <field name="vehicle_id" position="attributes">
-                    <attribute name="readonly">0</attribute>
+                    <attribute name="readonly">False</attribute>
                 </field>
         </field>
     </record>
