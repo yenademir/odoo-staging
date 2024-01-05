@@ -12,6 +12,7 @@ class PurchaseOrder(models.Model):
     is_current_user = fields.Boolean(compute='_compute_is_current_user')
     project_purchase = fields.Many2one('project.project', string="Project Number", required=True, store=True)
     contact_id = fields.Many2one('res.partner', string='Contact Person', store=True)
+    company_id=fields.Many2one("res.company", default=None)
 
     @api.onchange('project_purchase')
     def _onchange_project_purchase(self):
