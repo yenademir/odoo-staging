@@ -134,16 +134,42 @@ class StockPickingBatch(models.Model):
             else:
                 record.airtag_url = False
 
-    @api.onchange('edespatch_date', 'situation', 'arrival_date')
+    @api.onchange('edespatch_date', 'situation', 'arrival_date', 
+                  'edespatch_carrier_id', 'transport_equipment_id', 'rail_car_id', 
+                  'vessel_name', 'radio_call_sign_id', 'ships_requirements', 
+                  'gross_tonnage_measure', 'net_tonnage_measure', 
+                  'registry_cert_doc_ref', 'registry_port_location')
     def _onchange_transfer_related_fields(self):
         for batch in self:
+            # İlk üç alan için güncel değerleri topla
             edespatch_dates = {'edespatch_date': batch.edespatch_date}
             arrival_dates = {'arrival_date': batch.arrival_date}
             situation = {'situation': batch.situation}
-            for transfer in batch.picking_ids:
-                transfer.write(edespatch_dates)
-                transfer.write(situation)
-                transfer.write(arrival_dates)
+    
+            # Diğer alanlar için güncel değerleri topla
+            edespatch_carrier_id = {'edespatch_carrier_id': batch.edespatch_carrier_id.id}
+            transport_equipment_id = {'transport_equipment_id': batch.transport_equipment_id}
+            rail_car_id = {'rail_car_id': batch.rail_car_id}
+            maritime_fields = {
+                'vessel_name': batch.vessel_name,
+                'radio_call_sign_id': batch.radio_call_sign_id,
+                'ships_requirements': batch.ships_requirements,
+                'gross_tonnage_measure': batch.gross_tonnage_measure,
+                'net_tonnage_measure': batch.net_tonnage_measure,
+                'registry_cert_doc_ref': batch.registry_cert_doc_ref,
+                'registry_port_location': batch.registry_port_location
+            }
+
+        for transfer in batch.picking_ids:
+            # İlgili transfer kayıtlarına değerleri yaz
+            transfer.write(edespatch_dates)
+            transfer.write(arrival_dates)
+            transfer.write(situation)
+            transfer.write(edespatch_carrier_id)
+            transfer.write(transport_equipment_id)
+            transfer.write(rail_car_id)
+            transfer.write(maritime_fields)
+
 
     @api.depends('picking_ids')
     def _compute_edespatch_delivery_type(self):
