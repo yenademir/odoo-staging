@@ -45,7 +45,7 @@ class StockPickingBatch(models.Model):
         ('railtransport', 'Rail Transport'),
         ('maritimetransport', 'Maritime Transport'),
     ], string='Transport Type', inverse='_inverse_transport_type')
-    vehicle_id = fields.Char(string='Vehicle Id', inverse='_inverse_vehicle_id')
+    vehicle_id = fields.Char(string='Vehicle Id', inverse='_inverse_maritimetransport_fields')
     transport_equipment_id = fields.Char(string='Transport Equipment "Trailer" Plate Id', inverse='_inverse_transport_equipment_id')
     rail_car_id = fields.Char(string='Rail Car Id', inverse='_inverse_rail_car_id')
     maritimetransport = fields.Boolean(string='Maritime Transport', inverse='_inverse_maritimetransport_fields')
@@ -87,12 +87,6 @@ class StockPickingBatch(models.Model):
         for batch in self:
             batch.picking_ids.write({'transport_type': batch.transport_type})
 
-    # vehicle_id için inverse fonksiyon
-    @api.depends('picking_ids.vehicle_id')
-    def _inverse_vehicle_id(self):
-        for batch in self:
-            batch.picking_ids.write({'vehicle_id': batch.vehicle_id})
-
     # transport_equipment_id için inverse fonksiyon
     @api.depends('picking_ids.transport_equipment_id')
     def _inverse_transport_equipment_id(self):
@@ -105,7 +99,6 @@ class StockPickingBatch(models.Model):
         for batch in self:
             batch.picking_ids.write({'rail_car_id': batch.rail_car_id})
 
-    # vessel_name ve diğer maritimetransport alanları için inverse fonksiyonlar
     @api.depends('picking_ids.vessel_name', 'picking_ids.radio_call_sign_id', 
                  'picking_ids.ships_requirements', 'picking_ids.gross_tonnage_measure', 
                  'picking_ids.net_tonnage_measure', 'picking_ids.registry_cert_doc_ref', 
