@@ -40,7 +40,7 @@
              </xpath>
            <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="transportation_code" attrs="{'required': True}" />
-                <field name="project_transfer" attrs="{'required': True}"/>
+                <field name="project_transfer" attrs="{'required': True}" widget="many2many_tags"/>
             </xpath>
             <xpath expr="//field[@name='edespatch_date']" position="attributes">
                 <attribute name="invisible">1</attribute>
