@@ -202,10 +202,10 @@ class StockPickingBatch(models.Model):
 class StockMoveLine(models.Model):
     _inherit = 'stock.move.line'
 
-    project_ids = fields.Many2one('project.project', string='Projects', compute='_compute_project_transfer_line', store=True)
+    project_ids = fields.Many2one('project.project', string='Projects', compute='_compute_project_transfer', store=True)
 
     @api.depends('picking_id.project_transfer')
-    def _compute_project_transfer_line(self):
+    def _compute_project_transfer(self):
         for record in self:
             record.project_ids = record.picking_id.project_transfer
             
