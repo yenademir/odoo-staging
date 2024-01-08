@@ -109,7 +109,7 @@ class StockPickingBatch(models.Model):
     @api.depends('picking_ids.vessel_name', 'picking_ids.radio_call_sign_id', 
                  'picking_ids.ships_requirements', 'picking_ids.gross_tonnage_measure', 
                  'picking_ids.net_tonnage_measure', 'picking_ids.registry_cert_doc_ref', 
-                 'picking_ids.registry_port_location')
+                 'picking_ids.registry_port_location', 'picking_ids.vehicle_id')
     def _inverse_maritimetransport_fields(self):
         for batch in self:
             batch.picking_ids.write({
@@ -119,7 +119,8 @@ class StockPickingBatch(models.Model):
                 'gross_tonnage_measure': batch.gross_tonnage_measure,
                 'net_tonnage_measure': batch.net_tonnage_measure,
                 'registry_cert_doc_ref': batch.registry_cert_doc_ref,
-                'registry_port_location': batch.registry_port_location
+                'registry_port_location': batch.registry_port_location,
+                'vehicle_id': batch.vehicle_id,
             })
     
     @api.depends('picking_ids.project_transfer')
