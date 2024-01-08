@@ -59,10 +59,6 @@ class StockPickingBatch(models.Model):
         store=True, 
     )
 
-    @api.depends('picking_ids.edespatch_carrier_id')
-    def _inverse_edespatch_carrier_id(self):
-        for batch in self:
-            batch.picking_ids.write({'edespatch_carrier_id': batch.edespatch_carrier_id.id})
 
     # transport_type için inverse fonksiyon
     @api.depends('picking_ids.transport_type')
@@ -76,34 +72,6 @@ class StockPickingBatch(models.Model):
         for batch in self:
             batch.picking_ids.write({'vehicle_id': batch.vehicle_id})
 
-    # transport_equipment_id için inverse fonksiyon
-    @api.depends('picking_ids.transport_equipment_id')
-    def _inverse_transport_equipment_id(self):
-        for batch in self:
-            batch.picking_ids.write({'transport_equipment_id': batch.transport_equipment_id})
-
-    # rail_car_id için inverse fonksiyon
-    @api.depends('picking_ids.rail_car_id')
-    def _inverse_rail_car_id(self):
-        for batch in self:
-            batch.picking_ids.write({'rail_car_id': batch.rail_car_id})
-
-    # vessel_name ve diğer maritimetransport alanları için inverse fonksiyonlar
-    @api.depends('picking_ids.vessel_name', 'picking_ids.radio_call_sign_id', 
-                 'picking_ids.ships_requirements', 'picking_ids.gross_tonnage_measure', 
-                 'picking_ids.net_tonnage_measure', 'picking_ids.registry_cert_doc_ref', 
-                 'picking_ids.registry_port_location')
-    def _inverse_maritimetransport_fields(self):
-        for batch in self:
-            batch.picking_ids.write({
-                'vessel_name': batch.vessel_name,
-                'radio_call_sign_id': batch.radio_call_sign_id,
-                'ships_requirements': batch.ships_requirements,
-                'gross_tonnage_measure': batch.gross_tonnage_measure,
-                'net_tonnage_measure': batch.net_tonnage_measure,
-                'registry_cert_doc_ref': batch.registry_cert_doc_ref,
-                'registry_port_location': batch.registry_port_location
-            })
     
     @api.depends('picking_ids.project_transfer')
     def _compute_projects(self):
