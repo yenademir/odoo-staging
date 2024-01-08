@@ -6,12 +6,12 @@
     'category': 'Custom',
     'author': 'Emre Mataracı',
     'website': 'www.yenaengineering.nl',
-    'depends': ['product', 'stock', 'purchase', 'base','delivery', 'yena_purchase_development'],
+    'depends': ['product', 'stock', 'purchase', 'base','delivery', 'yena_purchase_development', 'yena_inventory_development'],
     'data': [
         'views/quality_development.xml',
         'security/ir.model.access.csv',
         'views/quality_overview.xml',
-        'wizards/upload_document.xml'
+        'wizards/upload_document.xml',
     ],
     'assets': {
         'web.assets_backend': [

@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError
 import requests
 import base64
 import logging
@@ -24,8 +25,22 @@ class DocumentUploadWizard(models.Model):
         'document.upload.wizard.packaging', 'wizard_id', string='Packaging'
     )
 
-    purchase_name = fields.Char('Purchase Name')
+    purchase_name = fields.Many2one('purchase.order', string="Purchase Name")
+    project_number = fields.Many2one('project.project', string="Project Number")
+    product_id = fields.Many2one('product.product', string='Pose Nr.')
+    
+    def write(self, vals):
+        result = super(DocumentUploadWizard, self).write(vals)
 
+        # project_number için olan mevcut kodunuz...
+        if 'project_number' in vals:
+            project_number_id = vals['project_number']
+            for wizard in self:
+                wizard.certificate_line_ids.write({'project_number': project_number_id})
+                # Diğer bağlı one2many alanları için de benzer işlem yapılabilir
+
+        return result
+    
 class DocumentUploadWizardLine(models.Model):
     _name = 'document.upload.wizard.line'
     _description = 'Document Upload Wizard Line'
@@ -33,16 +48,57 @@ class DocumentUploadWizardLine(models.Model):
     wizard_id = fields.Many2one('document.upload.wizard', string='Wizard')
     required_document = fields.Char(string='Required Document')
     uploaded_document = fields.Char(string='Uploaded Document')
-    material_thickness = fields.Char(string="Thickness")
-    material_width = fields.Char(string="Width")
-    material_length = fields.Char(string="Length")
+    dimension = fields.Char(string="Dimension")
     is_uploaded = fields.Boolean(string='Yüklemeden Devam Et')
     upload_document = fields.Binary(string='Upload Document')
+    lot_number = fields.Char(string="1.Lot Nr")
+    project_number = fields.Many2one('project.project', string="Project Number")
+    purchase_name = fields.Many2one(
+        'purchase.order', 
+        string="Order Reference", 
+        related='wizard_id.purchase_name',
+    )
+    product_id = fields.Many2one(
+        'product.product', 
+        string="Pose No",
+        related='wizard_id.product_id',
+        )
+    customer_id = fields.Many2one(
+        'res.partner', 
+        string="Customer",
+        related='project_number.partner_id',
+        )
+    supplier_id =fields.Many2one(
+        'res.partner', 
+        string="Supplier",
+        related='purchase_name.partner_id',        
+        )
+    manufacturer = fields.Char(string="Üretici Firma")
+    certificate_number = fields.Char(string="Certificate Nr.")
+    heat_number = fields.Char(string="Heat Number")
+    standart = fields.Char(string="Standart")
 
     material_certificate_id = fields.Many2one(
         'material.certificate', string='Material Certificate'
     )
-
+        
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super(DocumentUploadWizardLine, self).create(vals_list)
+        for record in records:
+            if record.wizard_id and record.wizard_id.project_number:
+                # Ebeveyn wizard'dan project_number'ı al ve bu kayda ata
+                record.project_number = record.wizard_id.project_number.id
+        return records
+    
+    def filename_extract_from_binary_field(self):
+        if self.upload_document:
+            # Odoo, binary alanlarda dosya adını 'filename;' önekini kullanarak saklar
+            file_info = self.upload_document.decode().split(';')[0]
+            file_name = file_info.split('=')[-1] if '=' in file_info else 'unknown_file'
+            return file_name
+        return 'unknown_file'
+    
     @api.onchange('upload_document')
     def onchange_upload_document(self):
         if self.upload_document:
@@ -73,8 +129,8 @@ class DocumentUploadWizardLine(models.Model):
                 viewer_url = "https://drive.google.com/viewerng/viewer?embedded=true&url=" + certificate_url
                 self.uploaded_document = viewer_url
 
-                return True  # Başarı durumunu belirt
-            return False  # Başarısızlık durumunu belirt
+                return True 
+            return False 
         
 class DocumentUploadWizardMeasurementReport(models.Model):
     _name = 'document.upload.wizard.measurement.report'
@@ -85,14 +141,11 @@ class DocumentUploadWizardMeasurementReport(models.Model):
     upload_document = fields.Binary(string='Upload Document')
     is_uploaded = fields.Boolean(string='Yüklemeden Devam Et')
     uploaded_document = fields.Char(string='Uploaded Document')
-
-    def filename_extract_from_binary_field(self):
-        if self.upload_document:
-            # Odoo, binary alanlarda dosya adını 'filename;' önekini kullanarak saklar
-            file_info = self.upload_document.decode().split(';')[0]
-            file_name = file_info.split('=')[-1] if '=' in file_info else 'unknown_file'
-            return file_name
-        return 'unknown_file'
+    product_id = fields.Many2one(
+        'product.product', 
+        string="Pose No",
+        related='wizard_id.product_id',
+        )
 
     @api.onchange('upload_document')
     def onchange_upload_document(self):
@@ -108,9 +161,9 @@ class DocumentUploadWizardMeasurementReport(models.Model):
         if file_data:
             api_url = "https://portal-test.yenaengineering.nl/api/qualitydocuments"
             
-            # Dosya adını al
-            file_name = self.filename_extract_from_binary_field()
-
+            product_name = self.product_id.name if self.product_id else ''
+            file_name = "{} {}".format(product_name, self.name or 'unknown_file').strip()
+            
             files = {
                 'quality_documents': (file_name, base64.b64decode(file_data), 'application/octet-stream')
             }
@@ -137,7 +190,12 @@ class DocumentUploadWizardGalvanize(models.Model):
     upload_document = fields.Binary(string='Upload Document')
     is_uploaded = fields.Boolean(string='Yüklemeden Devam Et')
     uploaded_document = fields.Char(string='Uploaded Document')
-
+    product_id = fields.Many2one(
+        'product.product', 
+        string="Pose No",
+        related='wizard_id.product_id',
+        )
+    
     def filename_extract_from_binary_field(self):
         if self.upload_document:
             # Odoo, binary alanlarda dosya adını 'filename;' önekini kullanarak saklar
@@ -161,7 +219,8 @@ class DocumentUploadWizardGalvanize(models.Model):
             api_url = "https://portal-test.yenaengineering.nl/api/qualitydocuments"
             
             # Dosya adını al
-            file_name = self.filename_extract_from_binary_field()
+            product_name = self.product_id.name if self.product_id else ''
+            file_name = "{} {}".format(product_name, self.name or 'unknown_file').strip()
 
             files = {
                 'quality_documents': (file_name, base64.b64decode(file_data), 'application/octet-stream')
@@ -189,7 +248,12 @@ class DocumentUploadWizardGalvanize(models.Model):
     upload_document = fields.Binary(string='Upload Document')
     is_uploaded = fields.Boolean(string='Yüklemeden Devam Et')
     uploaded_document = fields.Char(string='Uploaded Document')
-
+    product_id = fields.Many2one(
+        'product.product', 
+        string="Pose No",
+        related='wizard_id.product_id',
+        )
+    
     def filename_extract_from_binary_field(self):
         if self.upload_document:
             # Odoo, binary alanlarda dosya adını 'filename;' önekini kullanarak saklar
@@ -213,8 +277,9 @@ class DocumentUploadWizardGalvanize(models.Model):
             api_url = "https://portal-test.yenaengineering.nl/api/qualitydocuments"
             
             # Dosya adını al
-            file_name = self.filename_extract_from_binary_field()
-
+            product_name = self.product_id.name if self.product_id else ''
+            file_name = "{} {}".format(product_name, self.name or 'unknown_file').strip()
+            
             files = {
                 'quality_documents': (file_name, base64.b64decode(file_data), 'application/octet-stream')
             }

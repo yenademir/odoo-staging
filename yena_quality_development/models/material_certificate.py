@@ -24,8 +24,22 @@ class ProductTemplate(models.Model):
 
     material_certificate = fields.Many2many(
         'material.certificate',
-        string = 'Material Certificate'
+        string = 'Sub Part Materials'
     )
+class PurchaseOrder(models.Model):
+    _inherit = 'purchase.order'
+
+    def write(self, vals):
+        result = super(PurchaseOrder, self).write(vals)
+        if 'project_purchase' in vals: 
+            project_purchase_id = vals['project_purchase']
+            # İlgili tüm DocumentUploadWizard kayıtlarını bul ve güncelle
+            for order in self:
+                for line in order.order_line:
+                    if line.wizard_id:
+                        # project_purchase alanı güncellendiğinde wizard'ın project_number alanını güncelle
+                        line.wizard_id.write({'project_number': project_purchase_id})
+        return result
 
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
@@ -64,24 +78,24 @@ class PurchaseOrderLine(models.Model):
         ('not_ok', 'Eksik Belge'),
         ('conditional_acceptance', 'Şartlı Kabul'),
         ('done', 'Tamamlandı'),
-    ], string="Quality Status", store=True)
+    ], string="Quality Status", compute='_compute_quality_status', store=True)
 
     @api.depends('wizard_id.certificate_line_ids.uploaded_document', 'wizard_id.certificate_line_ids.is_uploaded')
     def _compute_material_certificate_status(self):
         for record in self:
             if record.wizard_id:
                 lines = record.wizard_id.certificate_line_ids
-                all_uploaded = all(line.uploaded_document for line in lines)
                 any_uploaded = any(line.uploaded_document for line in lines)
+                all_uploaded = all(line.uploaded_document for line in lines)
                 any_is_uploaded = any(line.is_uploaded for line in lines)
-                all_is_uploaded = all(line.is_uploaded for line in lines)
+                any_line_empty = any(not (line.uploaded_document or line.is_uploaded) for line in lines)
 
-                if all_uploaded or (any_uploaded and any_is_uploaded):
-                    record.material_certificate_status = 'done'
-                elif (len(lines) == 1 and any_is_uploaded) or all_is_uploaded:
-                    record.material_certificate_status = 'conditional_acceptance'
-                else:
+                if any_line_empty:  # Öncelikle herhangi bir satır boş mu diye kontrol et
                     record.material_certificate_status = 'not_ok'
+                elif all_uploaded:
+                    record.material_certificate_status = 'done'
+                elif any_uploaded or any_is_uploaded:
+                    record.material_certificate_status = 'conditional_acceptance'
 
 
     @api.depends('wizard_id.measurement_report_ids.uploaded_document', 'wizard_id.measurement_report_ids.is_uploaded')
@@ -89,42 +103,51 @@ class PurchaseOrderLine(models.Model):
         for record in self:
             if record.wizard_id:
                 lines = record.wizard_id.measurement_report_ids
-                all_is_uploaded = all(line.is_uploaded for line in lines)
+                any_uploaded = any(line.uploaded_document for line in lines)
+                all_uploaded = all(line.uploaded_document for line in lines)
+                any_is_uploaded = any(line.is_uploaded for line in lines)
+                any_line_empty = any(not (line.uploaded_document or line.is_uploaded) for line in lines)
 
-                if all(line.uploaded_document for line in lines):
-                    record.measurement_report_status = 'done'
-                elif len(lines) == 1 and lines[0].is_uploaded or all_is_uploaded:
-                    record.measurement_report_status = 'conditional_acceptance'
-                else:
+                if any_line_empty:  # Öncelikle herhangi bir satır boş mu diye kontrol et
                     record.measurement_report_status = 'not_ok'
+                elif all_uploaded:
+                    record.measurement_report_status = 'done'
+                elif any_uploaded or any_is_uploaded:
+                    record.measurement_report_status = 'conditional_acceptance'
     
     @api.depends('wizard_id.galvanize_ids.uploaded_document', 'wizard_id.galvanize_ids.is_uploaded')
     def _compute_galvanize_status(self):
         for record in self:
             if record.wizard_id:
                 lines = record.wizard_id.galvanize_ids
-                all_is_uploaded = all(line.is_uploaded for line in lines)
+                any_uploaded = any(line.uploaded_document for line in lines)
+                all_uploaded = all(line.uploaded_document for line in lines)
+                any_is_uploaded = any(line.is_uploaded for line in lines)
+                any_line_empty = any(not (line.uploaded_document or line.is_uploaded) for line in lines)
 
-                if all(line.uploaded_document for line in lines):
-                    record.galvanize_status = 'done'
-                elif len(lines) == 1 and lines[0].is_uploaded or all_is_uploaded:
-                    record.galvanize_status = 'conditional_acceptance'
-                else:
+                if any_line_empty:  # Öncelikle herhangi bir satır boş mu diye kontrol et
                     record.galvanize_status = 'not_ok'
+                elif all_uploaded:
+                    record.galvanize_status = 'done'
+                elif any_uploaded or any_is_uploaded:
+                    record.galvanize_status = 'conditional_acceptance'
 
     @api.depends('wizard_id.packaging_ids.uploaded_document', 'wizard_id.packaging_ids.is_uploaded')
     def _compute_packaging_status(self):
         for record in self:
             if record.wizard_id:
                 lines = record.wizard_id.packaging_ids
-                all_is_uploaded = all(line.is_uploaded for line in lines)
+                any_uploaded = any(line.uploaded_document for line in lines)
+                all_uploaded = all(line.uploaded_document for line in lines)
+                any_is_uploaded = any(line.is_uploaded for line in lines)
+                any_line_empty = any(not (line.uploaded_document or line.is_uploaded) for line in lines)
 
-                if all(line.uploaded_document for line in lines):
-                    record.packaging_status = 'done'
-                elif len(lines) == 1 and lines[0].is_uploaded or all_is_uploaded:
-                    record.packaging_status = 'conditional_acceptance'
-                else:
+                if any_line_empty:  # Öncelikle herhangi bir satır boş mu diye kontrol et
                     record.packaging_status = 'not_ok'
+                elif all_uploaded:
+                    record.packaging_status = 'done'
+                elif any_uploaded or any_is_uploaded:
+                    record.packaging_status = 'conditional_acceptance'
                     
     @api.depends('material_certificate_status', 'measurement_report_status', 'galvanize_status', 'packaging_status')
     def _compute_quality_status(self):
@@ -149,12 +172,14 @@ class PurchaseOrderLine(models.Model):
 
         # Sertifikalar için veri alın
         certificates_data = self.env['material.certificate'].browse(certificate_ids)
+        project_number_id = self.order_id.project_purchase.id  # Proje numarasını al
         certificate_line_values = []
         for cert in certificates_data:
             certificate_line_values.append((0, 0, {
                 'material_certificate_id': cert.id,
                 'required_document': cert.name,
-                'is_uploaded': False
+                'is_uploaded': False,
+                'project_number': project_number_id,
             }))
 
         if wizard and wizard.exists():
@@ -168,9 +193,13 @@ class PurchaseOrderLine(models.Model):
                         'wizard_id': wizard.id,
                         'material_certificate_id': cert_id,
                         'required_document': self.env['material.certificate'].browse(cert_id).name,
-                        'material_thickness': self.env['material.certificate'].browse(cert_id).material_thickness,
-                        'is_uploaded': False
+                        'is_uploaded': False,
+                        'project_number': project_number_id
                     })
+            else:
+                # Mevcut satırlar için project_number alanını güncelle
+                for line in wizard.certificate_line_ids:
+                    line.project_number = project_number_id
 
         else:
             measurement_report_values = [(0, 0, {
@@ -179,21 +208,25 @@ class PurchaseOrderLine(models.Model):
             })]
 
             galvanize_values = [(0, 0, {
-                'name': 'Galvaniz Rapor',
+                'name': 'Galvanizing / Painting / Coating',
                 'is_uploaded': False
             })]
 
             packaging_values = [(0, 0, {
-                'name': 'Galvaniz Rapor',
+                'name': 'Paketleme',
                 'is_uploaded': False
             })]
-
+            
+            project_number_id = self.order_id.project_purchase.id
             wizard = self.env['document.upload.wizard'].create({
                 'certificate_line_ids': certificate_line_values,
                 'measurement_report_ids': measurement_report_values,
                 'galvanize_ids': galvanize_values,
                 'packaging_ids': packaging_values,
-                'purchase_name': self.order_id.name,
+                'purchase_name': self.order_id.id,
+                'project_number': project_number_id,
+                'product_id': self.product_id.id,
+
             })
             self.wizard_id = wizard.id
 
@@ -206,7 +239,9 @@ class PurchaseOrderLine(models.Model):
             'context': {
                 'default_certificate_ids': certificate_ids,
                 'active_id': self.id,
-                'default_purchase_name': self.order_id.name,
+                'default_purchase_name': self.order_id.id,
+                'default_project_number': project_number_id,
+                'default_product_id': self.product_id.id,
             },
             'res_id': self.wizard_id.id,
         }

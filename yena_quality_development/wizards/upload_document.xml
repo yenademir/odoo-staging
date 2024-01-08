@@ -9,12 +9,20 @@
                         <field name="certificate_line_ids" nolabel="1">
                             <tree editable="bottom">
                                 <field name="required_document"/>
-                                <field name="material_thickness"/>
-                                <field name="material_width"/>
-                                <field name="material_length"/>
                                 <field name="upload_document" widget='binary'/>
+                                <field name="lot_number"/>
+                                <field name="project_number" optional="hide" readonly="1"/>
+                                <field name="purchase_name" optional="hide" readonly="1"/>
+                                <field name="product_id" optional="hide" readonly="1"/>
+                                <field name="customer_id" optional="hide" readonly="1"/>
+                                <field name="supplier_id" optional="hide" readonly="1"/>
+                                <field name="dimension"/>
+                                <field name="manufacturer"/>
+                                <field name="certificate_number"/>
+                                <field name="heat_number"/>
+                                <field name="standart"/>
                                 <field name="is_uploaded"/>
-                                <field name="uploaded_document"/>
+                                <field name="uploaded_document" widget="url_viewer"/>
                             </tree>
                         </field>
                     </group>
@@ -28,7 +36,7 @@
                             </tree>
                         </field>
                     </group>
-                    <group string="Galvanize">
+                    <group string="Galvanizing / Painting / Coating">
                         <field name="galvanize_ids" nolabel="1">
                             <tree editable="bottom">
                                 <field name="name"/>
