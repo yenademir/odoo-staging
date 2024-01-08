@@ -38,7 +38,24 @@ class StockPickingBatch(models.Model):
     airtag_url = fields.Char(string='Airtag URL', compute='_compute_airtag_url', store=True)  # Hesaplanmış URL alanı
     transportation_code = fields.Char(string='Transportation Code')
     import_decleration_number = fields.Char(string='Custom Decleration No', inverse='_inverse_import_decleration_number', store=True)
-    
+    edespatch_carrier_id = fields.Many2one('res.partner', string='Carrier Partner', domain=[('industry_id.id', '=', 139)], inverse='_inverse_edespatch_carrier_id')
+    transport_type = fields.Selection([
+        ('airtransport', 'Air Transport'),
+        ('roadtransport', 'Road Transport'),
+        ('railtransport', 'Rail Transport'),
+        ('maritimetransport', 'Maritime Transport'),
+    ], string='Transport Type', inverse='_inverse_transport_type')
+    vehicle_id = fields.Char(string='Vehicle Id', inverse='_inverse_vehicle_id')
+    transport_equipment_id = fields.Char(string='Transport Equipment "Trailer" Plate Id', inverse='_inverse_transport_equipment_id')
+    rail_car_id = fields.Char(string='Rail Car Id', inverse='_inverse_rail_car_id')
+    maritimetransport = fields.Boolean(string='Maritime Transport', inverse='_inverse_maritimetransport_fields')
+    vessel_name = fields.Char(string='Vessel Name', inverse='_inverse_maritimetransport_fields')
+    radio_call_sign_id = fields.Char(string='Radio Call Sign ID', inverse='_inverse_maritimetransport_fields')
+    ships_requirements = fields.Text(string='Ships Requirements', inverse='_inverse_maritimetransport_fields')
+    gross_tonnage_measure = fields.Float(string='Gross Tonnage Measure', inverse='_inverse_maritimetransport_fields')
+    net_tonnage_measure = fields.Float(string='Net Tonnage Measure', inverse='_inverse_maritimetransport_fields')
+    registry_cert_doc_ref = fields.Char(string='Registry Certificate Document Reference', inverse='_inverse_maritimetransport_fields')
+    registry_port_location = fields.Char(string='Registry Port Location', inverse='_inverse_maritimetransport_fields')
     edespatch_delivery_type = fields.Selection(
         [
             ("edespatch", "E-Despatch"),
