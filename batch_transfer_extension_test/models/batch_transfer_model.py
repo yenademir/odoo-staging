@@ -45,17 +45,17 @@ class StockPickingBatch(models.Model):
         ('railtransport', 'Rail Transport'),
         ('maritimetransport', 'Maritime Transport'),
     ], string='Transport Type', inverse='_inverse_transport_type')
-    vehicle_id = fields.Char(string='Vehicle Id', inverse='_inverse_vehicle_id')
-    transport_equipment_id = fields.Char(string='Transport Equipment "Trailer" Plate Id', inverse='_inverse_transport_equipment_id')
-    rail_car_id = fields.Char(string='Rail Car Id', inverse='_inverse_rail_car_id')
-    maritimetransport = fields.Boolean(string='Maritime Transport', inverse='_inverse_maritimetransport_fields')
-    vessel_name = fields.Char(string='Vessel Name', inverse='_inverse_maritimetransport_fields')
-    radio_call_sign_id = fields.Char(string='Radio Call Sign ID', inverse='_inverse_maritimetransport_fields')
-    ships_requirements = fields.Text(string='Ships Requirements', inverse='_inverse_maritimetransport_fields')
-    gross_tonnage_measure = fields.Float(string='Gross Tonnage Measure', inverse='_inverse_maritimetransport_fields')
-    net_tonnage_measure = fields.Float(string='Net Tonnage Measure', inverse='_inverse_maritimetransport_fields')
-    registry_cert_doc_ref = fields.Char(string='Registry Certificate Document Reference', inverse='_inverse_maritimetransport_fields')
-    registry_port_location = fields.Char(string='Registry Port Location', inverse='_inverse_maritimetransport_fields')
+    vehicle_id = fields.Char(string='Vehicle Id')
+    transport_equipment_id = fields.Char(string='Transport Equipment "Trailer" Plate Id')
+    rail_car_id = fields.Char(string='Rail Car Id')
+    maritimetransport = fields.Boolean(string='Maritime Transport')
+    vessel_name = fields.Char(string='Vessel Name')
+    radio_call_sign_id = fields.Char(string='Radio Call Sign ID')
+    ships_requirements = fields.Text(string='Ships Requirements')
+    gross_tonnage_measure = fields.Float(string='Gross Tonnage Measure')
+    net_tonnage_measure = fields.Float(string='Net Tonnage Measure')
+    registry_cert_doc_ref = fields.Char(string='Registry Certificate Document Reference')
+    registry_port_location = fields.Char(string='Registry Port Location')
     edespatch_delivery_type = fields.Selection(
         [
             ("edespatch", "E-Despatch"),
@@ -82,12 +82,6 @@ class StockPickingBatch(models.Model):
     def _inverse_transport_type(self):
         for batch in self:
             batch.picking_ids.write({'transport_type': batch.transport_type})
-
-    # vehicle_id için inverse fonksiyon
-    @api.depends('picking_ids.vehicle_id')
-    def _inverse_vehicle_id(self):
-        for batch in self:
-            batch.picking_ids.write({'vehicle_id': batch.vehicle_id})
 
     
     @api.depends('picking_ids.project_transfer')
@@ -138,13 +132,14 @@ class StockPickingBatch(models.Model):
                   'edespatch_carrier_id', 'transport_equipment_id', 'rail_car_id', 
                   'vessel_name', 'radio_call_sign_id', 'ships_requirements', 
                   'gross_tonnage_measure', 'net_tonnage_measure', 
-                  'registry_cert_doc_ref', 'registry_port_location')
+                  'registry_cert_doc_ref', 'registry_port_location', 'vehicle_id')
     def _onchange_transfer_related_fields(self):
         for batch in self:
-            # İlk üç alan için güncel değerleri topla
+            # İlk üç alan ve vehicle_id için güncel değerleri topla
             edespatch_dates = {'edespatch_date': batch.edespatch_date}
             arrival_dates = {'arrival_date': batch.arrival_date}
             situation = {'situation': batch.situation}
+            vehicle_id = {'vehicle_id': batch.vehicle_id}
     
             # Diğer alanlar için güncel değerleri topla
             edespatch_carrier_id = {'edespatch_carrier_id': batch.edespatch_carrier_id.id}
@@ -159,16 +154,17 @@ class StockPickingBatch(models.Model):
                 'registry_cert_doc_ref': batch.registry_cert_doc_ref,
                 'registry_port_location': batch.registry_port_location
             }
-
-        for transfer in batch.picking_ids:
-            # İlgili transfer kayıtlarına değerleri yaz
-            transfer.write(edespatch_dates)
-            transfer.write(arrival_dates)
-            transfer.write(situation)
-            transfer.write(edespatch_carrier_id)
-            transfer.write(transport_equipment_id)
-            transfer.write(rail_car_id)
-            transfer.write(maritime_fields)
+    
+            for transfer in batch.picking_ids:
+                # İlgili transfer kayıtlarına değerleri yaz
+                transfer.write(edespatch_dates)
+                transfer.write(arrival_dates)
+                transfer.write(situation)
+                transfer.write(vehicle_id)
+                transfer.write(edespatch_carrier_id)
+                transfer.write(transport_equipment_id)
+                transfer.write(rail_car_id)
+                transfer.write(maritime_fields)
 
 
     @api.depends('picking_ids')
