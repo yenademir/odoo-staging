@@ -75,9 +75,9 @@ class PurchaseOrderLine(models.Model):
     ], string="Packaging", compute='_compute_packaging_status', store=True)
 
     quality_status = fields.Selection([
-        ('1_not_ok', 'Eksik Belge'),
-        ('2_conditional_acceptance', 'Şartlı Kabul'),
-        ('3_done', 'Tamamlandı'),
+        ('not_ok', 'Eksik Belge'),
+        ('conditional_acceptance', 'Şartlı Kabul'),
+        ('done', 'Tamamlandı'),
     ], string="Quality Status", compute='_compute_quality_status', store=True)
 
     @api.depends('wizard_id.certificate_line_ids.uploaded_document', 'wizard_id.certificate_line_ids.is_uploaded')
