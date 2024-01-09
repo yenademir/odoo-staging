@@ -65,8 +65,8 @@ class StockPickingBatch(models.Model):
     registry_port_location = fields.Char(string='Registry Port Location', inverse='_inverse_maritimetransport_fields')
     edespatch_delivery_type = fields.Selection(
         [
-            ("edespatch", "E-Despatch"),
-            ("printed", "Printed")
+            ("printed", "Printed"),
+            ("edespatch", "E-Despatch")
         ],
         compute='_compute_edespatch_delivery_type',
         inverse='_inverse_edespatch_delivery_type',
