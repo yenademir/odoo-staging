@@ -51,7 +51,7 @@ class StockPickingBatch(models.Model):
         ('roadtransport', 'Road Transport'),
         ('railtransport', 'Rail Transport'),
         ('maritimetransport', 'Maritime Transport'),
-    ], string='Transport Type', inverse='_inverse_transport_type')
+    ], string='Transport Type',  default="roadtransport", inverse='_inverse_transport_type')
     vehicle_id = fields.Char(string='Vehicle Id', inverse='_inverse_maritimetransport_fields')
     transport_equipment_id = fields.Char(string='Transport Equipment "Trailer" Plate Id', inverse='_inverse_transport_equipment_id')
     rail_car_id = fields.Char(string='Rail Car Id', inverse='_inverse_rail_car_id')
