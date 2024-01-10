@@ -17,7 +17,7 @@
                     </group>
                 </group>
                 
-                <group string="sale history">
+                <group string="Sale history">
                     <field name="line_ids" nolabel="1" readonly="1">
                         <form>
                             <div class="oe_button_box" name="button_box">
