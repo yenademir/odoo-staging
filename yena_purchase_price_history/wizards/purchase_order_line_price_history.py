@@ -36,7 +36,7 @@ class PurchaseOrderLinePriceHistory(models.TransientModel):
         default=True,
 
     )
-    include_cancelled=fields.Boolean(string= "Include Cancelleds", default=True)
+    include_cancelled=fields.Boolean(string= "Include Losts", default=True)
 
     include_commercial_partner = fields.Boolean(
         string="Include commercial entity",
