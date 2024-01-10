@@ -65,7 +65,7 @@ class SaleOrderLinePriceHistory(models.TransientModel):
             else:
                 domain += [("order_partner_id", "child_of", self.partner_id.ids)]
         vals = []
-        order_lines = self.env["sale.order.line"].search(domain, limit=20)
+        order_lines = self.env["sale.order.line"].search(domain)
         for order_line in order_lines:
             vals.append( 
                 (0,False,
