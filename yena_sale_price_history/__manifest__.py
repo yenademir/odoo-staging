@@ -6,7 +6,7 @@
     "website": "https://github.com/OCA/purchase-workflow",
     "license": "AGPL-3",
     
-    "depends": ["sale"],
+    "depends": ["sale", "sale_blanket_order"],
     "data": [
         "security/ir.model.access.csv",
         "wizards/sale_order_line_history.xml",
