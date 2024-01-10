@@ -105,7 +105,7 @@ class SaleOrderLinePriceHistoryLine(models.TransientModel):
     sale_order_date_order = fields.Datetime(
         related="sale_order_line_id.order_id.date_order",
     )
-    #product_qty = fields.Float(related="sale_order_line_id.product_qty")
+    product_qty = fields.Float(related="sale_order_line_id.product_qty")
     product_uom = fields.Many2one(related="sale_order_line_id.product_uom")
     price_unit = fields.Float(related="sale_order_line_id.price_unit")
     def _prepare_sale_order_line_vals(self):
