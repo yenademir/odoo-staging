@@ -5,7 +5,7 @@
     "author": "Tecnativa, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/purchase-workflow",
     "license": "AGPL-3",
-    "depends": ["purchase"],
+    "depends": ["purchase", "purchase_blanket_order"],
     "data": [
         "security/ir.model.access.csv",
         "wizards/purchase_order_line_price_history.xml",
