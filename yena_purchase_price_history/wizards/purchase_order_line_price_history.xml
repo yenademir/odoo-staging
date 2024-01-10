@@ -63,10 +63,24 @@
             </form>
         </field>
     </record>
+    <record id="purchase_order_line_price_history_search_view" model="ir.ui.view">
+        <field name="name">purchase.order.line.price.history.search</field>
+        <field name="model">purchase.order.line.price.history</field>
+        <field name="arch" type="xml">
+            <search>
+                <group expand="0" string="Group By">
+                    <filter string="Order" context="{'group_by':'order_id'}"/>
+                    <filter string="Partner" context="{'group_by':'partner_id'}"/>
+                    <filter string="Product" context="{'group_by':'product_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
     <record id="purchase_order_line_price_history_action" model="ir.actions.act_window">
         <field name="name">Price history per supplier</field>
         <field name="res_model">purchase.order.line.price.history</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
+        <field name="search_view_id" ref="purchase_order_line_price_history_search_view"/>
     </record>
 </odoo>
