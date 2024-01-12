@@ -68,6 +68,16 @@
                     </group>
                 </page>
             </xpath>
+            <xpath expr="//notebook/page[5]" position="after">
+                <page string="e-Despatch Details" name="edespatch_info" attrs="{'invisible': [('edespatch_delivery_type', '!=', 'edespatch')]}">
+                    <group>
+                        <field name="edespatch_number_sequence"/>
+                        <field name="edespatch_profile"/>
+                        <field name="edespatch_sender_id"/>
+                        <field name="edespatch_postbox_id"/>
+                    </group>
+                </page>
+            </xpath>
         </field>
     </record>
     <record id="view_picking_tree_batch_inherit" model="ir.ui.view">
