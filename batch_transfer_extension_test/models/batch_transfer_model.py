@@ -66,10 +66,8 @@ class StockPickingBatch(models.Model):
     edespatch_number_sequence = fields.Many2one(
         'ir.sequence', 
         string='e-Despatch Number Sequence', 
-        default=lambda self: self.env.ref('edespatch.edespatch.seq_type_despatch_advice', raise_if_not_found=False),
+        default=lambda self: self.env.ref('l10n_tr_stock_edespatch.seq_type_despatch_advice', raise_if_not_found=False),
         domain=[('code', 'in', ['edespatch_despatch_advice', 'edespatch_receipt_advice'])],
-        required=True,
-        readonly=True,
         inverse='_inverse_edespatch_number_sequence'
     )
 
@@ -77,8 +75,6 @@ class StockPickingBatch(models.Model):
         [('basic', 'Temel İrsaliye')], 
         string='e-Despatch Profile', 
         default='basic', 
-        required=True, 
-        readonly=True,
         inverse='_inverse_edespatch_profile'
     )
 
@@ -86,8 +82,6 @@ class StockPickingBatch(models.Model):
         'edespatch.sender', 
         string='e-Despatch Sender', 
         default=lambda self: self.env.ref('edespatch.edespatch_sender_1_c39c1555', raise_if_not_found=False),
-        required=True,
-        readonly=True,
         inverse='_inverse_edespatch_sender_id'
     )
 
@@ -95,8 +89,6 @@ class StockPickingBatch(models.Model):
         'edespatch.postbox', 
         string='e-Despatch Postbox', 
         default=lambda self: self.env.ref('edespatch.edespatch_postbox_639_7f118785', raise_if_not_found=False),
-        required=True,
-        readonly=True,
         inverse='_inverse_edespatch_postbox_id'
     )
 
