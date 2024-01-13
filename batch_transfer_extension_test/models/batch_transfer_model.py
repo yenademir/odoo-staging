@@ -81,14 +81,14 @@ class StockPickingBatch(models.Model):
     edespatch_sender_id = fields.Many2one(
         'edespatch.sender', 
         string='e-Despatch Sender', 
-        default=lambda self: self.env.ref('edespatch.edespatch_sender_1_69303314', raise_if_not_found=False),
+        default=lambda self: self.env.ref('l10n_tr_stock_edespatch.edespatch_sender_1_69303314', raise_if_not_found=False),
         inverse='_inverse_edespatch_sender_id'
     )
 
     edespatch_postbox_id = fields.Many2one(
         'edespatch.postbox', 
         string='e-Despatch Postbox', 
-        default=lambda self: self.env.ref('edespatch.edespatch_postbox_639_00357d39', raise_if_not_found=False),
+        default=lambda self: self.env.ref('l10n_tr_stock_edespatch.edespatch_postbox_639_00357d39', raise_if_not_found=False),
         inverse='_inverse_edespatch_postbox_id'
     )
 
