@@ -67,7 +67,7 @@ class StockPickingBatch(models.Model):
         'ir.sequence', 
         string='e-Despatch Number Sequence', 
         default=lambda self: self.env.ref('l10n_tr_stock_edespatch.seq_type_despatch_advice', raise_if_not_found=False),
-        domain=[('code', 'in', ['edespatch_despatch_advice', 'edespatch_receipt_advice'])],
+        domain=[('code', 'in', ['E-Despatch'])],
         inverse='_inverse_edespatch_number_sequence'
     )
 
