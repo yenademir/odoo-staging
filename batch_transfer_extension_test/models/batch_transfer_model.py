@@ -72,9 +72,9 @@ class StockPickingBatch(models.Model):
     )
 
     edespatch_profile = fields.Selection(
-        [('basic', 'Temel İrsaliye')], 
+        [('TEMELIRSALIYE', 'Temel İrsaliye')], 
         string='e-Despatch Profile', 
-        default='basic', 
+        default='TEMELIRSALIYE', 
         inverse='_inverse_edespatch_profile'
     )
 
