@@ -66,6 +66,7 @@ class StockPickingBatch(models.Model):
          ('rejected', 'Rejected')],
         string='e-Despatch State',
         compute='_compute_edespatch_state',
+        default='draft',
         store=True
     )
     edespatch_number_sequence = fields.Many2one(
