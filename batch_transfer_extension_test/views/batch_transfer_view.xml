@@ -73,6 +73,7 @@
                     <group>
                         <field name="edespatch_number_sequence"/>
                         <field name="edespatch_profile"/>
+                        <field name="edespatch_state" string="E-Despatch Status"/>
                         <field name="edespatch_sender_id"/>
                         <field name="edespatch_postbox_id"/>
                     </group>
