@@ -63,6 +63,16 @@ class StockPickingBatch(models.Model):
     net_tonnage_measure = fields.Float(string='Net Tonnage Measure', inverse='_inverse_maritimetransport_fields')
     registry_cert_doc_ref = fields.Char(string='Registry Certificate Document Reference', inverse='_inverse_maritimetransport_fields')
     registry_port_location = fields.Char(string='Registry Port Location', inverse='_inverse_maritimetransport_fields')
+    edespatch_state = fields.Selection(
+        [('draft', 'Draft'), 
+         ('waiting', 'Waiting'), 
+         ('completed', 'Completed'), 
+         ('failed', 'Failed'), 
+         ('rejected', 'Rejected')],
+        string='e-Despatch State',
+        compute='_compute_edespatch_state',
+        store=True
+    )
     edespatch_number_sequence = fields.Many2one(
         'ir.sequence', 
         string='e-Despatch Number Sequence', 
@@ -116,7 +126,22 @@ class StockPickingBatch(models.Model):
         for picking in self.picking_ids:
             if hasattr(picking, 'action_despatch_send'):
                 picking.action_despatch_send()
-                    
+
+    @api.depends('picking_ids.edespatch_state')
+    def _compute_edespatch_state(self):
+        for batch in self:
+            # Tüm stock.picking kayıtlarının edespatch_state değerlerini kontrol et
+            if all(picking.edespatch_state == 'completed' for picking in batch.picking_ids):
+                batch.edespatch_state = 'completed'
+            elif any(picking.edespatch_state == 'failed' for picking in batch.picking_ids):
+                batch.edespatch_state = 'failed'
+            elif any(picking.edespatch_state == 'rejected' for picking in batch.picking_ids):
+                batch.edespatch_state = 'rejected'
+            elif any(picking.edespatch_state == 'waiting' for picking in batch.picking_ids):
+                batch.edespatch_state = 'waiting'
+            else:
+                batch.edespatch_state = 'draft'
+                
     @api.onchange('edespatch_delivery_type')
     def _onchange_edespatch_delivery_type(self):
         if self.edespatch_delivery_type == 'edespatch':
