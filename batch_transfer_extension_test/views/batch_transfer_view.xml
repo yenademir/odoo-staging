@@ -36,6 +36,7 @@
                 attrs="{'invisible': [('edespatch_delivery_type', '!=', 'edespatch')]}" >
                     <field name="driver_ids" domain="[('type','=','driver')]" >
                         <tree create="true" edit="false" delete="true" editable="bottom" string="Drivers">
+                            <field name="nationality_id"/>
                             <field name="function"/>
                             <field name="name"/>
                         </tree>
