@@ -87,8 +87,8 @@ class StockPickingBatch(models.Model):
 
     edespatch_postbox_id = fields.Many2one(
         'edespatch.postbox', 
-        string='e-Despatch Postbox', 
-        default=lambda self: self.env.ref('l10n_tr_stock_edespatch.edespatch_postbox_639_00357d39', raise_if_not_found=False),
+        string='e-Despatch Postbox',
+        default=lambda self: self.env['edespatch.sender'].search([('name', '=', 'urn:mail:irsaliyepk@gib.gov.tr')], limit=1),
         inverse='_inverse_edespatch_postbox_id'
     )
 
