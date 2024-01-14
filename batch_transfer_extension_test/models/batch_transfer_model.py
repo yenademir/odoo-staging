@@ -72,7 +72,7 @@ class StockPickingBatch(models.Model):
     edespatch_number_sequence = fields.Many2one(
         'ir.sequence', 
         string='e-Despatch Number Sequence', 
-        domain=[('code', 'in', ['E-Despatch'])],
+        domain=[('name', 'in', ['E-Despatch'])],
         inverse='_inverse_edespatch_number_sequence'
     )
 
