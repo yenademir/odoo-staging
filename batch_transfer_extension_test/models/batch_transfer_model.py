@@ -33,11 +33,6 @@ class StockPickingBatch(models.Model):
     purchase_count = fields.Integer(string='Purchases', compute='_compute_purchase_count')
     scheduled_date = fields.Datetime(string='Scheduled Date')
     arrival_date = fields.Date(string='Arrival Date')
-    # shipping_type = fields.Selection([
-    #   ('air', 'Airline'),
-    #  ('road', 'Highway'),
-    # ('sea', 'Seaway')
-    # ], string='Shipping Type')
     vehicle_type_id = fields.Many2one('vehicle.type', string='Araç Türü')
     airtag_url = fields.Char(string='Airtag URL', compute='_compute_airtag_url', store=True)  # Hesaplanmış URL alanı
     transportation_code = fields.Char(
@@ -130,17 +125,7 @@ class StockPickingBatch(models.Model):
     @api.depends('picking_ids.edespatch_state')
     def _compute_edespatch_state(self):
         for batch in self:
-            # Tüm stock.picking kayıtlarının edespatch_state değerlerini kontrol et
-            if all(picking.edespatch_state == 'completed' for picking in batch.picking_ids):
-                batch.edespatch_state = 'completed'
-            elif any(picking.edespatch_state == 'failed' for picking in batch.picking_ids):
-                batch.edespatch_state = 'failed'
-            elif any(picking.edespatch_state == 'rejected' for picking in batch.picking_ids):
-                batch.edespatch_state = 'rejected'
-            elif any(picking.edespatch_state == 'waiting' for picking in batch.picking_ids):
-                batch.edespatch_state = 'waiting'
-            else:
-                batch.edespatch_state = 'draft'
+            batch.edespatch_state = 'completed' if all(picking.edespatch_state == 'completed' for picking in batch.picking_ids) else 'draft'
                 
     @api.onchange('edespatch_delivery_type')
     def _onchange_edespatch_delivery_type(self):
