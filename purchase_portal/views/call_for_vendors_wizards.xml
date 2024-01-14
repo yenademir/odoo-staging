@@ -9,7 +9,7 @@
                     <field name="vendor_line_ids" nolabel="1">
                         <tree editable="bottom">
                             <field name="vendor_id"/>
-                            <field name="contact_id"/>
+                            <field name="contact_person"/>
                             <field name="company_id" string="Company (Buyer)"/>
                             <field name="incoterm" string="S-Incoterm"/>
                             <field name="payment_term_id" string="S-Payment Term"/>
