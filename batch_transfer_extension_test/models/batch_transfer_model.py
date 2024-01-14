@@ -126,7 +126,8 @@ class StockPickingBatch(models.Model):
             
             self.edespatch_sender_id = sender.id if sender else False
             self.edespatch_postbox_id = postbox.id if postbox else False
-            self.edespatch_number_sequence = number_sequence.id if number_sequence else False
+            self.edespatch_number_sequence_id = number_sequence.id if number_sequence else False
+
 
     @api.depends('picking_ids.edespatch_number_sequence')
     def _inverse_edespatch_number_sequence(self):
