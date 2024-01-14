@@ -81,7 +81,7 @@ class StockPickingBatch(models.Model):
     edespatch_sender_id = fields.Many2one(
         'edespatch.sender', 
         string='e-Despatch Sender', 
-        default=lambda self: self.env.ref('l10n_tr_stock_edespatch.edespatch_sender_1_69303314', raise_if_not_found=False),
+        default=lambda self: 1,
         domain=[('code', 'in', ['urn:mail:irsaliyegb@yenaengineering.nl'])],
         inverse='_inverse_edespatch_sender_id'
     )
