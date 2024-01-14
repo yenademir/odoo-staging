@@ -81,7 +81,6 @@ class StockPickingBatch(models.Model):
     edespatch_sender_id = fields.Many2one(
         'edespatch.sender', 
         string='e-Despatch Sender', 
-        default=lambda self: self.env.ref('l10n_tr_stock_edespatch.edespatch_sender_1_69303314', raise_if_not_found=False),
         domain=[('name', '=', ['urn:mail:irsaliyegb@yenaengineering.nl'])],
         inverse='_inverse_edespatch_sender_id'
     )
@@ -89,7 +88,6 @@ class StockPickingBatch(models.Model):
     edespatch_postbox_id = fields.Many2one(
         'edespatch.postbox', 
         string='e-Despatch Postbox',
-        default=lambda self: self.env.ref('l10n_tr_stock_edespatch.edespatch_postbox_639_00357d39', raise_if_not_found=False),
         domain=[('name', '=', ['urn:mail:irsaliyepk@gib.gov.tr'])],
         inverse='_inverse_edespatch_postbox_id'
     )
@@ -114,6 +112,16 @@ class StockPickingBatch(models.Model):
         store=True, 
     )
 
+
+    @api.onchange('edespatch_delivery_type')
+    def _onchange_edespatch_delivery_type(self):
+        if self.edespatch_delivery_type == 'edespatch':
+            sender = self.env['edespatch.sender'].search([('name', '=', 'urn:mail:irsaliyegb@yenaengineering.nl')], limit=1)
+            postbox = self.env['edespatch.postbox'].search([('name', '=', 'urn:mail:irsaliyepk@gib.gov.tr')], limit=1)
+            
+            self.edespatch_sender_id = sender.id if sender else False
+            self.edespatch_postbox_id = postbox.id if postbox else False
+            
     @api.depends('picking_ids.edespatch_number_sequence')
     def _inverse_edespatch_number_sequence(self):
         for batch in self:
