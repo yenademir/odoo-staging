@@ -66,7 +66,6 @@ class StockPickingBatch(models.Model):
     edespatch_number_sequence = fields.Many2one(
         'ir.sequence', 
         string='e-Despatch Number Sequence', 
-        default=lambda self: self.env.ref('l10n_tr_stock_edespatch.seq_type_despatch_advice', raise_if_not_found=False),
         domain=[('code', 'in', ['E-Despatch'])],
         inverse='_inverse_edespatch_number_sequence'
     )
@@ -123,10 +122,12 @@ class StockPickingBatch(models.Model):
         if self.edespatch_delivery_type == 'edespatch':
             sender = self.env['edespatch.sender'].search([('name', '=', 'urn:mail:irsaliyegb@yenaengineering.nl')], limit=1)
             postbox = self.env['edespatch.postbox'].search([('name', '=', 'urn:mail:irsaliyepk@gib.gov.tr')], limit=1)
+            number_sequence = self.env['edespatch.number_sequence'].search([('name', '=', 'E-Despatch DespatchAdvice Numbering Sequence')], limit=1)
             
             self.edespatch_sender_id = sender.id if sender else False
             self.edespatch_postbox_id = postbox.id if postbox else False
-            
+            self.edespatch_number_sequence = number_sequence.id if number_sequence else False
+
     @api.depends('picking_ids.edespatch_number_sequence')
     def _inverse_edespatch_number_sequence(self):
         for batch in self:
