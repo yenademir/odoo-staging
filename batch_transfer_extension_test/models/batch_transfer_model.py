@@ -112,7 +112,12 @@ class StockPickingBatch(models.Model):
         store=True, 
     )
 
-
+    def action_batch_despatch_send(self):
+            self.ensure_one()
+            for picking in self.picking_ids:
+                if hasattr(picking, 'action_despatch_send'):
+                    picking.action_despatch_send()
+                    
     @api.onchange('edespatch_delivery_type')
     def _onchange_edespatch_delivery_type(self):
         if self.edespatch_delivery_type == 'edespatch':
