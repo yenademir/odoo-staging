@@ -111,15 +111,11 @@ class StockPickingBatch(models.Model):
         store=True, 
     )
 
-    button_clicked = fields.Boolean(string="Button Clicked", default=False)
-
     def action_batch_despatch_send(self):
         self.ensure_one()
         for picking in self.picking_ids:
             if hasattr(picking, 'action_despatch_send'):
                 picking.action_despatch_send()
-
-        self.button_clicked = True
                     
     @api.onchange('edespatch_delivery_type')
     def _onchange_edespatch_delivery_type(self):
