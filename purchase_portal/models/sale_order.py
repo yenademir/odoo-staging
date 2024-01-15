@@ -1,6 +1,11 @@
 from odoo import models, fields
 
 class SaleOrder(models.Model):
+    _inherit = 'sale.order.line'
+
+    totalweight = fields.Char(string='Total Weight')
+    
+class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     call_for_vendors_id = fields.Many2one('call.for.vendors', string='Related Call for Vendors')
@@ -48,7 +53,7 @@ class SaleOrder(models.Model):
                     'product_id': line.product_id.id,
                     'quantity': line.product_uom_qty,
                     'product_uom': line.product_uom.id,
-                    'total_weight': line.total_weight,
+                    'total_weight': line.totalweight,
                     'delivery_date': line.product_delivery_date,
                     'order_line_id': line.id,
                 }
