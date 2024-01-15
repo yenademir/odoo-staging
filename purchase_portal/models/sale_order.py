@@ -48,7 +48,7 @@ class SaleOrder(models.Model):
                     'product_id': line.product_id.id,
                     'quantity': line.product_uom_qty,
                     'product_uom': line.product_uom.id,
-                    'total_weight': line.totalweight,
+                    'total_weight': line.total_weight,
                     'delivery_date': line.product_delivery_date,
                     'order_line_id': line.id,
                 }
