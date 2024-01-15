@@ -63,7 +63,8 @@ class StockPickingBatch(models.Model):
          ('waiting', 'Waiting'), 
          ('completed', 'Completed'), 
          ('failed', 'Failed'), 
-         ('rejected', 'Rejected')],
+         ('rejected', 'Rejected'),
+         ('different', 'E-despatch Statuses are different!')],
         string='e-Despatch State',
         compute='_compute_edespatch_state',
         default='draft',
@@ -122,11 +123,17 @@ class StockPickingBatch(models.Model):
         for picking in self.picking_ids:
             if hasattr(picking, 'action_despatch_send'):
                 picking.action_despatch_send()
-
+                
     @api.depends('picking_ids.edespatch_state')
     def _compute_edespatch_state(self):
         for batch in self:
-            batch.edespatch_state = 'completed' if all(picking.edespatch_state == 'completed' for picking in batch.picking_ids) else 'draft'
+            states = set(picking.edespatch_state for picking in batch.picking_ids)
+            
+            if len(states) == 1:
+                batch.edespatch_state = states.pop()
+            else:
+                batch.edespatch_state = 'different'
+
                 
     @api.onchange('edespatch_delivery_type')
     def _onchange_edespatch_delivery_type(self):
