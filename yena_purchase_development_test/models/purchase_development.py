@@ -14,6 +14,14 @@ class PurchaseOrder(models.Model):
     contact_id = fields.Many2one('res.partner', string='Contact Person', store=True)
     company_id=fields.Many2one("res.company", default=None)
 
+
+    @api.onchange('company_id')
+    def _onchange_company_id(self):
+        if self.company_id.id == 1:
+            self.incoterm_id = 14
+        elif self.company_id.id == 2:
+            self.incoterm_id = 10
+            
     @api.onchange('project_purchase')
     def _onchange_project_purchase(self):
         if self.project_purchase and hasattr(self.project_purchase, 'analytic_account_id'):
