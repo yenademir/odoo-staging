@@ -65,6 +65,13 @@ class SaleOrder(models.Model):
 
         # company_id 1 ise, standart onay işlemi yapılır ve özel işlemlerden kaçınılır
         if self.company_id.id == 1:
+                        # İlgili teslimat emirlerini bul
+            delivery_orders = self.env['stock.picking'].search([('origin', '=', order.name)])
+            for delivery_order in delivery_orders:
+                # Teslimat emirlerinde 'project_transfer' alanını güncelle
+                delivery_order.write({
+                    'project_transfer': [(6, 0, order.project_sales.ids)],
+                })
             return super(SaleOrder, self).action_confirm()
 
         # Diğer durumlarda, öncelikle standart onay işlemi yapılır
@@ -73,13 +80,7 @@ class SaleOrder(models.Model):
         current_user = self.env.user  # Şu anki kullanıcıyı al
         incoterm = self.env['account.incoterms'].browse(10)
         for order in self:
-            # İlgili teslimat emirlerini bul
-            delivery_orders = self.env['stock.picking'].search([('origin', '=', order.name)])
-            for delivery_order in delivery_orders:
-                # Teslimat emirlerinde 'project_transfer' alanını güncelle
-                delivery_order.write({
-                    'project_transfer': [(6, 0, order.project_sales.ids)],
-                })
+
         # Tüm satış siparişleri için döngü başlat
         for order in self:
             # İlişkili tüm satın alma siparişlerini bul
