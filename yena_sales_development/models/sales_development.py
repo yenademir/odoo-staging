@@ -23,6 +23,12 @@ class SaleOrder(models.Model):
 
         company_id = vals.get('company_id', False)
         if company_id == 1:
+            delivery_orders = self.env['stock.picking'].search([('origin', '=', order.name)])
+            # İlişkili tüm teslimat emirlerini güncelle
+            for delivery_order in delivery_orders:
+                delivery_order.write({
+                    'project_transfer': [(6, 0, order.project_sales.ids)],
+                })
             return super().create(vals)
 
         # customer_reference'ın rfq_reference'a kopyalandığını kontrol edin.
@@ -96,13 +102,7 @@ class SaleOrder(models.Model):
                             'account_analytic_id': order.analytic_account_id.id,
                         })
 
-            # İlişkili tüm teslimat emirlerini bul
-            delivery_orders = self.env['stock.picking'].search([('origin', '=', order.name)])
-            # İlişkili tüm teslimat emirlerini güncelle
-            for delivery_order in delivery_orders:
-                delivery_order.write({
-                    'project_transfer': [(6, 0, order.project_sales.ids)],
-                })
+
                 
         # Eğer customer_reference değiştiyse analitik hesap ve proje adını güncelle
         if self.rfq_reference != self.customer_reference:
