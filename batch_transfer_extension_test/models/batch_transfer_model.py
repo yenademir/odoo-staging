@@ -135,16 +135,24 @@ class StockPickingBatch(models.Model):
                 batch.edespatch_state = 'different'
 
                 
-    @api.onchange('edespatch_delivery_type')
-    def _onchange_edespatch_delivery_type(self):
-        if self.edespatch_delivery_type == 'edespatch':
-            sender = self.env['edespatch.sender'].search([('name', '=', 'urn:mail:irsaliyegb@yenaengineering.nl')], limit=1)
-            postbox = self.env['edespatch.postbox'].search([('name', '=', 'urn:mail:irsaliyepk@gib.gov.tr')], limit=1)
-            number_sequence = self.env['ir.sequence'].search([('name', '=', 'E-Despatch DespatchAdvice Numbering Sequence')], limit=1)
-            
-            self.edespatch_sender_id = sender.id if sender else False
-            self.edespatch_postbox_id = postbox.id if postbox else False
-            self.edespatch_number_sequence = number_sequence.id if number_sequence else False
+    @api.model
+    def create(self, vals):
+        # Eğer vals içinde 'picking_ids' varsa, her bir picking için varsayılan değerleri ayarlayın
+        if 'picking_ids' in vals:
+            for picking in vals['picking_ids']:
+                # vals['picking_ids'] listesindeki her eleman, bir tuple'dır (0, 0, {values})
+                if picking[0] == 0 and picking[2]:
+                    picking[2].update({
+                        'edespatch_number_sequence': vals.get('edespatch_number_sequence', False),
+                        'edespatch_profile': vals.get('edespatch_profile', False),
+                        'edespatch_sender_id': vals.get('edespatch_sender_id', False),
+                        'edespatch_postbox_id': vals.get('edespatch_postbox_id', False)
+                    })
+    
+        # İlk olarak batch oluşturulur
+        batch = super(StockPickingBatch, self).create(vals)
+
+    return batch
 
     @api.model
     def create(self, vals):
