@@ -68,10 +68,10 @@ class SaleOrder(models.Model):
             res = super(SaleOrder, self).action_confirm()
     
             # İlgili transfer emirlerini bul ve güncelle
-            delivery_orders = self.env['stock.picking'].search([('origin', '=', self.name), ('state', '!=', 'cancel')])
+            delivery_orders = self.env['stock.picking'].search([('origin', '=', order.name)])
             for delivery_order in delivery_orders:
                 delivery_order.write({
-                    'project_transfer': self.project_sales.id,
+                    'project_transfer': self.project_sales.ids,
                 })
     
             return res
@@ -105,7 +105,13 @@ class SaleOrder(models.Model):
                             'account_analytic_id': order.analytic_account_id.id,
                         })
 
-            
+            # İlişkili tüm teslimat emirlerini bul
+            delivery_orders = self.env['stock.picking'].search([('origin', '=', order.name)])
+            # İlişkili tüm teslimat emirlerini güncelle
+            for delivery_order in delivery_orders:
+                delivery_order.write({
+                    'project_transfer': [(6, 0, order.project_sales.ids)],
+                })
                 
         # Eğer customer_reference değiştiyse analitik hesap ve proje adını güncelle
         if self.rfq_reference != self.customer_reference:
@@ -118,6 +124,7 @@ class SaleOrder(models.Model):
                 'name': project.name
             })
         return res
+
 
     def action_quotation_sent(self):
         res = super(SaleOrder, self).action_quotation_sent()
