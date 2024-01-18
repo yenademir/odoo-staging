@@ -61,12 +61,20 @@ class SaleOrder(models.Model):
         # C-Delivery Date kontrolü
         if not self.commitment_date:
             raise UserError('The C-Delivery Date is mandatory! Please add this date and try again.')
+            
+        # company_id 1 ise, özel işlem yap
+        if self.company_id.id == 1:
+            # Standart onay işlemi yapılır
+            res = super(SaleOrder, self).action_confirm()
     
-       
+            # İlgili transfer emirlerini bul ve güncelle
+            delivery_orders = self.env['stock.picking'].search([('origin', '=', self.name), ('state', '!=', 'cancel')])
+            for delivery_order in delivery_orders:
+                delivery_order.write({
+                    'project_transfer': self.project_sales.id,
+                })
     
-        # Standart onay işlemini gerçekleştir
-        return super(SaleOrder, self).action_confirm()
-
+            return res
 
         # Diğer durumlarda, öncelikle standart onay işlemi yapılır
         res = super(SaleOrder, self).action_confirm()
