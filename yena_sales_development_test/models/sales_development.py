@@ -81,7 +81,6 @@ class SaleOrder(models.Model):
 
         current_user = self.env.user  # Şu anki kullanıcıyı al
         incoterm = self.env['account.incoterms'].browse(10)
-        for order in self:
 
         # Tüm satış siparişleri için döngü başlat
         for order in self:
