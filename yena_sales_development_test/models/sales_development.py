@@ -71,7 +71,7 @@ class SaleOrder(models.Model):
             delivery_orders = self.env['stock.picking'].search([('origin', '=', order.name)])
             for delivery_order in delivery_orders:
                 delivery_order.write({
-                    'project_transfer': self.project_sales.ids,
+                    'project_transfer': [(6, 0, order.project_sales.ids)],
                 })
     
             return res
