@@ -66,15 +66,16 @@ class SaleOrder(models.Model):
         if self.company_id.id == 1:
             # Standart onay işlemi yapılır
             res = super(SaleOrder, self).action_confirm()
-    
-            # İlgili transfer emirlerini bul ve güncelle
-            delivery_orders = self.env['stock.picking'].search([('origin', '=', order.name)])
-            for delivery_order in delivery_orders:
-                delivery_order.write({
-                    'project_transfer': [(6, 0, order.project_sales.ids)],
-                })
-    
-            return res
+            
+            for order in self:
+                # İlgili transfer emirlerini bul ve güncelle
+                delivery_orders = self.env['stock.picking'].search([('origin', '=', order.name)])
+                for delivery_order in delivery_orders:
+                    delivery_order.write({
+                        'project_transfer': [(6, 0, order.project_sales.ids)],
+                    })
+        
+                return res
 
         # Diğer durumlarda, öncelikle standart onay işlemi yapılır
         res = super(SaleOrder, self).action_confirm()
