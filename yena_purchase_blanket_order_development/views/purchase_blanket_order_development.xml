@@ -1,0 +1,16 @@
+<odoo>
+    <data>
+        <!-- Inherit the form view -->
+        <record id="view_purchase_blanket_order_form_inherit" model="ir.ui.view">
+            <field name="name">purchase.blanket.order.form.inherit</field>
+            <field name="model">purchase.blanket.order</field>
+            <field name="inherit_id" ref="purchase_blanket_order.view_purchase_blanket_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='taxes_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                    <attribute name="required">0</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
