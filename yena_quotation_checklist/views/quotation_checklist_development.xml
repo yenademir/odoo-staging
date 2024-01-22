@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_sale_order_form_project_logs_inherit_yena" model="ir.ui.view">
+        <field name="name">sale.order.form.project.logs.inherit.yena</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='other_information']" position="after">
+                <page string="Quotation Checklist" groups="base.group_user">
+                    <group string="Communicated details with the customer">
+                        <field name="customer_log" widget="radio" options="{'horizontal': true}" />
+                    </group>
+                    <span style="font-size: 14px; font-weight: bold; color: #45a0a5">
+                        If not described in the request from the customer;
+                    </span>
+                    <group col="4">
+                        <field name="requested_received" widget="radio" options="{'horizontal': true}"/>
+                        <field name="requested_received_note" nolabel="1" colspan="2" placeholder="Note"/>
+                    </group>
+                    <span style="font-size: 14px; font-weight: bold; color: #45a0a5">
+                        Making calculations (material, surface treatment, length, weight, processes, etc.);
+                    </span>
+                    <group col="4">
+                        <field name="material_list" widget="radio" options="{'horizontal': true}" />
+                        <field name="material_list_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="surface_treatment" widget="radio" options="{'horizontal': true}" />
+                        <field name="surface_treatment_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="weights_clear" widget="radio" options="{'horizontal': true}" />
+                        <field name="weights_clear_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="manufacturing_processes" widget="radio" options="{'horizontal': true}" />
+                        <field name="manufacturing_processes_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <span style="font-size: 14px; font-weight: bold; color: #45a0a5">
+                        Technical review
+                    </span>
+                    <group col="4">
+                        <field name="drawing_sufficient" widget="radio" options="{'horizontal': true}" />
+                        <field name="drawing_sufficient_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="drawing_information" widget="radio" options="{'horizontal': true}" />
+                        <field name="drawing_information_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="important_notes" widget="radio" options="{'horizontal': true}" />
+                        <field name="important_notes_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="raw_material_supplied" widget="radio" options="{'horizontal': true}" />
+                        <field name="raw_material_supplied_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="surface_treatment_information" widget="radio" options="{'horizontal': true}" />
+                        <field name="surface_treatment_information_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="bolts_nuts_nonsteel" widget="radio" options="{'horizontal': true}" />
+                        <field name="bolts_nuts_nonsteel_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="assembly_notes" widget="radio" options="{'horizontal': true}" />
+                        <field name="assembly_notes_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="ndt_information" widget="radio" options="{'horizontal': true}" />
+                        <field name="ndt_information_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="certification_documents" widget="radio" options="{'horizontal': true}" />
+                        <field name="certification_documents_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="dies_fixtures" widget="radio" options="{'horizontal': true}" />
+                        <field name="dies_fixtures_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <span style="font-size: 14px; font-weight: bold; color: #45a0a5">
+                        Kick-Off Meeting: Enter your Kick-Off Meeting Notes (draft or final): These notes can be considered as draft notes if there is no kick-off, and as final notes if there is a kick-off.
+
+                    </span>
+                    <group col="4">
+                        <field name="kickoff_meeting" widget="radio" options="{'horizontal': true}" />
+                        <field name="kickoff_meeting_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
