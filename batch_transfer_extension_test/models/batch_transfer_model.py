@@ -137,22 +137,17 @@ class StockPickingBatch(models.Model):
                 
     @api.model
     def create(self, vals):
-        # Eğer vals içinde 'picking_ids' varsa, her bir picking için varsayılan değerleri ayarlayın
-        if 'picking_ids' in vals:
-            for picking in vals['picking_ids']:
-                # vals['picking_ids'] listesindeki her eleman, bir tuple'dır (0, 0, {values})
-                if picking[0] == 0 and picking[2]:
-                    picking[2].update({
-                        'edespatch_number_sequence': vals.get('edespatch_number_sequence', False),
-                        'edespatch_profile': vals.get('edespatch_profile', False),
-                        'edespatch_sender_id': vals.get('edespatch_sender_id', False),
-                        'edespatch_postbox_id': vals.get('edespatch_postbox_id', False)
-                    })
-    
         # İlk olarak batch oluşturulur
         batch = super(StockPickingBatch, self).create(vals)
-
-    return batch
+        # Varsayılan değerler ile picking güncellenir
+        default_values = {
+            'edespatch_number_sequence': batch.edespatch_number_sequence.id,
+            'edespatch_profile': batch.edespatch_profile,
+            'edespatch_sender_id': batch.edespatch_sender_id.id,
+            'edespatch_postbox_id': batch.edespatch_postbox_id.id
+        }
+        batch.picking_ids.write(default_values)
+        return batch
 
     @api.model
     def create(self, vals):
