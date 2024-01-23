@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_purchase_order_form_project_logs_inherit_yena" model="ir.ui.view">
+        <field name="name">purchase.order.form.project.logs.inherit.yena</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='purchase_delivery_invoice']" position="after">
+                <page string="RFQ Checklist" groups="base.group_user">
+                    <span style="font-size: 14px; font-weight: bold; color: #45a0a5">
+                        Aşağıdaki listede zamanla kullanmaya gerek olmadığını düşündüklerinizi lütfen ticket olarak gönderiniz.
+                    </span>
+                    <group col="4">
+                        <field name="project_docs" widget="radio" options="{'horizontal': true}"/>
+                        <field name="project_docs_note" nolabel="1" colspan="2" placeholder="Note"/>
+                    </group>
+                    <group col="4">
+                        <field name="is_supllied" widget="radio" options="{'horizontal': true}" />
+                        <field name="is_supllied_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="drawing_activities" widget="radio" options="{'horizontal': true}" />
+                        <field name="drawing_activities_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="equipments_capability" widget="radio" options="{'horizontal': true}" />
+                        <field name="equipments_capability_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="external_outsource" widget="radio" options="{'horizontal': true}" />
+                        <field name="external_outsource_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="measurement_equipment_supplier" widget="radio" options="{'horizontal': true}" />
+                        <field name="measurement_equipment_supplier_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="measurement_equipment_yena" widget="radio" options="{'horizontal': true}" />
+                        <field name="measurement_equipment_yena_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="mold_or_fixture" widget="radio" options="{'horizontal': true}" />
+                        <field name="mold_or_fixture_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="before_project" widget="radio" options="{'horizontal': true}" />
+                        <field name="before_project_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="transfer_condition" widget="radio" options="{'horizontal': true}" />
+                        <field name="transfer_condition_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="wpqr_approval" widget="radio" options="{'horizontal': true}" />
+                        <field name="wpqr_approval_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="welder_cert" widget="radio" options="{'horizontal': true}" />
+                        <field name="welder_cert_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="test_info" widget="radio" options="{'horizontal': true}" />
+                        <field name="test_info_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="ndt_information" widget="radio" options="{'horizontal': true}" />
+                        <field name="ndt_information_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="supplier_checklist" widget="radio" options="{'horizontal': true}" />
+                        <field name="supplier_checklist_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="yena_checklist" widget="radio" options="{'horizontal': true}" />
+                        <field name="yena_checklist_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="hole_information" widget="radio" options="{'horizontal': true}" />
+                        <field name="hole_information_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="is_info_shared" widget="radio" options="{'horizontal': true}" />
+                        <field name="is_info_shared_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="is_revision_actual" widget="radio" options="{'horizontal': true}" />
+                        <field name="is_revision_actual_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <group col="4">
+                        <field name="potential_nonconformity" widget="radio" options="{'horizontal': true}" />
+                        <field name="potential_nonconformity_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                    <span style="font-size: 14px; font-weight: bold; color: #45a0a5">
+                        Kick-Off Toplantı Notlarınızı (taslak ya da final) giriniz: Help: bu notlar kick-off yapılmadıysa taslak not olarak, kick-off yapıldıysa final not olarak düşünülebilir.
+                    </span>
+                    <group col="4">
+                        <field name="kickoff_meeting" widget="radio" options="{'horizontal': true}" />
+                        <field name="kickoff_meeting_note" nolabel="1" colspan="2" placeholder="Note:"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
