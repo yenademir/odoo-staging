@@ -21,6 +21,32 @@ class Picking(models.Model):
         self._update_scheduled_date(vals)
         return super(Picking, self).write(vals)
 
+    @api.model
+    def _create_scheduled_activity(self):
+        # Bu metotta, planlanmış aktivitenin detaylarını belirleyin.
+        model_id = self.env['ir.model'].search([('model', '=', 'stock.picking')], limit=1)
+        activity_type_id = self.env.ref('yena_inventory_development.activity_type_custom').id
+        date_deadline = fields.Date.today() + timedelta(days=3)
+
+        return {
+            'res_model_id': model_id.id,
+            'res_id': self.id,
+            'activity_type_id': activity_type_id,
+            'summary': 'Check Documents',
+            'note': 'Lütfen TR/OUT transferi için gerekli dökümanların tamamlandığından emin olun.', 
+            'date_deadline': date_deadline,
+            'user_id': self.env.user.id,
+        }
+
+    def button_validate(self):
+        # Bu, stok hareketini onaylama metodunun üzerine yazılıyor.
+        res = super(Picking, self).button_validate()
+        if res and self.picking_type_id.id == 2:
+            # Eğer hareket picking_type_id.id'si 2 ise ve başarıyla onaylandıysa, planlanmış aktivite oluştur.
+            activity_vals = self._create_scheduled_activity()
+            self.env['mail.activity'].create(activity_vals)
+        return res
+    
     def _update_scheduled_date(self, vals):
         if 'scheduled_date' not in vals:
             return
