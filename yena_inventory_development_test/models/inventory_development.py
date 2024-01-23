@@ -2,6 +2,7 @@ from odoo import api, fields, models
 import requests
 import base64
 from io import BytesIO
+from datetime import datetime, timedelta
 
 class Picking(models.Model):
     _inherit = 'stock.picking'
