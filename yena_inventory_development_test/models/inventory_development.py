@@ -25,7 +25,7 @@ class Picking(models.Model):
     def _create_scheduled_activity(self):
         # Bu metotta, planlanmış aktivitenin detaylarını belirleyin.
         model_id = self.env['ir.model'].search([('model', '=', 'stock.picking')], limit=1)
-        activity_type_id = self.env.ref('yena_inventory_development.activity_type_custom').id
+        activity_type_id = self.env.ref('yena_inventory_development_test.activity_type_custom').id
         date_deadline = fields.Date.today() + timedelta(days=3)
 
         return {
