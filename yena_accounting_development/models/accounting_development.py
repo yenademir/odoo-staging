@@ -13,3 +13,16 @@ class AccountMoveLine(models.Model):
                 record.customer_reference = sale_order.customer_reference
             else:
                 record.customer_reference = False
+                
+class AccountMove(models.Model):
+    _inherit = 'account.move'
+
+    def print_customer_references(self):
+        # account.move.line kayıtlarını çek
+        move_lines = self.line_ids
+
+        # customer reference'ları bir set içinde topla
+        customer_refs = set(line.customer_reference for line in move_lines if line.customer_reference)
+
+        # Benzersiz customer reference'ları formatlayıp döndür
+        return ', '.join(sorted(customer_refs))
