@@ -22,6 +22,10 @@ class AccountMove(models.Model):
     def _compute_customer_references(self):
         for record in self:
             move_lines = record.line_ids
+            # customer_reference'ları sayısal olarak sırala
             customer_refs = set(line.customer_reference for line in move_lines if line.customer_reference)
-            record.customer_references = ', '.join(sorted(customer_refs))
+            # Sayısal olarak sıralamak için önce int'e çevir
+            customer_refs = sorted(customer_refs, key=lambda x: int(x))
+            record.customer_references = ', '.join(customer_refs)
+
 
