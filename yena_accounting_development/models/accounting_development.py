@@ -17,12 +17,11 @@ class AccountMoveLine(models.Model):
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
-    def print_customer_references(self):
-        # account.move.line kayıtlarını çek
-        move_lines = self.line_ids
+    customer_references = fields.Char(compute='_compute_customer_references')
 
-        # customer reference'ları bir set içinde topla
-        customer_refs = set(line.customer_reference for line in move_lines if line.customer_reference)
+    def _compute_customer_references(self):
+        for record in self:
+            move_lines = record.line_ids
+            customer_refs = set(line.customer_reference for line in move_lines if line.customer_reference)
+            record.customer_references = ', '.join(sorted(customer_refs))
 
-        # Benzersiz customer reference'ları formatlayıp döndür
-        return ', '.join(sorted(customer_refs))
