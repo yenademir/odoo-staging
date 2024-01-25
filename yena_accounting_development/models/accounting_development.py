@@ -3,16 +3,13 @@ from odoo import api, fields, models
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
 
-    customer_reference = fields.Char(string='Customer Reference', compute='_compute_customer_reference', store=True, readonly=False)
+    customer_reference = fields.Char(string='Customer Reference')
 
-    @api.depends('move_id.invoice_origin')
-    def _compute_customer_reference(self):
+    def set_customer_reference_from_sale_order(self):
         for record in self:
             sale_order = self.env['sale.order'].search([('name', '=', record.move_id.invoice_origin)], limit=1)
             if sale_order:
                 record.customer_reference = sale_order.customer_reference
-            else:
-                record.customer_reference = False
                 
 class AccountMove(models.Model):
     _inherit = 'account.move'
