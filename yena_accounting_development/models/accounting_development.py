@@ -17,15 +17,10 @@ class AccountMoveLine(models.Model):
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
-    customer_references = fields.Char(compute='_compute_customer_references')
+    customer_references = fields.Char(compute='_compute_customer_references', string='Müşteri Referansları')
 
+    @api.depends('invoice_line_ids.customer_reference')
     def _compute_customer_references(self):
         for record in self:
-            move_lines = record.line_ids
-            # customer_reference'ları sayısal olarak sırala
-            customer_refs = set(line.customer_reference for line in move_lines if line.customer_reference)
-            # Sayısal olarak sıralamak için önce int'e çevir
-            customer_refs = sorted(customer_refs, key=lambda x: int(x))
-            record.customer_references = ', '.join(customer_refs)
-
-
+            references = list(set(line.customer_reference for line in record.invoice_line_ids if line.customer_reference))
+            record.customer_references = ', '.join(references)
