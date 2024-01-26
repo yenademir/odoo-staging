@@ -135,7 +135,7 @@ class StockPickingBatch(models.Model):
                 batch.edespatch_state = 'different'
 
     def action_done(self):
-        res = super(Picking, self).action_done()
+        res = super(StockPickingBatch, self).action_done()
         self.arrival_date = datetime.now().date()
         return res
         
