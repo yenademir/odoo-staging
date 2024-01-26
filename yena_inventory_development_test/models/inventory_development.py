@@ -21,7 +21,12 @@ class Picking(models.Model):
     def write(self, vals):
         self._update_scheduled_date(vals)
         return super(Picking, self).write(vals)
-
+        
+    def button_validate(self):
+        res = super(Picking, self).button_validate()
+        self.arrival_date = datetime.now().date()
+        return res
+        
     @api.model
     def _create_scheduled_activity(self):
         # Bu metotta, planlanmış aktivitenin detaylarını belirleyin.
