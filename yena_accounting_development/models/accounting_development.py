@@ -3,7 +3,7 @@ from odoo import api, fields, models
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
 
-    customer_reference = fields.Char(string='Müşteri Referansı', compute='_compute_customer_reference', store=True, readonly=False)
+    customer_reference = fields.Char(string='Müşteri Referansı', compute='_compute_customer_reference', readonly=False)
 
     @api.depends('move_id.invoice_origin')
     def _compute_customer_reference(self):
