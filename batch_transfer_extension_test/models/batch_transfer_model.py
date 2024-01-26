@@ -134,7 +134,11 @@ class StockPickingBatch(models.Model):
             else:
                 batch.edespatch_state = 'different'
 
-                
+    def action_done(self):
+        res = super(Picking, self).action_done()
+        self.arrival_date = datetime.now().date()
+        return res
+        
     @api.model
     def create(self, vals):
         # İlk olarak batch oluşturulur
