@@ -5,18 +5,15 @@ class AccountMoveLine(models.Model):
 
     customer_reference = fields.Char(string='Müşteri Referansı', compute='_compute_customer_reference', store=True, readonly=False)
 
-    @api.depends('move_id.invoice_origin')
+    @api.depends('sale_line_ids.order_id.customer_reference')
     def _compute_customer_reference(self):
         for record in self:
-            references = []
-            if record.move_id.invoice_origin:
-                order_names = record.move_id.invoice_origin.split(', ')
-                for order_name in order_names:
-                    sale_order = self.env['sale.order'].search([('name', '=', order_name.strip())], limit=1)
-                    if sale_order and sale_order.customer_reference:
-                        references.append(sale_order.customer_reference)
-            # Sadece geçerli string değerleri birleştir
-            record.customer_reference = ', '.join(references)
+            # Her fatura satırı için ilgili satış siparişi satırına bak
+            if record.sale_line_ids:
+                sale_order = record.sale_line_ids.order_id
+                record.customer_reference = sale_order.customer_reference if sale_order else False
+            else:
+                record.customer_reference = False
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
