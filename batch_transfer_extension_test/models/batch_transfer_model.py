@@ -1,5 +1,5 @@
 from odoo import api, fields, models
-
+from datetime import datetime
 
 class StockPickingBatch(models.Model):
     _inherit = 'stock.picking.batch'
