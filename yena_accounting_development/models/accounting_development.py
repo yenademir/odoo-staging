@@ -9,15 +9,14 @@ class AccountMoveLine(models.Model):
     def _compute_customer_reference(self):
         for record in self:
             references = []
-            # invoice_origin alanındaki her bir sipariş ismi için arama yap
             if record.move_id.invoice_origin:
                 order_names = record.move_id.invoice_origin.split(', ')
                 for order_name in order_names:
                     sale_order = self.env['sale.order'].search([('name', '=', order_name.strip())], limit=1)
-                    if sale_order:
+                    if sale_order and sale_order.customer_reference:
                         references.append(sale_order.customer_reference)
-            # Benzersiz referansları set olarak sakla ve birleştir
-            record.customer_reference = ', '.join(set(references))
+            # Sadece geçerli string değerleri birleştir
+            record.customer_reference = ', '.join(references)
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
