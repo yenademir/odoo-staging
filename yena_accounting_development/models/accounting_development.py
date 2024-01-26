@@ -1,9 +1,9 @@
-from odoo import fields, models
+from odoo import api, fields, models
 
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
 
-    customer_reference = fields.Char(string='Customer Reference')
+    customer_reference = fields.Char(string='Müşteri Referansı')
 
     @api.model
     def create(self, vals):
@@ -19,7 +19,7 @@ class AccountMoveLine(models.Model):
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
-    customer_references = fields.Char(compute='_compute_customer_references', string='Customer References')
+    customer_references = fields.Char(compute='_compute_customer_references', string='Müşteri Referansları')
 
     @api.depends('invoice_line_ids.customer_reference')
     def _compute_customer_references(self):
