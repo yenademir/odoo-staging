@@ -1,0 +1,31 @@
+<odoo>
+    <data>
+
+        <!-- Inherit the existing view of project.project to add a new page -->
+        <record id="view_project_compare_product_form_inherit" model="ir.ui.view">
+            <field name="name">project.project.compare.product.form.inherit</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.edit_project" />
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='settings']" position="after">
+                    <page string="Compare Orders">
+                        <field name="comparison_lines">
+                            <tree>
+                                <field name="product_id" />
+                                <field name="sale_qty" />
+                                <field name="purchase_qty" />
+                                <field name="sale_weight" />
+                                <field name="purchase_weight" />
+                                <!-- <field name="sale_order_id" />
+                                <field name="purchase_order_id"/> -->
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+                
+            </field>
+        </record>
+
+
+    </data>
+</odoo>
