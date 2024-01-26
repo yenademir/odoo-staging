@@ -1,1 +1,0 @@
-from . import sales_note_templates_development
