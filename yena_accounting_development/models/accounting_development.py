@@ -24,5 +24,8 @@ class AccountMove(models.Model):
     def _compute_customer_references(self):
         for record in self:
             # Fatura satırlarındaki benzersiz müşteri referanslarını topla
-            references = list(set(line.customer_reference for line in record.invoice_line_ids if line.customer_reference))
+            references = set()
+            for line in record.invoice_line_ids:
+                if line.customer_reference:
+                    references.add(line.customer_reference)
             record.customer_references = ', '.join(references)
