@@ -34,7 +34,7 @@ class Picking(models.Model):
             'res_id': self.id,
             'activity_type_id': activity_type_id,
             'summary': 'Check Documents',
-            'note': 'Lütfen TR/OUT transferi için gerekli dökümanların tamamlandığından emin olun.',
+            'note': 'Lütfen TR/OUT transferi için gerekli lojistik dökümanlarının tamamlandığından emin olun.',
             'date_deadline': date_deadline,
             'user_id': self.env.user.id,
         }
