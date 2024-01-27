@@ -10,8 +10,6 @@
             </xpath>
         </field>
     </record>
-</odoo>
-<odoo>
     <data>
         <record id="view_move_form_inherit" model="ir.ui.view">
             <field name="name">account.move.form.inherit</field>
