@@ -20,9 +20,11 @@ class AccountMoveInherit(models.Model):
     @api.depends('invoice_line_ids.customer_reference')
     def _compute_customer_references(self):
         for record in self:
-            # customer_reference alanı boş olmayanları filtrele
-            references = record.invoice_line_ids.filtered(lambda r: r.customer_reference).mapped('customer_reference')
-            # references listesindeki öğelerin string türünde olduğundan emin ol
-            references = [ref for ref in references if isinstance(ref, str)]
-            # Benzersiz string değerleri virgülle birleştir
-            record.customer_references = ','.join(set(references))
+            references = record.invoice_line_ids.mapped('customer_reference')
+            # Flatten the list of lists into a single list of references
+            flattened_references = [item for sublist in references for item in (sublist if isinstance(sublist, list) else [sublist])]
+            # Filter out any non-string items and ensure uniqueness
+            unique_references = set(filter(lambda x: isinstance(x, str), flattened_references))
+            # Join the unique string references with a comma
+            record.customer_references = ','.join(unique_references)
+
