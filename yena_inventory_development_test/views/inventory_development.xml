@@ -284,4 +284,30 @@
           name="Transportation Follow Up"
           parent="stock.menu_stock_root"
           action="transportation_follow_up"/>
+    <record id="view_stock_move_search_filters_inherit" model="ir.ui.view">
+        <field name="name">stock.move.search.filters.inherit</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_move_search"/> <!-- Uygun external ID'yi kullanın -->
+        <field name="arch" type="xml">
+            <search>
+                <!-- transportation_code ve situation alanlarını filtrelenebilir hale getir -->
+                <field name="transportation_code"/>
+                <field name="situation"/>
+            </search>
+        </field>
+    </record>
+    <record id="view_stock_move_search_group_by_inherit" model="ir.ui.view">
+        <field name="name">stock.move.search.group.by.inherit</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_move_search"/> <!-- Uygun external ID'yi kullanın -->
+        <field name="arch" type="xml">
+            <search>
+                <!-- Gruplandırma seçenekleri ekleyin -->
+                <group expand="0" string="Group By">
+                    <filter string="Picking Type" domain="[]" context="{'group_by': 'picking_type_id'}"/>
+                    <filter string="Transportation Code" domain="[]" context="{'group_by': 'transportation_code'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
 </odoo>
