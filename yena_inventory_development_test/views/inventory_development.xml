@@ -213,6 +213,7 @@
         <field name="model">stock.move</field>
         <field name="arch" type="xml">
             <tree string="Operations" delete="0" multi_edit="1" sample="1" default_order="transportation_code" decoration-info="situation=='to_be_planned'" decoration-danger="situation=='on_the_way'" decoration-success="situation=='arrived'" editable="bottom">
+                <field name="company_id" invisible="1"/>
                 <field name="transportation_code" groupby="transportation_code"/>
                 <field name="batch_id" optional="show" widget='many2one'/>
                 <field name="edespatch_delivery_type" optional="hide"/>
