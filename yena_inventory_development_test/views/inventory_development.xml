@@ -294,12 +294,6 @@
                 <!-- transportation_code ve situation alanlarını filtrelenebilir hale getir -->
                 <field name="transportation_code"/>
                 <field name="situation"/>
-
-                <!-- Gruplandırma seçenekleri ekleyin -->
-                <group expand="0" string="Group By">
-                    <filter string="Picking Type" domain="[]" context="{'group_by': 'picking_type_id'}"/>
-                    <filter string="Transportation Code" domain="[]" context="{'group_by': 'transportation_code'}"/>
-                </group>
             </search>
         </field>
     </record>
