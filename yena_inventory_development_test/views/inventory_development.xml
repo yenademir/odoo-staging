@@ -293,10 +293,6 @@
             <search>
                 <field name="transportation_code"/>
                 <field name="situation"/>
-                <group expand="0" string="Group By">
-                    <filter string="Transportation Code" domain="[]" context="{'group_by': 'transportation_code'}"/>
-                    <filter string="Picking Type" domain="[]" context="{'group_by': 'picking_type_id'}"/>
-                </group>
                 <xpath expr="//search/group" position="inside">
                     <filter string="Transportation Code" domain="[]" context="{'group_by': 'transportation_code'}"/>
                     <filter string="Picking Type" domain="[]" context="{'group_by': 'picking_type_id'}"/>
