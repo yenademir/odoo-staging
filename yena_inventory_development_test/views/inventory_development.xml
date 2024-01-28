@@ -285,18 +285,19 @@
           parent="stock.menu_stock_root"
           action="transportation_follow_up"/>
     
-<record id="view_stock_move_search_inherit" model="ir.ui.view">
-        <field name="name">stock.move.search.inherit</field>
-        <field name="model">stock.move</field>
-        <field name="inherit_id" ref="stock.view_move_search"/>
-        <field name="arch" type="xml">
-            <search>
-                <field name="transportation_code"/>
-                <field name="situation"/>
-                <group expand="0" string="Group By">
-                    <filter string="Transportation Code" name="group_by_transportation_code" context="{'group_by': 'transportation_code'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
+        <record id="view_stock_move_search_inherit" model="ir.ui.view">
+            <field name="name">stock.move.search.inherit</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_search"/> <!-- Mevcut arama görünümünün external ID'si -->
+            <field name="arch" type="xml">
+                <search>
+                    <field name="transportation_code"/>
+                    <field name="situation"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Picking Type" domain="[]" context="{'group_by': 'picking_type_id'}"/>
+                        <filter string="Transportation Code" domain="[]" context="{'group_by': 'transportation_code'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
 </odoo>
