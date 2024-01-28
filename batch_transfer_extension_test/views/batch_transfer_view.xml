@@ -125,8 +125,8 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='name']" position="after">
                 <field name="transportation_code" optional="show"/>
-                <field name="customer_ids" optional="show" widget="Many2many_tags"/>
-                <field name="vendor_ids" optional="show" widget="Many2many_tags"/>
+                <field name="customer_ids" optional="show" widget="many2many_tags"/>
+                <field name="vendor_ids" optional="show" widget="many2many_tags"/>
             </xpath>
         </field>
     </record>
