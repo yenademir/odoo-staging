@@ -53,8 +53,6 @@ class SaleOrder(models.Model):
 class PurchaseOrder(models.Model):
     _inherit="purchase.order"
     
-    transit_time = fields.Float(string='Transit Time', readonly=True, compute="_compute_transit_time")
-    #picking_ids = fields.Many2one('stock.picking', string='Picking')
     delivery_date_diff = fields.Float(string='Delivery Performance', readonly=True, compute="_compute_delivery_date_diff")
     
     @api.depends('delivery_date', 'picking_ids.effective_date')
@@ -78,22 +76,3 @@ class PurchaseOrder(models.Model):
 
                     order.delivery_date_diff = diff_days
     
-    @api.depends('picking_ids.arrival_date', 'picking_ids.edespatch_date')
-    def _compute_transit_time(self):
-        for order in self:
-            order.transit_time = False  # Varsayılan değer
-            # İlgili stock.picking kayıtlarını bul
-            picking_records = self.env['stock.picking']
-            #üste yazılacak > .search([('origin', '=', order.name), ('state', '=', 'done')])
-            if picking_records:
-                transit_times = []
-                for record in picking_records:
-                    if record.arrival_date and record.edespatch_date:
-                        arrival_datetime = fields.Datetime.from_string(record.arrival_date)
-                        edespatch_datetime = fields.Datetime.from_string(record.edespatch_date)
-                        transit_seconds = (arrival_datetime - edespatch_datetime).total_seconds()
-                        transit_days = transit_seconds / (24 * 3600)
-                        transit_times.append(transit_days)
-
-                if transit_times:
-                    order.transit_time = max(transit_times)
