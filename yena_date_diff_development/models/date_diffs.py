@@ -55,7 +55,7 @@ class PurchaseOrder(models.Model):
     
     delivery_date_diff = fields.Float(string='Delivery Performance', readonly=True, compute="_compute_delivery_date_diff")
     
-    @api.depends('delivery_date', 'picking_ids.effective_date')
+    @api.depends('delivery_date', 'picking_ids.date_done')
     def _compute_delivery_date_diff(self):
         for order in self:
             # Varsayılan değeri False olarak ayarla
@@ -65,11 +65,11 @@ class PurchaseOrder(models.Model):
                 delivery_timestamp = datetime.timestamp(delivery_datetime)
 
                 picking_records = self.env['stock.picking'].search([('origin', '=', order.name), ('state', '=', 'done')])
-                effective_datetimes = [fields.Datetime.from_string(record.effective_date) for record in picking_records if record.effective_date]
+                date_donetimes = [fields.Datetime.from_string(record.date_done) for record in picking_records if record.date_done]
 
-                if effective_datetimes:
-                    latest_effective_datetime = max(effective_datetimes)
-                    latest_effective_timestamp = datetime.timestamp(latest_effective_datetime)
+                if date_donetimes:
+                    latest_date_donetime = max(date_donetimes)
+                    latest_effective_timestamp = datetime.timestamp(latest_date_donetime)
 
                     diff_seconds = latest_effective_timestamp - delivery_timestamp
                     diff_days = diff_seconds / (24 * 3600)
