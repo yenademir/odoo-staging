@@ -35,8 +35,8 @@ class SaleOrder(models.Model):
         for order in self:
             order.transit_time = False  # Varsayılan değer
             # İlgili stock.picking kayıtlarını bul
-            picking_records = self.env['stock.picking']
-            #.search([('origin', '=', order.name), ('state', '=', 'done')])
+            picking_records = self.env['stock.picking'].search([('origin', '=', order.name), ('state', '=', 'done')])
+
             if picking_records:
                 transit_times = []
                 for record in picking_records:
@@ -66,8 +66,7 @@ class PurchaseOrder(models.Model):
                 delivery_datetime = datetime.combine(fields.Date.from_string(order.delivery_date), datetime.min.time())
                 delivery_timestamp = datetime.timestamp(delivery_datetime)
 
-                picking_records = self.env['stock.picking']
-                #üste yazılacak > .search([('origin', '=', order.name), ('state', '=', 'done')])
+                picking_records = self.env['stock.picking'].search([('origin', '=', order.name), ('state', '=', 'done')])
                 effective_datetimes = [fields.Datetime.from_string(record.effective_date) for record in picking_records if record.effective_date]
 
                 if effective_datetimes:
