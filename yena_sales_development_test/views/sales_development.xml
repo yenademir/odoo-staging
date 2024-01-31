@@ -161,5 +161,16 @@
             </xpath>
         </field>
     </record>
-
+    <record id="view_sale_order_tree_to_invoice_yena_tree" model="ir.ui.view">
+        <field name="name">sale.order.tree.to.invoice.yena</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="document_numbers" optional="show"/>
+                <field name="transportation_codes" optional="show"/>
+                <field name="effective_date_list" optional="show"/>
+            </xpath>
+        </field>
+    </record>
 </odoo>
