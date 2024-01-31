@@ -29,5 +29,5 @@ class SaleBlanketOrderLine(models.Model):
         for line in self:
             line.invoiced_subtotal = line.invoiced_uom_qty * line.price_unit
             line.ordered_subtotal = line.ordered_uom_qty * line.price_unit
-            line.remaining_invoice_subtotal = (line.ordered_uom_qty - line.invoiced_uom_qty) * line.price_unit
+            line.remaining_invoice_subtotal = (line.original_uom_qty - line.invoiced_uom_qty) * line.price_unit
             line.remaining_subtotal = (line.original_uom_qty - line.ordered_uom_qty) * line.price_unit
