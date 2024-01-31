@@ -54,7 +54,7 @@ class PurchaseOrder(models.Model):
     _inherit="purchase.order"
     
     transit_time = fields.Float(string='Transit Time', readonly=True, compute="_compute_transit_time")
-    picking_ids = fields.Many2one('stock.picking', string='Picking')
+    #picking_ids = fields.Many2one('stock.picking', string='Picking')
     delivery_date_diff = fields.Float(string='Delivery Performance', readonly=True, compute="_compute_delivery_date_diff")
     
     @api.depends('delivery_date', 'picking_ids.effective_date')
