@@ -19,7 +19,7 @@ class SaleOrder(models.Model):
     account_note = fields.Html(string="Account Note")
     document_numbers = fields.Char(string='Document Numbers', compute='_compute_document_numbers')
     transportation_codes = fields.Char(string="Transportation Codes", compute='_compute_transportation_codes')
-    effective_date_list = fields.Char(string="Effective Date", compute='_compute_effective_dates')
+    date_done_list = fields.Char(string="Effective Date", compute='_compute_date_done_list')
     
     @api.model
     def create(self, vals):
@@ -81,15 +81,15 @@ class SaleOrder(models.Model):
                 order.transportation_codes = ''
 
     
-    def _compute_effective_dates(self):
+    def _compute_date_done_list(self):
         for order in self:
             pickings = self.env['stock.picking'].search([('sale_id', '=', order.id)])
             if pickings:
-                effective_dates = [picking.effective_date.strftime("%Y-%m-%d") for picking in pickings if picking.effective_date]
-                effective_dates_str = ', '.join(effective_dates)
-                order.effective_date_list = effective_dates_str
+                date_dones = [picking.date_done.strftime("%Y-%m-%d") for picking in pickings if picking.date_done]
+                date_dones_str = ', '.join(date_dones)
+                order.date_done_list = date_dones_str
             else:
-                order.effective_date_list = ''
+                order.date_done_list = ''
                 
     def action_confirm(self):
         # C-Delivery Date kontrolü
