@@ -74,11 +74,12 @@ class SaleOrder(models.Model):
         for order in self:
             pickings = self.env['stock.picking'].search([('sale_id', '=', order.id)])
             if pickings:
-                transportation_codes = [picking.transportation_code for picking in pickings if picking.transportation_code]
-                transportation_codes_str = ', '.join(transportation_codes)
+                unique_transportation_codes = {picking.transportation_code for picking in pickings if picking.transportation_code}
+                transportation_codes_str = ', '.join(unique_transportation_codes)
                 order.transportation_codes = transportation_codes_str
             else:
                 order.transportation_codes = ''
+
     
     def _compute_effective_dates(self):
         for order in self:
