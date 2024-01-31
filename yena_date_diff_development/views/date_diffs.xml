@@ -10,8 +10,6 @@
         
             <xpath expr="//field[@name='origin']" position="after">
                 <field name="delivery_date_diff"/>
-                <field name="transit_time"/>
-
             </xpath>
         </field>
     </record>
