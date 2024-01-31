@@ -64,7 +64,8 @@ class SaleOrder(models.Model):
         for order in self:
             pickings = self.env['stock.picking'].search([('sale_id', '=', order.id)])
             if pickings:
-                document_numbers_str = ', '.join(picking.document_number for picking in pickings)
+                document_numbers = [picking.document_number for picking in pickings if picking.document_number]
+                document_numbers_str = ', '.join(document_numbers)
                 order.document_numbers = document_numbers_str
             else:
                 order.document_numbers = ''
@@ -73,16 +74,18 @@ class SaleOrder(models.Model):
         for order in self:
             pickings = self.env['stock.picking'].search([('sale_id', '=', order.id)])
             if pickings:
-                transportation_codes_str = ', '.join(picking.transportation_code for picking in pickings)
+                transportation_codes = [picking.transportation_code for picking in pickings if picking.transportation_code]
+                transportation_codes_str = ', '.join(transportation_codes)
                 order.transportation_codes = transportation_codes_str
             else:
                 order.transportation_codes = ''
-
+    
     def _compute_effective_dates(self):
         for order in self:
             pickings = self.env['stock.picking'].search([('sale_id', '=', order.id)])
             if pickings:
-                effective_dates_str = ', '.join(picking.effective_date.strftime("%Y-%m-%d") for picking in pickings if picking.effective_date)
+                effective_dates = [picking.effective_date.strftime("%Y-%m-%d") for picking in pickings if picking.effective_date]
+                effective_dates_str = ', '.join(effective_dates)
                 order.effective_date_list = effective_dates_str
             else:
                 order.effective_date_list = ''
