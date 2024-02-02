@@ -41,5 +41,8 @@
                 </field>
             </field>
         </record>
+        <record id="sale_blanket_order.act_open_blanket_order_view" model="ir.actions.act_window">
+            <field name="view_mode">tree,form,pivot,graph</field>
+        </record>
     </data>
 </odoo>
