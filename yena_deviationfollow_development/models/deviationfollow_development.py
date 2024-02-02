@@ -6,7 +6,7 @@ class DeviationFollowUp(models.Model):
 
     name = fields.Char(string="Name")
     customer_id = fields.Many2one('res.partner', string='Customer')
-    project_number = fields.Many2one('project.project', string='Project Number')
+    project_number = fields.Many2one('account.analytic.account', string='Project Number')
     product_id = fields.Many2one('product.product', string='Drawing No')
     purchase_no = fields.Many2one('purchase.order', string='Purchase No')
     question_for_customer = fields.Char(string='Question for Customer')
