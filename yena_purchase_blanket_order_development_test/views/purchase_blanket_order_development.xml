@@ -1,6 +1,5 @@
 <odoo>
     <data>
-        <!-- Inherit the form view -->
         <record id="view_blanket_order_form_inherit" model="ir.ui.view">
             <field name="name">purchase.blanket.order.form.inherit</field>
             <field name="model">purchase.blanket.order</field>
@@ -14,10 +13,10 @@
                     <attribute name="invisible">1</attribute>
                 </xpath>-->
                 <xpath expr="//field[@name='taxes_id']" position="after">
-                    <field name="ordered_subtotal"/>
-                    <field name="remaining_subtotal"/>
-                    <field name="invoiced_subtotal"/>
-                    <field name="remaining_invoice_subtotal"/>
+                    <field name="ordered_subtotal" optional="hide"/>
+                    <field name="remaining_subtotal" optional="hide"/>
+                    <field name="invoiced_subtotal" optional="hide"/>
+                    <field name="remaining_invoice_subtotal" optional="hide"/>
                 </xpath>
                 <xpath expr="//field[@name='amount_tax']" position="after">
                     <field name="ordered_total"/>
