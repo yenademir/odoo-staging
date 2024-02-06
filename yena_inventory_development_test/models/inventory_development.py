@@ -222,4 +222,14 @@ class ProductTemplate(models.Model):
                 else:
                     record.pricekg = 0
 
+    class SaleOrderLine(models.Model):
+        _inherit = 'sale.order.line'
+
+        product_type = fields.Selection(related='product_id.detailed_type', string='Product Type', store=True)
+        product_category = fields.Many2one('product.category', related="product_id.categ_id", string="Product Category")
+        totalweight = fields.Float(string='Total Weight', compute='_compute_total_weight', store=True, readonly=True)
+        coating = fields.Selection(related="product_id.coating", string="Coating", readonly=True)
+        pricekg = fields.Float(compute='_compute_pricekg', string='KG Price', readonly=True, store=True)
+        unit_weight = fields.Float(related="product_id.weight", string="Unit Weight", readonly=True)
+
 
