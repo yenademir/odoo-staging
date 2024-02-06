@@ -21,7 +21,6 @@ class Picking(models.Model):
         readonly=False
     )
     sale_id=fields.Many2one("sale.order",string="Sale Order")
-    purchase_id=fields.Many2one("purchase.order",string="Purchase Order")
     sequence_code = fields.Char(string='Sequence Code', related='picking_type_id.sequence_code', store=True)
     logistic_company = fields.Char (string="Logistic Company", store=True)
 
