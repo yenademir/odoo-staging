@@ -4,6 +4,44 @@ import base64
 from io import BytesIO
 from datetime import datetime, timedelta
 
+class Picking(models.Model):
+    _inherit = 'stock.picking'
+
+    situation = fields.Selection(
+        [("to_be_planned", "To Be Planned"),
+         ("on_the_way", "On The Way"),
+         ("arrived", "Arrived")],
+        string="Situation",
+        store=True,
+        readonly=False
+    )
+    transportation_code = fields.Char(
+        string="Transportation Code",
+        store=True,
+        readonly=False
+    )
+    sale_id=fields.Many2one("sale.order",string="Sale Order")
+    purchase_id=fields.Many2one("purchase.order",string="Purchase Order")
+    sequence_code = fields.Char(string='Sequence Code', related='picking_type_id.sequence_code', store=True)
+    logistic_company = fields.Char (string="Logistic Company", store=True)
+
+
+    
+class StockMove(models.Model):
+    _inherit = "stock.move"
+
+    picking_type_id = fields.Many2one(related="picking_id.picking_type_id", string="Operation Type", store=True)
+    related_partner = fields.Many2one(related="picking_id.partner_id", string="Receive From / Delivery Adress", store=True)
+    situation = fields.Selection(related="picking_id.situation", string="Situation", store=True)
+    transportation_code = fields.Char(related="picking_id.transportation_code", string="Transportation Code", store=True)
+    batch_id = fields.Many2one('stock.picking.batch', string='Batch', related='picking_id.batch_id', store=True, readonly=True)
+    edespatch_delivery_type = fields.Selection(related="picking_id.edespatch_delivery_type", string="Delivery Type")
+    scheduled_date = fields.Datetime(related='picking_id.scheduled_date', store=True, readonly=True)
+    #arrival_date = fields.Date(related='picking_id.arrival_date', store=True, readonly=True)
+    purchase_id=fields.Many2one(related='picking_id.purchase_id',string="Purchase Order")
+    edespatch_date=fields.Datetime(related='picking_id.edespatch_date',string="Actual Departure Date")
+    #airtag_url = fields.Char(string='Airtag Link', related='picking_id.batch_id.airtag_url', store=True, readonly=True)
+    #vehicle_type_id = fields.Many2one(string='Vehicle Type', related='picking_id.batch_id.vehicle_type_id', store=True, readonly=True)
 
     
 class ProductTemplate(models.Model):
