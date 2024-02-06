@@ -23,7 +23,7 @@ class PurchaseBlanketOrderLine(models.Model):
     ordered_subtotal = fields.Monetary(compute='_compute_subtotals', string='Ordered Subtotal')
     remaining_invoice_subtotal = fields.Monetary(compute='_compute_subtotals', string='Remaining Invoice Subtotal')
     remaining_subtotal = fields.Monetary(compute='_compute_subtotals', string='Remaining Subtotal')
-        state = fields.Selection([
+    state = fields.Selection([
         ('draft', 'Draft'),
         ('open', 'Open'),
         ('done', 'Done'),
