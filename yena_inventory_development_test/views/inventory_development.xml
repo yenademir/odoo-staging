@@ -221,7 +221,6 @@
                 <field name="weight"/>
                 <field name="scheduled_date" optional="hide"/>
                 <field name="arrival_date" optional="hide"/>
-                <field name="purchase_id" optional="show"/>
                 <field name="edespatch_date" optional="hide"/>
                 <field name="situation" />
                 <field name="vehicle_type_id" optional="hide"/>
