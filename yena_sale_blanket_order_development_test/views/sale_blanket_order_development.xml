@@ -46,5 +46,15 @@
         <record id="sale_blanket_order.act_open_blanket_order_view" model="ir.actions.act_window">
             <field name="view_mode">tree,form,pivot,graph</field>
         </record>
+        <record id="sale_blanket_order_line_tree_inherit" model="ir.ui.view">
+            <field name="name">sale.blanket.order.line.tree.inherit</field>
+            <field name="model">sale.blanket.order.line</field>
+            <field name="inherit_id" ref="sale_blanket_order.sale_blanket_order_line_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='remaining_uom_qty']" position="after">
+                    <field name="state"/>
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>
