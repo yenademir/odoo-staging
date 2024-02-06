@@ -101,12 +101,7 @@ class ProductTemplate(models.Model):
         if 'standard_price' not in res:
             res['standard_price'] = 1.0
 
-        # MTO rota ayarlama
-        mto_route_id = 1  # "MTO" rotasının ID'si linkteki web#id'den bulunacak
-        if 'route_ids' not in res:
-            res['route_ids'] = [(4, mto_route_id)]
-        else:
-            res['route_ids'].append((4, mto_route_id))
+
 
         # Varsayılan satıcı ayarlama
         if 'default_seller' in self._context:
