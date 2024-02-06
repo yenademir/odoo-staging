@@ -22,22 +22,7 @@ class Picking(models.Model):
         self._update_scheduled_date(vals)
         return super(Picking, self).write(vals)
         
-    @api.model
-    def _create_scheduled_activity(self):
-        # Bu metotta, planlanmış aktivitenin detaylarını belirleyin.
-        model_id = self.env['ir.model'].search([('model', '=', 'stock.picking')], limit=1)
-        activity_type_id = self.env.ref('yena_inventory_development_test.activity_type_custom').id
-        date_deadline = fields.Date.today() + timedelta(days=3)
 
-        return {
-            'res_model_id': model_id.id,
-            'res_id': self.id,
-            'activity_type_id': activity_type_id,
-            'summary': 'Check Documents',
-            'note': 'Lütfen TR/OUT transferi için gerekli lojistik dökümanlarının tamamlandığından emin olun.',
-            'date_deadline': date_deadline,
-            'user_id': self.env.user.id,
-        }
 
     
     def _update_scheduled_date(self, vals):
