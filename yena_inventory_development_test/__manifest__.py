@@ -8,7 +8,6 @@
     'license': 'LGPL-3',
     'depends': ['product', 'stock', 'barcodes', 'digest', 'purchase', 'base', 'account', 'delivery'],
     'data': [
-        'views/inventory_development.xml',
         'security/ir.model.access.csv',
         'views/hs_code.xml'
     ],
