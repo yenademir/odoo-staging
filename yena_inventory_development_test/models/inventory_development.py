@@ -103,34 +103,7 @@ class ProductTemplate(models.Model):
 
 
 
-        # Varsayılan satıcı ayarlama
-        if 'default_seller' in self._context:
-            seller_id = self.env['res.partner'].browse(self._context['default_seller'])
-            if 'seller_ids' in res:
-                res['seller_ids'].append((0, 0, {'name': seller_id.id}))
-            else:
-                res['seller_ids'] = [(0, 0, {'name': seller_id.id})]
-        if 'default_seller' in self._context:
-            seller_id = self.env['res.partner'].browse(self._context['default_seller'])
-            # İlk satır için veriler
-            first_line = {
-                'name': 219,
-                'currency_id': 1,
-                'company_id': 2,
-            }
-            # İkinci satır için veriler
-            second_line = {
-                'name': 94654,
-                'currency_id': 1,
-                'company_id': 1,
-            }
-            # Eğer seller_ids anahtarı zaten varsa bu satırları ekle, yoksa yeni bir liste oluştur
-            if 'seller_ids' in res:
-                res['seller_ids'].extend([(0, 0, first_line), (0, 0, second_line)])
-            else:
-                res['seller_ids'] = [(0, 0, first_line), (0, 0, second_line)]
 
-        return res
 
     def _post_technical_drawing(self, drawing, filename, product_id, product_name):
         try:
