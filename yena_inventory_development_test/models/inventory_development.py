@@ -93,7 +93,6 @@ class Picking(models.Model):
 class StockMove(models.Model):
     _inherit = "stock.move"
 
-    project_transfer = fields.Many2many(related="picking_id.project_transfer", string="Project Number")
     picking_type_id = fields.Many2one(related="picking_id.picking_type_id", string="Operation Type", store=True)
     related_partner = fields.Many2one(related="picking_id.partner_id", string="Receive From / Delivery Adress", store=True)
     situation = fields.Selection(related="picking_id.situation", string="Situation", store=True)
