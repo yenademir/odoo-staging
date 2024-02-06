@@ -4,27 +4,6 @@ import base64
 from io import BytesIO
 from datetime import datetime, timedelta
 
-class Picking(models.Model):
-    _inherit = 'stock.picking'
-
-    situation = fields.Selection(
-        [("to_be_planned", "To Be Planned"),
-         ("on_the_way", "On The Way"),
-         ("arrived", "Arrived")],
-        string="Situation",
-        store=True,
-        readonly=False
-    )
-    transportation_code = fields.Char(
-        string="Transportation Code",
-        store=True,
-        readonly=False
-    )
-    sale_id=fields.Many2one("sale.order",string="Sale Order")
-    sequence_code = fields.Char(string='Sequence Code', related='picking_type_id.sequence_code', store=True)
-    logistic_company = fields.Char (string="Logistic Company", store=True)
-
-
     
 class StockMove(models.Model):
     _inherit = "stock.move"
