@@ -13,29 +13,7 @@ class Picking(models.Model):
     logistic_company = fields.Char (string="Logistic Company", store=True)
     arrive_date = fields.Date(string="Arrive Date")
     
-    @api.model
-    def create(self, vals):
-        self._update_scheduled_date(vals)
-        return super(Picking, self).create(vals)
 
-    def write(self, vals):
-        self._update_scheduled_date(vals)
-        return super(Picking, self).write(vals)
-        
-
-
-    
-
-                    
-    def default_get(self, fields_list):
-        defaults = super(Picking, self).default_get(fields_list)
-
-        if self.env.user.company_id.id == 1 and self.env.context.get('default_picking_type_id'):
-            picking_type = self.env['stock.picking.type'].browse(self.env.context['default_picking_type_id'])
-            if picking_type.sequence_code == 'OUT':
-                defaults['edespatch_delivery_type'] = 'edespatch'
-
-        return defaults
 
     
 class StockMove(models.Model):
