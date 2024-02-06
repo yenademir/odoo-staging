@@ -91,25 +91,15 @@ class SaleOrder(models.Model):
             else:
                 order.date_done_list = ''
                 
-    def action_confirm(self):
+def action_confirm(self):
+
         # C-Delivery Date kontrolü
         if not self.commitment_date:
             raise UserError('The C-Delivery Date is mandatory! Please add this date and try again.')
-            
-        # company_id 1 ise, özel işlem yap
+
+        # company_id 1 ise, standart onay işlemi yapılır ve özel işlemlerden kaçınılır
         if self.company_id.id == 1:
-            # Standart onay işlemi yapılır
-            res = super(SaleOrder, self).action_confirm()
-            
-            for order in self:
-                # İlgili transfer emirlerini bul ve güncelle
-                delivery_orders = self.env['stock.picking'].search([('origin', '=', order.name)])
-                for delivery_order in delivery_orders:
-                    delivery_order.write({
-                        'project_transfer': [(6, 0, order.project_sales.ids)],
-                    })
-        
-                return res
+            return super(SaleOrder, self).action_confirm()
 
         # Diğer durumlarda, öncelikle standart onay işlemi yapılır
         res = super(SaleOrder, self).action_confirm()
@@ -159,7 +149,6 @@ class SaleOrder(models.Model):
                 'name': project.name
             })
         return res
-
 
     def action_quotation_sent(self):
         res = super(SaleOrder, self).action_quotation_sent()
