@@ -3,10 +3,11 @@ from odoo import models, fields, api
 class SaleBlanketOrder(models.Model):
     _inherit = 'sale.blanket.order'
 
-    invoiced_total = fields.Monetary(compute='_compute_totals', string='Invoiced Total')
-    ordered_total = fields.Monetary(compute='_compute_totals', string='Ordered Total')
-    remaining_invoice_total = fields.Monetary(compute='_compute_totals', string='Remaining to Invoice Total')
-    remaining_total = fields.Monetary(compute='_compute_totals', string='Remaining Total')
+    invoiced_total = fields.Monetary(compute='_compute_totals', store=True, string='Invoiced Total')
+    ordered_total = fields.Monetary(compute='_compute_totals', store=True, string='Ordered Total')
+    remaining_invoice_total = fields.Monetary(compute='_compute_totals', store=True, string='Remaining to Invoice Total')
+    remaining_total = fields.Monetary(compute='_compute_totals', store=True, string='Remaining Total')
+
 
     @api.depends('line_ids.invoiced_subtotal', 'line_ids.ordered_subtotal', 'line_ids.remaining_invoice_subtotal', 'line_ids.remaining_subtotal')
     def _compute_totals(self):
