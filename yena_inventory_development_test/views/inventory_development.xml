@@ -262,6 +262,20 @@
             </xpath>
         </field>
     </record> -->
+    <record id="view_picking_internal_search_inherit_last_week" model="ir.ui.view">
+        <field name="name">view.picking.internal.search.inherit.last.week</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter string="Last Week Arrival Dates"
+                        name="filter_last_week_arrival"
+                        domain="[('arrival_date', '&gt;=', (context_today()-relativedelta(days=7)).strftime('%Y-%m-%d')),
+                                ('arrival_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+            </xpath>
+        </field>
+    </record>
     <record id="transportation_follow_up" model="ir.actions.act_window">
         <field name="name">Transportation Follow Up</field>
         <field name="res_model">stock.move</field>
