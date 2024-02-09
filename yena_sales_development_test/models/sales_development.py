@@ -183,49 +183,47 @@ class SaleOrder(models.Model):
         return record
 
     def action_confirm(self):
-
         # C-Delivery Date kontrolü
         if not self.commitment_date:
             raise UserError('The C-Delivery Date is mandatory! Please add this date and try again.')
-
+    
         # company_id 1 ise, standart onay işlemi yapılır ve özel işlemlerden kaçınılır
         if self.company_id.id == 1:
             return super(SaleOrder, self).action_confirm()
-
+    
         # Diğer durumlarda, öncelikle standart onay işlemi yapılır
         res = super(SaleOrder, self).action_confirm()
-
+    
         current_user = self.env.user  # Şu anki kullanıcıyı al
         incoterm = self.env['account.incoterms'].browse(10)
-
-        # Tüm satış siparişleri için döngü başlat
+    
         for order in self:
             purchase_orders = self.env['purchase.order'].search([('origin', '=', order.name)])
-                for purchase_order in purchase_orders:
-                    purchase_order.write({
-                        'user_id': current_user.id,
-                        'customer_reference': order.customer_reference,
-                        'project_purchase': order.project_sales.id,
-                        'incoterm_id': incoterm.id
+            for purchase_order in purchase_orders:
+                purchase_order.write({
+                    'user_id': current_user.id,
+                    'customer_reference': order.customer_reference,
+                    'project_purchase': order.project_sales.id,
+                    'incoterm_id': incoterm.id
+                })
+    
+                # İlişkili tüm satın alma siparişi satırlarını sil
+                purchase_order.order_line.unlink()
+    
+                # Yeni satın alma siparişi satırlarını oluştur
+                for so_line in order.order_line:
+                    new_price_unit = so_line.price_unit * 0.92  # Satış fiyatını 0.92 ile çarp
+                    purchase_order.order_line.create({
+                        'order_id': purchase_order.id,
+                        'product_id': so_line.product_id.id,
+                        'product_qty': so_line.product_uom_qty,
+                        'product_uom': so_line.product_uom.id,
+                        'price_unit': new_price_unit,
+                        'name': so_line.name,
+                        'date_planned': purchase_order.date_order,
+                        'account_analytic_id': order.analytic_account_id.id,
                     })
-        
-                    # İlişkili tüm satın alma siparişi satırlarını sil
-                    purchase_order.order_line.unlink()
-        
-                    # Yeni satın alma siparişi satırlarını oluştur
-                    for so_line in order.order_line:
-                        new_price_unit = so_line.price_unit * 0.92  # Satış fiyatını 0.92 ile çarp
-                        purchase_order.order_line.create({
-                            'order_id': purchase_order.id,
-                            'product_id': so_line.product_id.id,
-                            'product_qty': so_line.product_uom_qty,
-                            'product_uom': so_line.product_uom.id,
-                            'price_unit': new_price_unit,
-                            'name': so_line.name,
-                            'date_planned': purchase_order.date_order,
-                            'account_analytic_id': order.analytic_account_id.id,
-                        })
-                        
+    
             # İlişkili tüm teslimat emirlerini bul
             delivery_orders = self.env['stock.picking'].search([('origin', '=', order.name)])
             # İlişkili tüm teslimat emirlerini güncelle
@@ -233,7 +231,7 @@ class SaleOrder(models.Model):
                 delivery_order.write({
                     'project_transfer': [(6, 0, order.project_sales.ids)],
                 })
-                
+    
         # Eğer customer_reference değiştiyse analitik hesap ve proje adını güncelle
         if self.rfq_reference != self.customer_reference:
             project = self.project_sales
@@ -244,6 +242,7 @@ class SaleOrder(models.Model):
             analytic_account.write({
                 'name': project.name
             })
+    
         return res
 
     def action_quotation_sent(self):
