@@ -200,27 +200,32 @@ class SaleOrder(models.Model):
 
         # Tüm satış siparişleri için döngü başlat
         for order in self:
-            # İlişkili tüm satın alma siparişlerini bul
             purchase_orders = self.env['purchase.order'].search([('origin', '=', order.name)])
-            # İlişkili tüm satın alma siparişlerini güncelle
-            for purchase_order in purchase_orders:
-                purchase_order.write({
-                    'user_id': current_user.id,  # Mevcut kullanıcıyı user_id alanına yaz
-                    'customer_reference': order.customer_reference,
-                    'project_purchase': order.project_sales.id,
-                    'incoterm_id': incoterm.id
-                })
-                # İlişkili tüm satın alma sipariş satırlarını güncelle
-                for po_line in purchase_order.order_line:
-                    # Satış siparişi satırını, ürün kimliği ile eşleştir
-                    so_line = order.order_line.filtered(lambda line: line.product_id == po_line.product_id)
-                    if so_line:
-                        new_price_unit = so_line.price_unit * 0.92  # Satış fiyatını 0.72 ile çarp
-                        po_line.write({
-                            'price_unit': new_price_unit,  # Yeni fiyatı güncelle
+                for purchase_order in purchase_orders:
+                    purchase_order.write({
+                        'user_id': current_user.id,
+                        'customer_reference': order.customer_reference,
+                        'project_purchase': order.project_sales.id,
+                        'incoterm_id': incoterm.id
+                    })
+        
+                    # İlişkili tüm satın alma siparişi satırlarını sil
+                    purchase_order.order_line.unlink()
+        
+                    # Yeni satın alma siparişi satırlarını oluştur
+                    for so_line in order.order_line:
+                        new_price_unit = so_line.price_unit * 0.92  # Satış fiyatını 0.92 ile çarp
+                        purchase_order.order_line.create({
+                            'order_id': purchase_order.id,
+                            'product_id': so_line.product_id.id,
+                            'product_qty': so_line.product_uom_qty,
+                            'product_uom': so_line.product_uom.id,
+                            'price_unit': new_price_unit,
+                            'name': so_line.name,
+                            'date_planned': purchase_order.date_order,
                             'account_analytic_id': order.analytic_account_id.id,
                         })
-
+                        
             # İlişkili tüm teslimat emirlerini bul
             delivery_orders = self.env['stock.picking'].search([('origin', '=', order.name)])
             # İlişkili tüm teslimat emirlerini güncelle
