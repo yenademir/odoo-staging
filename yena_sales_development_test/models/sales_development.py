@@ -222,7 +222,7 @@ class SaleOrder(models.Model):
                         'name': so_line.name,
                         'date_planned': purchase_order.date_order,
                         'account_analytic_id': order.analytic_account_id.id,
-                        'sale_line_id': so_line.order_id.id,
+                        'sale_line_id': so_line.order_id,
                     })
     
             # İlişkili tüm teslimat emirlerini bul
