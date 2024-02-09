@@ -170,19 +170,28 @@ class ProductTemplate(models.Model):
     @api.model
     def default_get(self, fields_list):
         res = super(ProductTemplate, self).default_get(fields_list)
-    
+
         # standard_price default değeri ayarlama
         if 'standard_price' not in res:
             res['standard_price'] = 1.0
-    
+
         # MTO rota ayarlama
-        mto_route = self.env.ref('stock.route_warehouse0_mto', raise_if_not_found=False)
-        if mto_route and 'route_ids' not in res:
-            res['route_ids'] = [(4, mto_route.id)]
-    
-        # Varsayılan satıcı ve ek satıcılar ayarlama
+        mto_route_id = 1  # "MTO" rotasının ID'si linkteki web#id'den bulunacak
+        if 'route_ids' not in res:
+            res['route_ids'] = [(4, mto_route_id)]
+        else:
+            res['route_ids'].append((4, mto_route_id))
+
+        # Varsayılan satıcı ayarlama
         if 'default_seller' in self._context:
-            #seller_id = self.env['res.partner'].browse(self._context['default_seller'])
+            seller_id = self.env['res.partner'].browse(self._context['default_seller'])
+            if 'seller_ids' in res:
+                res['seller_ids'].append((0, 0, {'name': seller_id.id}))
+            else:
+                res['seller_ids'] = [(0, 0, {'name': seller_id.id})]
+        if 'default_seller' in self._context:
+            seller_id = self.env['res.partner'].browse(self._context['default_seller'])
+            # İlk satır için veriler
             first_line = {
                 'name': 1,
                 'currency_id': 1,
@@ -194,12 +203,12 @@ class ProductTemplate(models.Model):
                 'currency_id': 1,
                 'company_id': 1,
             }
-            seller_lines = [(0, 0, first_line), (0, 0, second_line)]
+            # Eğer seller_ids anahtarı zaten varsa bu satırları ekle, yoksa yeni bir liste oluştur
             if 'seller_ids' in res:
-                res['seller_ids'].extend(seller_lines)
+                res['seller_ids'].extend([(0, 0, first_line), (0, 0, second_line)])
             else:
-                res['seller_ids'] = seller_lines
-    
+                res['seller_ids'] = [(0, 0, first_line), (0, 0, second_line)]
+
         return res
 
 
