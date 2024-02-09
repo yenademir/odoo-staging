@@ -212,8 +212,8 @@ class SaleOrder(models.Model):
     
                 # Yeni satın alma siparişi satırlarını oluştur
                 for so_line in order.order_line:
-                    new_price_unit = so_line.price_unit * 0.92  # Satış fiyatını 0.92 ile çarp
-                    purchase_order.order_line.create({
+                    new_price_unit = so_line.price_unit * 0.92  # Örnek indirim oranı
+                    po_line = purchase_order.order_line.create({
                         'order_id': purchase_order.id,
                         'product_id': so_line.product_id.id,
                         'product_qty': so_line.product_uom_qty,
@@ -222,8 +222,10 @@ class SaleOrder(models.Model):
                         'name': so_line.name,
                         'date_planned': purchase_order.date_order,
                         'account_analytic_id': order.analytic_account_id.id,
-                        'sale_line_id': order.id,
+                        'sale_line_id': so_line.id,  # Satış siparişi satırını bağla
                     })
+                    # Satış siparişi satırına geri bağlantı oluştur
+                    so_line.purchase_line_ids = [(4, po_line.id)]
     
             # İlişkili tüm teslimat emirlerini bul
             delivery_orders = self.env['stock.picking'].search([('origin', '=', order.name)])
