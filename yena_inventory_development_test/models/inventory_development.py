@@ -170,45 +170,32 @@ class ProductTemplate(models.Model):
     @api.model
     def default_get(self, fields_list):
         res = super(ProductTemplate, self).default_get(fields_list)
-
+    
         # standard_price default değeri ayarlama
         if 'standard_price' not in res:
             res['standard_price'] = 1.0
-
+    
         # MTO rota ayarlama
-        mto_route_id = 1  # "MTO" rotasının ID'si linkteki web#id'den bulunacak
+        mto_route_id = 1  # "MTO" rotasının ID'si
         if 'route_ids' not in res:
             res['route_ids'] = [(4, mto_route_id)]
         else:
             res['route_ids'].append((4, mto_route_id))
-
-        # Varsayılan satıcı ayarlama
-        if 'default_seller' in self._context:
-            seller_id = self.env['res.partner'].browse(self._context['default_seller'])
-            if 'seller_ids' in res:
-                res['seller_ids'].append((0, 0, {'name': seller_id.id}))
-            else:
-                res['seller_ids'] = [(0, 0, {'name': seller_id.id})]
-        if 'default_seller' in self._context:
-            seller_id = self.env['res.partner'].browse(self._context['default_seller'])
-            # İlk satır için veriler
-            first_line = {
-                'name': 1,
-                'currency_id': 1,
-                'company_id': 2,
-            }
-            # İkinci satır için veriler
-            second_line = {
-                'name': 94654,
-                'currency_id': 1,
-                'company_id': 1,
-            }
-            # Eğer seller_ids anahtarı zaten varsa bu satırları ekle, yoksa yeni bir liste oluştur
-            if 'seller_ids' in res:
-                res['seller_ids'].extend([(0, 0, first_line), (0, 0, second_line)])
-            else:
-                res['seller_ids'] = [(0, 0, first_line), (0, 0, second_line)]
-
+    
+        # Varsayılan satıcı ayarlama ve satıcı bilgileri eklemek
+        # Bu kısım kaldırıldı çünkü aşağıda spesifik partner_id'ler ile satırlar ekleyeceğiz
+    
+        # İlk ve ikinci satır için veriler, burada doğrudan belirtilen partner_id'leri kullanacağız
+        lines = [
+            {'name': 1, 'currency_id': 1, 'company_id': 2},  # 'name' yerine modelinizin Many2one alan adını kullanın, örneğin 'partner_id'
+            {'name': 94654, 'currency_id': 1, 'company_id': 1},
+        ]
+        # Eğer seller_ids anahtarı zaten varsa bu satırları ekle, yoksa yeni bir liste oluştur
+        if 'seller_ids' in res:
+            res['seller_ids'].extend([(0, 0, line) for line in lines])
+        else:
+            res['seller_ids'] = [(0, 0, line) for line in lines]
+    
         return res
 
 
