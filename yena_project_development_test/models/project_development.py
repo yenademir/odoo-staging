@@ -22,7 +22,6 @@ class Project(models.Model):
         context = {
             'default_project_sales': self.id,  # Satın alma emri oluşturulurken projenin ID'sini varsayılan olarak ayarla
             'search_default_project_sales': self.id,  # Listeyi sadece bu projeye ait satın alma siparişleriyle sınırla
-            'create': True,
         }
 
         return {
@@ -32,6 +31,7 @@ class Project(models.Model):
             'res_model': 'sale.order',
             'domain': [('id', 'in', sale_ids)],
             'context': context,
+            'create': True,
         }
     
     def action_show_purchases(self):
@@ -47,7 +47,6 @@ class Project(models.Model):
         context = {
             'default_project_purchase': self.id,  # Satın alma emri oluşturulurken projenin ID'sini varsayılan olarak ayarla
             'search_default_project_purchase': self.id,  # Listeyi sadece bu projeye ait satın alma siparişleriyle sınırla
-            'create': True,
         }
 
         return {
@@ -57,6 +56,7 @@ class Project(models.Model):
             'res_model': 'purchase.order',
             'domain': [('id', 'in', purchase_ids)],
             'context': context,
+            'create': True,
         }
 
     def action_show_transfers(self):
