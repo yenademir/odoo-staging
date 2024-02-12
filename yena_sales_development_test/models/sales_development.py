@@ -113,10 +113,10 @@ class SaleOrder(models.Model):
     document_numbers = fields.Char(string='Document Numbers', compute='_compute_document_numbers')
     transportation_codes = fields.Char(string="Transportation Codes", compute='_compute_transportation_codes')
     date_done_list = fields.Char(string="Effective Date", compute='_compute_date_done_list')
-    edespatch_done_list = fields.Char(string="EDespatch-Date", compute='_compute_edespatch_done_list')            
+    edespatch_date_list = fields.Char(string="EDespatch-Date", compute='_compute_edespatch_date_list')            
 
 
-    def _compute_edespatch_done_list(self):
+    def _compute_edespatch_date_list(self):
         for order in self:
             pickings = self.env['stock.picking'].search([('sale_id', '=', order.id)])
             if pickings:
