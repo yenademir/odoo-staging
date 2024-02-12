@@ -252,7 +252,7 @@
                 <field name="document_numbers" optional="show"/>
                 <field name="transportation_codes" optional="show"/>
                 <field name="date_done_list" optional="hide"/>
-                <field name="edespatch_done_list" optional="show"/>
+                <field name="edespatch_date_list" optional="show"/>
             </xpath>
         </field>
     </record>
