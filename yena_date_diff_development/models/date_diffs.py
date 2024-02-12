@@ -30,13 +30,45 @@ class SaleOrder(models.Model):
             else:
                 order.delivery_date_diff = False
                 
+    
+
+class PurchaseOrder(models.Model):
+    _inherit="purchase.order"
+    
+    delivery_date_diff = fields.Float(string='Delivery Performance', readonly=True, compute="_compute_delivery_date_diff")
+    
+    @api.depends('delivery_date', 'picking_ids.edespatch_date')
+    def _compute_delivery_date_diff(self):
+        for order in self:
+            # Varsayılan değeri False olarak ayarla
+            order.delivery_date_diff = False
+            if order.delivery_date:
+                delivery_datetime = datetime.combine(fields.Date.from_string(order.delivery_date), datetime.min.time())
+                delivery_timestamp = datetime.timestamp(delivery_datetime)
+
+                picking_records = self.env['stock.picking'].search([('origin', '=', order.name), ('state', '=', 'done')])
+                edespatch_datetimes = [fields.Datetime.from_string(record.edespatch_date) for record in picking_records if record.edespatch_date]
+
+                if edespatch_datetimes:
+                    latest_edespatch_datetime = max(edespatch_datetimes)
+                    latest_effective_timestamp = datetime.timestamp(latest_edespatch_datetime)
+
+                    diff_seconds = latest_effective_timestamp - delivery_timestamp
+                    diff_days = diff_seconds / (24 * 3600)
+
+                    order.delivery_date_diff = diff_days
+                    
+
+class BatchTransfer(models.Model):
+    _inherit = 'stock.picking.batch'
+    transit_time = fields.Float(string='Transit Time', readonly=True, compute="_compute_transit_time")
+
     @api.depends('picking_ids.arrival_date', 'picking_ids.edespatch_date')
     def _compute_transit_time(self):
-        for order in self:
-            order.transit_time = False  # Varsayılan değer
+        for batch in self:
+            batch.transit_time = False  # Varsayılan değer
             # İlgili stock.picking kayıtlarını bul
-            picking_records = self.env['stock.picking'].search([('origin', '=', order.name), ('state', '=', 'done')])
-
+            picking_records = batch.mapped('picking_ids').filtered(lambda p: p.origin)
             if picking_records:
                 transit_times = []
                 for record in picking_records:
@@ -48,31 +80,4 @@ class SaleOrder(models.Model):
                         transit_times.append(transit_days)
 
                 if transit_times:
-                    order.transit_time = max(transit_times)
-
-class PurchaseOrder(models.Model):
-    _inherit="purchase.order"
-    
-    delivery_date_diff = fields.Float(string='Delivery Performance', readonly=True, compute="_compute_delivery_date_diff")
-    
-    @api.depends('delivery_date', 'picking_ids.date_done')
-    def _compute_delivery_date_diff(self):
-        for order in self:
-            # Varsayılan değeri False olarak ayarla
-            order.delivery_date_diff = False
-            if order.delivery_date:
-                delivery_datetime = datetime.combine(fields.Date.from_string(order.delivery_date), datetime.min.time())
-                delivery_timestamp = datetime.timestamp(delivery_datetime)
-
-                picking_records = self.env['stock.picking'].search([('origin', '=', order.name), ('state', '=', 'done')])
-                date_donetimes = [fields.Datetime.from_string(record.date_done) for record in picking_records if record.date_done]
-
-                if date_donetimes:
-                    latest_date_donetime = max(date_donetimes)
-                    latest_effective_timestamp = datetime.timestamp(latest_date_donetime)
-
-                    diff_seconds = latest_effective_timestamp - delivery_timestamp
-                    diff_days = diff_seconds / (24 * 3600)
-
-                    order.delivery_date_diff = diff_days
-    
+                    batch.transit_time = max(transit_times)
