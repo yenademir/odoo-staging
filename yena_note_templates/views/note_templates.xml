@@ -3,11 +3,11 @@
     <!-- Sale Note Template-->
     <record id="view_sales_note_templates_tree" model="ir.ui.view">
         <field name="name">sales.note.templates.tree</field>
-        <field name="model">yena.note_templates</field>
+        <field name="model">yena.sale.note.template</field>
         <field name="arch" type="xml">
             <tree string="Sales Note Templates" create="true" edit="true">
                 <field name="name" required="1" />
-                <field name="customer" required="1" />
+                <field name="customer_id" required="1" />
                 <field name="notes" required="1" />
 
             </tree>
@@ -16,13 +16,13 @@
 
     <record id="view_sales_note_templates_form" model="ir.ui.view">
         <field name="name">sales.note.templates.form</field>
-        <field name="model">yena.note_templates</field>
+        <field name="model">yena.sale.note.template</field>
         <field name="arch" type="xml">
             <form>
                 <sheet>
                     <group>
                         <field name="name" required="1" />
-                        <field name="customer" required="1" />
+                        <field name="customer_id" required="1" />
                         <field name="notes" required="1" />
                     </group>
                 </sheet>
@@ -32,7 +32,7 @@
 
     <record id="action_sales_note_templates" model="ir.actions.act_window">
         <field name="name">Sales Quotation Note Templates</field>
-        <field name="res_model">yena.note_templates</field>
+        <field name="res_model">yena.sale.note.template</field>
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="view_sales_note_templates_tree" />
     </record>
@@ -62,7 +62,7 @@
                 </group>
                 <group>
                     <group>
-                        <field name="note_templates" />
+                        <field name="sale_note_template_id" />
                     </group>
                     <group>
                     </group>
@@ -76,7 +76,7 @@
         </field>
     </record>
 
-    <record id="view_note_templates_invisible_fields_yena_development" model="ir.ui.view">
+    <!-- <record id="view_note_templates_invisible_fields_yena_development" model="ir.ui.view">
         <field name="name">note.templates.invisible.fieldsform.inherit.yena.development</field>
         <field name="model">sale.order</field>
         <field name="inherit_id"
@@ -86,32 +86,31 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
         </field>
-    </record>
+    </record> -->
 
     <!-- Purchase Note Template -->
 
     <record id="view_purchase_note_templates_tree" model="ir.ui.view">
         <field name="name">purchase.note.templates.tree</field>
-        <field name="model">yena.note_templates</field>
+        <field name="model">yena.purchase.note.template</field>
         <field name="arch" type="xml">
             <tree string="purchase Note Templates" create="true" edit="true">
                 <field name="name" required="1" />
-                <field name="vendor" required="1" />
+                <field name="vendor_id" required="1" />
                 <field name="notes" required="1" />
-
             </tree>
         </field>
     </record>
 
     <record id="view_purchase_note_templates_form" model="ir.ui.view">
         <field name="name">purchase.note.templates.form</field>
-        <field name="model">yena.note_templates</field>
+        <field name="model">yena.purchase.note.template</field>
         <field name="arch" type="xml">
             <form>
                 <sheet>
                     <group>
                         <field name="name" required="1" />
-                        <field name="vendor" required="1" />
+                        <field name="vendor_id" required="1" />
                         <field name="notes" required="1" />
                     </group>
                 </sheet>
@@ -121,7 +120,7 @@
 
     <record id="action_purchase_note_templates" model="ir.actions.act_window">
         <field name="name">Purchase Quotation Note Templates</field>
-        <field name="res_model">yena.note_templates</field>
+        <field name="res_model">yena.purchase.note.template</field>
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="view_purchase_note_templates_tree" />
     </record>
@@ -141,7 +140,7 @@
             <xpath expr="//field[@name='order_line']" position="after">
                 <group>
                     <group>
-                        <field name="note_templates" />
+                        <field name="purchase_note_template_id" />
                     </group>
                     <group>
                     </group>
