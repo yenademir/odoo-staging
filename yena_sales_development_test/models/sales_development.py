@@ -117,13 +117,13 @@ class SaleOrder(models.Model):
 
 
     def _compute_edespatch_dates(self):
-    for order in self:
-        pickings = self.env['stock.picking'].search([('sale_id', '=', order.id)])
-        if pickings:
-            edespatch_dates_str = ', '.join(picking.edespatch_date.strftime("%Y-%m-%d") for picking in pickings if picking.edespatch_date)
-            order.edespatch_date_list = edespatch_dates_str
-        else:
-            order.edespatch_date_list = ''
+        for order in self:
+            pickings = self.env['stock.picking'].search([('sale_id', '=', order.id)])
+            if pickings:
+                edespatch_dates_str = ', '.join(picking.edespatch_date.strftime("%Y-%m-%d") for picking in pickings if picking.edespatch_date)
+                order.edespatch_date_list = edespatch_dates_str
+            else:
+                order.edespatch_date_list = ''
                 
     @api.depends('order_line.product_uom_qty', 'order_line.qty_invoiced')
     def _compute_invoice_report(self):
