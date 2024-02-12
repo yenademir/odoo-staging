@@ -218,9 +218,9 @@
                 <field name="type_of_material" attrs="{'invisible': ['|', '|', ('is_company', '=', False), ('contact_type', '=', 'potential_customer'), ('vendor_type', '!=', 'material')], 'required': [('vendor_type', '=', 'material')]}" widget="many2many_tags"/>
             </xpath>
 
-            <xpath expr="//field[@name='lang']" position="replace"/>
+            <!--<xpath expr="//field[@name='lang']" position="replace"/>
             <xpath expr="//label[@for='lang']" position="replace"/>
-            <xpath expr="//button[@name='56']" position="replace"/>
+            <xpath expr="//button[@name='56']" position="replace"/>-->
 
             <xpath expr="//field[@name='ref']" position="before">
                 <field name="lang"/>
