@@ -76,7 +76,7 @@
         </field>
     </record>
 
-    <!-- <record id="view_note_templates_invisible_fields_yena_development" model="ir.ui.view">
+    <record id="view_note_templates_invisible_fields_yena_development" model="ir.ui.view">
         <field name="name">note.templates.invisible.fieldsform.inherit.yena.development</field>
         <field name="model">sale.order</field>
         <field name="inherit_id"
@@ -86,7 +86,7 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
         </field>
-    </record> -->
+    </record>
 
     <!-- Purchase Note Template -->
 
