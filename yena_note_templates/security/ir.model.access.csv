@@ -1,4 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_yena_note_templates, Sales Note Templates - User Rule,model_yena_note_templates,base.group_user,1,1,1,1
-access_sale_order, Sale Order - User Rule,model_sale_order,base.group_user,1,1,1,1
-access_purchase_order,Purchase Order - User Rule,purchase.model_purchase_order,base.group_user,1,1,1,1
+access_yena_sale_note_template,yena.sale.note.template,model_yena_sale_note_template,,1,1,1,1
+access_yena_purchase_note_template,yena.purchase.note.template,model_yena_purchase_note_template,,1,1,1,1
