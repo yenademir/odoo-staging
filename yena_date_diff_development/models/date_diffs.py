@@ -9,13 +9,16 @@ class SaleOrder(models.Model):
     @api.depends('commitment_date', 'picking_ids.arrival_date')
     def _compute_delivery_date_diff(self):
         for order in self:
-            
             order.delivery_date_diff = False
             if order.commitment_date:
                 commitment_datetime = fields.Datetime.from_string(order.commitment_date)
                 commitment_timestamp = datetime.timestamp(commitment_datetime)
+
+                # Kökeni bu sipariş olan ve durumu 'done' olan picking kayıtlarını filtrele
+                picking_records = self.env['stock.picking'].search([('origin', '=', order.name), ('state', '=', 'done')])
                 
-                arrival_dates = order.picking_ids.mapped('arrival_date')
+                # Filtrelenmiş picking kayıtlarından varış tarihlerini al
+                arrival_dates = picking_records.mapped('arrival_date')
                 filtered_datetimes = [fields.Datetime.from_string(arrival) for arrival in arrival_dates if arrival]
                 
                 if filtered_datetimes:
@@ -26,8 +29,6 @@ class SaleOrder(models.Model):
                     diff_days = diff_seconds / (24 * 3600)
 
                     order.delivery_date_diff = diff_days
-            else:
-                order.delivery_date_diff = False
                 
     
 
