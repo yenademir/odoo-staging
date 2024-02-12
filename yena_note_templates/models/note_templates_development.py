@@ -6,7 +6,7 @@ class SaleNoteTemplate(models.Model):
 
     name = fields.Char(string="Template Name")
     customer_id = fields.Many2one('res.partner', string="Customer")
-    notes = fields.Html(string="Notes")
+    notes = fields.Html(string="Notes", required=True)
 
 class PurchaseNoteTemplate(models.Model):
     _name = 'yena.purchase.note.template'
@@ -14,7 +14,7 @@ class PurchaseNoteTemplate(models.Model):
 
     name = fields.Char(string="Template Name")
     vendor_id = fields.Many2one('res.partner', string="Vendor")
-    notes = fields.Html(string="Notes")
+    notes = fields.Html(string="Notes", required=True)
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
