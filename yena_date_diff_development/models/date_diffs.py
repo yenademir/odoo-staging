@@ -5,7 +5,6 @@ class SaleOrder(models.Model):
     _inherit="sale.order"
     
     delivery_date_diff = fields.Float(string='YENA Teslim Performası', readonly=True, compute="_compute_delivery_date_diff")
-    transit_time = fields.Float(string='Transit Time', readonly=True, compute="_compute_transit_time")
 
     @api.depends('commitment_date', 'picking_ids.arrival_date')
     def _compute_delivery_date_diff(self):
