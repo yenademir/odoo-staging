@@ -1,33 +1,43 @@
 from odoo import fields, models,api
 
-class NoteTemplates(models.Model):
-    _name='yena.note_templates'
+class SaleNoteTemplate(models.Model):
+    _name = 'yena.sale.note.template'
+    _description = 'Sale Note Template'
 
-    name=fields.Char(string="Template Name")
-    customer=fields.Many2one('res.partner',string="Customer")
-    notes=fields.Html(string="Notes")
-    vendor=fields.Many2one('res.partner',string="Vendors")
+    name = fields.Char(string="Template Name")
+    customer_id = fields.Many2one('res.partner', string="Customer")
+    notes = fields.Html(string="Notes")
+
+class PurchaseNoteTemplate(models.Model):
+    _name = 'yena.purchase.note.template'
+    _description = 'Purchase Note Template'
+
+    name = fields.Char(string="Template Name")
+    vendor_id = fields.Many2one('res.partner', string="Vendor")
+    notes = fields.Html(string="Notes")
 
 class SaleOrder(models.Model):
-    _inherit='sale.order'
+    _inherit = 'sale.order'
 
-    note_templates=fields.Many2one("yena.note_templates",string="Sale Quotation Note Template", domain="[('customer', '=', partner_id)]")
+    sale_note_template_id = fields.Many2one("yena.sale.note.template", string="Sale Quotation Note Template",
+                                            domain="[('customer_id', '=', partner_id)]")
 
-    @api.onchange('note_templates')
-    def onchange_note_templates(self):
-        if self.note_templates:
-            self.note = self.note_templates.notes
+    @api.onchange('sale_note_template_id')
+    def onchange_sale_note_template_id(self):
+        if self.sale_note_template_id:
+            self.note = self.sale_note_template_id.notes
         else:
             self.note = ""
 
 class PurchaseOrder(models.Model):
-    _inherit='purchase.order'
+    _inherit = 'purchase.order'
 
-    note_templates=fields.Many2one("yena.note_templates",string="Purchase Note Template", domain="[('vendor', '=', partner_id)]")
+    purchase_note_template_id = fields.Many2one("yena.purchase.note.template", string="Purchase Note Template",
+                                                domain="[('vendor_id', '=', partner_id)]")
 
-    @api.onchange('note_templates')
-    def onchange_note_templates(self):
-        if self.note_templates:
-            self.notes = self.note_templates.notes
+    @api.onchange('purchase_note_template_id')
+    def onchange_purchase_note_template_id(self):
+        if self.purchase_note_template_id:
+            self.notes = self.purchase_note_template_id.notes
         else:
             self.notes = ""
