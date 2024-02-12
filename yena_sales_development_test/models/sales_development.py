@@ -116,7 +116,7 @@ class SaleOrder(models.Model):
     edespatch_done_list = fields.Char(string="EDespatch-Date", compute='_compute_edespatch_done_list')            
 
 
-    def _compute_edespatch_dates(self):
+    def _compute_edespatch_done_list(self):
         for order in self:
             pickings = self.env['stock.picking'].search([('sale_id', '=', order.id)])
             if pickings:
