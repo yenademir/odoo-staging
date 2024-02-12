@@ -38,7 +38,8 @@ class StockPickingBatch(models.Model):
     transportation_code = fields.Char(
         string='Transportation Code',
         inverse='_inverse_transportation_code'
-    )    
+    )
+    logistic_company = fields.Many2one('res.partner', inverse='_inverse_logistic_company', string='Logistic Company', domain=[('is_company', '=', True)])
     import_decleration_number = fields.Char(string='Custom Decleration No', inverse='_inverse_import_decleration_number', store=True)
     edespatch_carrier_id = fields.Many2one('res.partner', string='Carrier Partner', domain=[('industry_id.id', '=', 139)], inverse='_inverse_edespatch_carrier_id')
     transport_type = fields.Selection([
@@ -186,6 +187,11 @@ class StockPickingBatch(models.Model):
     def _inverse_edespatch_postbox_id(self):
         for batch in self:
             batch.picking_ids.write({'edespatch_postbox_id': batch.edespatch_postbox_id.id})
+
+    @api.depends('picking_ids.logistic_company')
+    def _inverse_logistic_company(self):
+        for batch in self:
+            batch.picking_ids.write({'logistic_company': batch.logistic_company})
             
     @api.depends('picking_ids.edespatch_carrier_id')
     def _inverse_edespatch_carrier_id(self):
