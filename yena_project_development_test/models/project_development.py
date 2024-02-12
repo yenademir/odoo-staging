@@ -19,19 +19,17 @@ class Project(models.Model):
         for sale in sales:
             sale_ids.append(sale.id)
 
-        context = {
-            'default_project_sales': self.id,  # Satın alma emri oluşturulurken projenin ID'sini varsayılan olarak ayarla
-            'search_default_project_sales': self.id,  # Listeyi sadece bu projeye ait satın alma siparişleriyle sınırla
-        }
-
         return {
             'type': 'ir.actions.act_window',
             'name': 'Sales',
             'view_mode': 'tree,form',
             'res_model': 'sale.order',
             'domain': [('id', 'in', sale_ids)],
-            'context': context,
+            'context':  {
+            'default_project_sales': self.id,  # Satın alma emri oluşturulurken projenin ID'sini varsayılan olarak ayarla
+            'search_default_project_sales': self.id,  # Listeyi sadece bu projeye ait satın alma siparişleriyle sınırla
             'create': True,
+        },
         }
     
     def action_show_purchases(self):
@@ -44,19 +42,15 @@ class Project(models.Model):
         for purchase in purchases:
             purchase_ids.append(purchase.id)
 
-        context = {
-            'default_project_purchase': self.id,  # Satın alma emri oluşturulurken projenin ID'sini varsayılan olarak ayarla
-            'search_default_project_purchase': self.id,  # Listeyi sadece bu projeye ait satın alma siparişleriyle sınırla
-        }
-
         return {
             'type': 'ir.actions.act_window',
             'name': 'Purchases',
             'view_mode': 'tree,form',
             'res_model': 'purchase.order',
             'domain': [('id', 'in', purchase_ids)],
-            'context': context,
-            'create': True,
+            'context': {'default_project_purchase': self.id,
+                        'search_default_project_purchase': self.id,
+                        'create':True},
         }
 
     def action_show_transfers(self):
