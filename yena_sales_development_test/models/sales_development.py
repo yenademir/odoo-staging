@@ -145,6 +145,15 @@ class SaleOrder(models.Model):
     transportation_codes = fields.Char(string="Transportation Codes", compute='_compute_transportation_codes')
     date_done_list = fields.Char(string="Effective Date", compute='_compute_date_done_list')
 
+    #def _compute_edespatch_done_list(self):
+     #   for order in self:
+      #      pickings = self.env['stock.picking'].search([('sale_id', '=', order.id)])
+       #     if pickings:
+        #        date_dones = [picking.date_done.strftime("%Y-%m-%d") for picking in pickings if picking.date_done]
+         #       date_dones_str = ', '.join(date_dones)
+          #      order.date_done_list = date_dones_str
+           # else:
+            #    order.date_done_list = ''
 
     def _compute_document_numbers(self):
         for order in self:
