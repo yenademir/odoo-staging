@@ -243,7 +243,7 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//button[@name='441']" position="after">
+            <xpath expr="//button[@name='action_view_partner_invoices']" position="after">
                 
                 <button name="action_view_stock_moves" type="object" string="Products" class="oe_highlight" icon="fa-th-large"/>                
             </xpath>
