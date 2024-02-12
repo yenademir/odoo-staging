@@ -21,37 +21,6 @@ class SaleOrder(models.Model):
     rfq_reference=fields.Char(string="RFQ Reference", store=True)
     is_current_user = fields.Boolean(compute='_compute_is_current_user')
     account_note = fields.Html(string="Account Note")
-
-
-    @api.depends('order_line.product_uom_qty', 'order_line.qty_invoiced')
-    def _compute_invoice_report(self):
-        for order in self:
-            # Varsayılan olarak "nothinginvoiced" varsayalım
-            invoice_status = "nothinginvoiced"
-            partially_invoiced = False
-            fully_invoiced = True
-
-            for line in order.order_line:
-                if line.qty_invoiced > 0:
-                    if line.qty_invoiced < line.product_uom_qty:
-                        partially_invoiced = True
-                        fully_invoiced = False
-                        break  # En az bir satır kısmen faturalandırıldıysa döngüden çık
-                    else:
-                        # Bu satır tamamen faturalandırıldı, döngü devam eder
-                        invoice_status = "fullyinvoiced"
-                else:
-                    fully_invoiced = False  # Eğer qty_invoiced 0 ise tamamen faturalandırılmamıştır
-
-            if partially_invoiced:
-                invoice_status = "partiallyinvoice"
-            elif fully_invoiced:
-                invoice_status = "fullyinvoiced"
-            else:
-                invoice_status = "nothinginvoiced"
-
-            order.invoice_report = invoice_status
-            
     customer_meeting = fields.Selection([
         ('yes', 'Evet'),
         ('no', 'Hayır')
@@ -144,16 +113,46 @@ class SaleOrder(models.Model):
     document_numbers = fields.Char(string='Document Numbers', compute='_compute_document_numbers')
     transportation_codes = fields.Char(string="Transportation Codes", compute='_compute_transportation_codes')
     date_done_list = fields.Char(string="Effective Date", compute='_compute_date_done_list')
+    edespatch_done_list = fields.Char(string="EDespatch-Date", compute='_compute_edespatch_done_list')            
 
-    #def _compute_edespatch_done_list(self):
-     #   for order in self:
-      #      pickings = self.env['stock.picking'].search([('sale_id', '=', order.id)])
-       #     if pickings:
-        #        date_dones = [picking.date_done.strftime("%Y-%m-%d") for picking in pickings if picking.date_done]
-         #       date_dones_str = ', '.join(date_dones)
-          #      order.date_done_list = date_dones_str
-           # else:
-            #    order.date_done_list = ''
+
+    def _compute_edespatch_dates(self):
+    for order in self:
+        pickings = self.env['stock.picking'].search([('sale_id', '=', order.id)])
+        if pickings:
+            edespatch_dates_str = ', '.join(picking.edespatch_date.strftime("%Y-%m-%d") for picking in pickings if picking.edespatch_date)
+            order.edespatch_date_list = edespatch_dates_str
+        else:
+            order.edespatch_date_list = ''
+                
+    @api.depends('order_line.product_uom_qty', 'order_line.qty_invoiced')
+    def _compute_invoice_report(self):
+        for order in self:
+            # Varsayılan olarak "nothinginvoiced" varsayalım
+            invoice_status = "nothinginvoiced"
+            partially_invoiced = False
+            fully_invoiced = True
+
+            for line in order.order_line:
+                if line.qty_invoiced > 0:
+                    if line.qty_invoiced < line.product_uom_qty:
+                        partially_invoiced = True
+                        fully_invoiced = False
+                        break  # En az bir satır kısmen faturalandırıldıysa döngüden çık
+                    else:
+                        # Bu satır tamamen faturalandırıldı, döngü devam eder
+                        invoice_status = "fullyinvoiced"
+                else:
+                    fully_invoiced = False  # Eğer qty_invoiced 0 ise tamamen faturalandırılmamıştır
+
+            if partially_invoiced:
+                invoice_status = "partiallyinvoice"
+            elif fully_invoiced:
+                invoice_status = "fullyinvoiced"
+            else:
+                invoice_status = "nothinginvoiced"
+
+            order.invoice_report = invoice_status
 
     def _compute_document_numbers(self):
         for order in self:
