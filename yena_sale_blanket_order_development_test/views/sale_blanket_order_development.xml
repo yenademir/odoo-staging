@@ -19,6 +19,9 @@
                     <field name="invoiced_subtotal" optional="hide"/>
                     <field name="remaining_invoice_subtotal" optional="hide"/>
                 </xpath>
+                <xpath expr="//field[@name='taxes_id']" position="attributes">
+                    <attribute name="attrs">{'required': [(0, '=', 1)], 'invisible': [('display_type', '=', True)]}</attribute>
+                </xpath>
                 <field name="sequence" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </field>
