@@ -99,10 +99,8 @@ class PurchaseOrder(models.Model):
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
-    line_status = fields.Char(string="Line Status", compute="_compute_line_status")
     delivery_date = fields.Date(string="Required Delivery Date")
     tags = fields.Many2many(related='order_id.tags', string="Tags", readonly=False)
-    status = fields.Char(string="Status")
     user_id = fields.Char(string="User", related='order_id.user_id.name', readonly=True)
     production_status = fields.Selection([
         ('tobe_material_purchase', 'To be Material Purchase'),
@@ -127,14 +125,36 @@ class PurchaseOrderLine(models.Model):
         ('metalworks', 'Metalworks'),
         ('attention', 'Attention'),
         ('attention_repair', 'Attention Repair'),
-        ('optional', 'Optional'),
-        ('hide', 'Hide'),
+        ('despatched', 'Despatched'),
+        ('partially_despatched', 'Partially Despatched'),
+        ('whoops', 'WHOOPS!'),
+
     ], string='Production Status')
 
-    @api.depends('product_qty', 'qty_received')
-    def _compute_line_status(self):
+    @api.depends('qty_received', 'product_qty')
+    def _compute_production_status(self):
         for record in self:
-            if record.product_qty > record.qty_received:
-                record.line_status = "ongoing"
-            elif record.product_qty == record.qty_received:
-                record.line_status = "finished"
+            if record.qty_received == record.product_qty:
+                record.production_status = 'despatched'
+            elif 0 < record.qty_received < record.product_qty:
+                record.production_status = 'partially_despatched'
+            elif record.qty_received > record.product_qty:
+                record.production_status = 'whoops'
+
+class StockMove(models.Model):
+    _inherit = 'stock.move'
+
+    def write(self, vals):
+        res = super(StockMove, self).write(vals)
+        for move in self.filtered(lambda m: m.state == 'done' and m.purchase_line_id):
+            purchase_line = move.purchase_line_id
+            product_qty = purchase_line.product_qty
+            qty_received = sum(purchase_line.move_ids.filtered(lambda m: m.state == 'done').mapped('quantity_done'))
+
+            if qty_received == product_qty:
+                purchase_line.production_status = 'despatched'
+            elif 0 < qty_received < product_qty:
+                purchase_line.production_status = 'partially_despatched'
+            elif qty_received > product_qty:
+                purchase_line.production_status = 'whoops'
+        return res
