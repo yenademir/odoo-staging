@@ -155,7 +155,7 @@
                 <field name="price_unit" optional="hide" readonly="1"/>
                 <field name="price_subtotal" optional="hide" readonly="1"/>
                 <field name="currency_id" invisible="1" readonly="1"/>
-                <field name="tags" widget="many2many_tags" optional="hide"/>
+                <field name="tags" widget="many2many_tags" optional="hide" string="Order Tags"/>
                 <field name="production_status"/>
             </tree>
         </field>
