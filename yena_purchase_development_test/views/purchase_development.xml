@@ -177,7 +177,7 @@
         <field name="inherit_id" ref="purchase.purchase_order_form"/>
         <field name="arch" type="xml">      
                 <xpath expr="//page/field[@name='order_line']/tree//field[@name='taxes_id']" position="attributes">
-                <attribute name="optional">hide</attribute>
+                <attribute name="optional">show</attribute>
             </xpath>
         </field>
     </record>
