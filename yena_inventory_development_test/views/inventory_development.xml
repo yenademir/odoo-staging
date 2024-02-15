@@ -162,7 +162,7 @@
             </xpath>
             
             <xpath expr="//group[@name='description']" position="after">
-                <group string="Customer Description">
+                <group string="Customer Product Description">
                     <field name="customer_description" nolabel="1"/>
                 </group>
             </xpath>
