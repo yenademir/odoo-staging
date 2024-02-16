@@ -21,100 +21,11 @@ class SaleOrder(models.Model):
     rfq_reference=fields.Char(string="RFQ Reference", store=True)
     is_current_user = fields.Boolean(compute='_compute_is_current_user')
     account_note = fields.Html(string="Account Note")
-    customer_meeting = fields.Selection([
-        ('yes', 'Evet'),
-        ('no', 'Hayır')
-    ], string='Müşteri İle Yapılan Görüşmeler')
-    customer_meeting_note = fields.Char(string='Müşteri İle Yapılan Görüşmeler Notu')
-
-    initial_info_request = fields.Selection([
-        ('yes', 'Evet'),
-        ('no', 'Hayır')
-    ], string='Müşteriden Gelen Talepte İlk Bilgiler')
-    initial_info_request_note = fields.Char(string='Müşteriden Gelen Talepte İlk Bilgiler Notu')
-
-    metrage_study = fields.Selection([
-        ('yes', 'Evet'),
-        ('no', 'Hayır')
-    ], string='Metraj Çalışması')
-    metrage_study_note = fields.Char(string='Metraj Çalışması Notu')
-
-    technical_inspection = fields.Selection([
-        ('yes', 'Evet'),
-        ('no', 'Hayır')
-    ], string='Teknik İncelemeler')
-    technical_inspection_note = fields.Char(string='Teknik İncelemeler Notu')
-
-    drawing_sufficiency = fields.Selection([
-        ('yes', 'Evet'),
-        ('no', 'Hayır')
-    ], string='Çizimlerin Yeterliliği')
-    drawing_sufficiency_note = fields.Char(string='Çizimlerin Yeterliliği Notu')
-
-    drawing_details = fields.Selection([
-        ('yes', 'Evet'),
-        ('no', 'Hayır')
-    ], string='Çizim Detayları')
-    drawing_details_note = fields.Char(string='Çizim Detayları Notu')
-
-    raw_material_availability = fields.Selection([
-        ('yes', 'Evet'),
-        ('no', 'Hayır')
-    ], string='Hammadde Tedarik Edilebilirliği')
-    raw_material_availability_note = fields.Char(string='Hammadde Tedarik Edilebilirliği Notu')
-
-    surface_treatment_info = fields.Selection([
-        ('yes', 'Evet'),
-        ('no', 'Hayır')
-    ], string='Yüzey İşlemi Bilgileri')
-    surface_treatment_info_note = fields.Char(string='Yüzey İşlemi Bilgileri Notu')
-
-    non_steel_elements = fields.Selection([
-        ('yes', 'Evet'),
-        ('no', 'Hayır')
-    ], string='Bağlantı Elemanları ve Çelik Dışı Parçalar')
-    non_steel_elements_note = fields.Char(string='Bağlantı Elemanları ve Çelik Dışı Parçalar Notu')
-
-    assembly_scope = fields.Selection([
-        ('yes', 'Evet'),
-        ('no', 'Hayır')
-    ], string='Montaj Kapsamı')
-    assembly_scope_note = fields.Char(string='Montaj Kapsamı Notu')
-
-    ndt_request = fields.Selection([
-        ('yes', 'Evet'),
-        ('no', 'Hayır')
-    ], string='NDT Talebi')
-    ndt_request_note = fields.Char(string='NDT Talebi Notu')
-
-    certifications_documents = fields.Selection([
-        ('yes', 'Evet'),
-        ('no', 'Hayır')
-    ], string='Sertifikasyon ve Belgeler')
-    certifications_documents_note = fields.Char(string='Sertifikasyon ve Belgeler Notu')
-
-    mold_fixture_creation = fields.Selection([
-        ('yes', 'Evet'),
-        ('no', 'Hayır')
-    ], string='Kalıp veya Fikstür Yapımı')
-    mold_fixture_creation_note = fields.Char(string='Kalıp veya Fikstür Yapımı Notu')
-
-    design_activities = fields.Selection([
-        ('yes', 'Evet'),
-        ('no', 'Hayır')
-    ], string='Tasarım Faaliyetleri')
-    design_activities_note = fields.Char(string='Tasarım Faaliyetleri Notu')
-
-    special_packaging_request = fields.Selection([
-        ('yes', 'Evet'),
-        ('no', 'Hayır')
-    ], string='Özel Paketleme Talebi')
-    special_packaging_request_note = fields.Char(string='Özel Paketleme Talebi Notu')
     document_numbers = fields.Char(string='Document Numbers', compute='_compute_document_numbers')
     transportation_codes = fields.Char(string="Transportation Codes", compute='_compute_transportation_codes')
     date_done_list = fields.Char(string="Effective Date", compute='_compute_date_done_list')
-    edespatch_date_list = fields.Char(string="EDespatch-Date", compute='_compute_edespatch_date_list')            
-
+    edespatch_date_list = fields.Char(string="EDespatch-Date", compute='_compute_edespatch_date_list')   
+    tax_selection = fields.Many2one("account.tax", string="Tax Selection",help="Select taxes to confirm and apply to all order lines." ,store=True)
 
     def _compute_edespatch_date_list(self):
         for order in self:
@@ -319,8 +230,25 @@ class SaleOrder(models.Model):
     def print_proposal_form(self):
         # id'si 2298 olan raporu indir
         return self.env.ref('__export__.ir_act_report_xml_2298_852ac486').report_action(self)
-
-    class SaleOrderLine(models.Model):
+        
+    def tax_button(self):
+        # Vergi referanslarını al
+        tax_to_clear_ids = [
+            self.env.ref('__export__.account_tax_125_7615b3b3').id,
+            self.env.ref('__export__.account_tax_208_e1b8c54a').id
+        ]
+        for order in self:
+            # Eğer seçilen vergi, boşaltılacak vergi ID'lerinden biriyse
+            if order.tax_selection.id in tax_to_clear_ids:
+                # Tüm satış siparişi satırlarındaki vergileri temizle
+                for line in order.order_line:
+                    line.tax_id = [(5, 0, 0)]
+            else:
+                # Aksi takdirde, seçilen vergiyi tüm satırlara uygula
+                for line in order.order_line:
+                    line.tax_id = [(6, 0, [order.tax_selection.id])]
+                    
+class SaleOrderLine(models.Model):
         _inherit = 'sale.order.line'
 
         product_delivery_date = fields.Date(string="Product Delivery Date")
