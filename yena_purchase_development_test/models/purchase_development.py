@@ -13,7 +13,7 @@ class PurchaseOrder(models.Model):
     project_purchase = fields.Many2one('project.project', string="Project Number", store=True)
     contact_id = fields.Many2one('res.partner', string='Contact Person', store=True)
     company_id=fields.Many2one("res.company", default=None)
-
+    tax_selection_purchase = fields.Many2one('account.tax',string="Tax Selection",help="Select taxes to confirm and apply to all order lines." ,store=True)
 
     @api.onchange('company_id')
     def _onchange_company_id(self):
@@ -95,7 +95,21 @@ class PurchaseOrder(models.Model):
     def _compute_is_current_user(self):
         for record in self:
             record.is_current_user = record.user_id == self.env.user
-
+            
+    def tax_confirm_button(self):
+    # Vergi referanslarını al
+    tax_to_clear_ids = [
+        self.env.ref('__export__.account_tax_201_236c9448').id,
+        self.env.ref('__export__.account_tax_206_2a6dd61f').id
+    ]
+    for order in self:
+        if order.tax_selection_purchase.id in tax_to_clear_ids:
+            for line in order.order_line:
+                line.tax_id = [(5, 0, 0)]
+        else:
+            for line in order.order_line:
+                line.tax_id = [(6, 0, [order.tax_selection_purchase.id])]
+                
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
