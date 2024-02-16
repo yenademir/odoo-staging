@@ -262,11 +262,6 @@ class PackageTypes(models.Model):
     net_weight = fields.Float(string="Net Weight")
     stackable = fields.Boolean(string="Stackable")
 
-class PurchaseOrder(models.Model):
-    _inherit = 'purchase.order'
-
-    customer_reference = fields.Char(string="deneme")
-
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
