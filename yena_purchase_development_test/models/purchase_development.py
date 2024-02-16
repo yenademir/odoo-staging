@@ -97,18 +97,17 @@ class PurchaseOrder(models.Model):
             record.is_current_user = record.user_id == self.env.user
             
     def tax_confirm_button(self):
-    # Vergi referanslarını al
-    tax_to_clear_ids = [
-        self.env.ref('__export__.account_tax_201_236c9448').id,
-        self.env.ref('__export__.account_tax_206_2a6dd61f').id
-    ]
-    for order in self:
-        if order.tax_selection_purchase.id in tax_to_clear_ids:
-            for line in order.order_line:
-                line.tax_id = [(5, 0, 0)]
-        else:
-            for line in order.order_line:
-                line.tax_id = [(6, 0, [order.tax_selection_purchase.id])]
+        tax_to_clear_ids = [
+            self.env.ref('__export__.account_tax_201_236c9448').id,
+            self.env.ref('__export__.account_tax_206_2a6dd61f').id
+        ]
+        for order in self:
+            if order.tax_selection_purchase.id in tax_to_clear_ids:
+                for line in order.order_line:
+                    line.tax_id = [(5, 0, 0)]
+            else:
+                for line in order.order_line:
+                    line.tax_id = [(6, 0, [order.tax_selection_purchase.id])]
                 
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
