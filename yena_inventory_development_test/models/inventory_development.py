@@ -262,6 +262,11 @@ class PackageTypes(models.Model):
     net_weight = fields.Float(string="Net Weight")
     stackable = fields.Boolean(string="Stackable")
 
+class PurchaseOrder(models.Model):
+    _inherit = 'purchase.order'
+
+    customer_reference = fields.Char(string="deneme")
+
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
@@ -271,7 +276,7 @@ class PurchaseOrderLine(models.Model):
     product_type = fields.Selection(related='product_id.detailed_type', string='Product Type', store=True)
     totalweight = fields.Float(string="Total Weight", readonly=True, compute="_compute_total_weight")
     pricekg = fields.Float(string="KG Price", readonly=True, compute="_compute_pricekg")
-
+    
     @api.depends('unit_weight', 'product_qty')
     def _compute_total_weight(self):
         for record in self:
