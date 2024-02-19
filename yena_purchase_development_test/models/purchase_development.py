@@ -12,9 +12,7 @@ class PurchaseOrder(models.Model):
     is_current_user = fields.Boolean(compute='_compute_is_current_user')
     project_purchase = fields.Many2one('project.project', string="Project Number", store=True)
     contact_id = fields.Many2one('res.partner', string='Contact Person', store=True)
-    company_id=fields.Many2one("res.company", default=None)
     tax_selection_purchase = fields.Many2one('account.tax',string="Tax Selection",help="Select taxes to confirm and apply to all order lines." ,store=True)
-
     @api.onchange('company_id')
     def _onchange_company_id(self):
         if self.company_id.id == 1:
@@ -24,10 +22,9 @@ class PurchaseOrder(models.Model):
             
     @api.onchange('project_purchase')
     def _onchange_project_purchase(self):
-        if self.project_purchase and hasattr(self.project_purchase, 'analytic_account_id'):
-            analytic_account = self.project_purchase.analytic_account_id
-            for line in self.order_line:
-                line.account_analytic_id = analytic_account.id
+        analytic_account = self.project_purchase.analytic_account_id
+        for line in self.order_line:
+            line.account_analytic_id = analytic_account.id
 
     def button_confirm(self):
         res = super(PurchaseOrder, self).button_confirm()
@@ -41,6 +38,21 @@ class PurchaseOrder(models.Model):
                 })
         return res
 
+
+    def tax_confirm_button(self):
+        for order in self:
+            for line in order.order_line:
+                if order.tax_selection_purchase and order.tax_selection_purchase.id == self.env.ref('__export__.account_tax_6_47f7ef82').id:
+                    # Vergi alanını boşalt
+                    line.taxes_id = [(5, 0, 0)]
+                else:
+                    # Seçilen vergiyi tüm satırlara uygula
+                    if order.tax_selection_purchase:
+                        line.taxes_id = [(6, 0, [order.tax_selection_purchase.id])]
+                    else:
+                        # Eğer vergi seçimi yapılmamışsa, vergi alanını boşalt
+                        line.taxes_id = [(5, 0, 0)]
+                    
     def mark_as_sent(self):
 
         for record in self:
@@ -95,25 +107,14 @@ class PurchaseOrder(models.Model):
     def _compute_is_current_user(self):
         for record in self:
             record.is_current_user = record.user_id == self.env.user
-            
-    def tax_confirm_button(self):
-        tax_to_clear_ids = [
-            self.env.ref('__export__.account_tax_201_236c9448').id,
-            self.env.ref('__export__.account_tax_206_2a6dd61f').id
-        ]
-        for order in self:
-            if order.tax_selection_purchase.id in tax_to_clear_ids:
-                for line in order.order_line:
-                    line.tax_id = [(5, 0, 0)]
-            else:
-                for line in order.order_line:
-                    line.tax_id = [(6, 0, [order.tax_selection_purchase.id])]
-                
+
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
+    line_status = fields.Char(string="Line Status", compute="_compute_line_status")
     delivery_date = fields.Date(string="Required Delivery Date")
-    tags = fields.Many2many(related='order_id.tags', string="Tags", readonly=False)
+    tags = fields.Many2many(related='order_id.tags', string="Tags", readonly=True)
+    status = fields.Char(string="Status")
     user_id = fields.Char(string="User", related='order_id.user_id.name', readonly=True)
     production_status = fields.Selection([
         ('tobe_material_purchase', 'To be Material Purchase'),
@@ -141,7 +142,6 @@ class PurchaseOrderLine(models.Model):
         ('despatched', 'Despatched'),
         ('partially_despatched', 'Partially Despatched'),
         ('whoops', 'WHOOPS!'),
-
     ], string='Production Status')
 
     @api.depends('qty_received', 'product_qty')
