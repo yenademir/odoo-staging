@@ -299,8 +299,8 @@
                 <separator/>
                 <filter string="Last Week to Future Arrival Dates"
                         name="filter_last_week_arrival"
-                        domain="[('arrival_date', '>=', (context_today()-relativedelta(days=7)).strftime('%Y-%m-%d')),
-                                ('arrival_date', '<=', context_today().strftime('%Y-%m-%d'))]"/>
+                        domain="[('arrival_date', '&gt;=', (context_today()-relativedelta(days=7)).strftime('%Y-%m-%d')),
+                                ('arrival_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
             </xpath>
         </field>
     </record>
