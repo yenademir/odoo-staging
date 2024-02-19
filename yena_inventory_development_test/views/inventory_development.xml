@@ -282,6 +282,28 @@
             </xpath>
         </field>
     </record>
+    <record id="view_move_search_inherit_combined" model="ir.ui.view">
+        <field name="name">stock.move.search.inherit.combined</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_move_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <!-- Önceki tanımları koruyun -->
+                <field name="transportation_code"/>
+                <field name="situation"/>
+                <group expand="0" string="Group By">
+                    <filter string="Transportation Code" name="group_by_transportation_code" context="{'group_by': 'transportation_code'}"/>
+                    <filter string="Operation Type" name="group_by_picking_type_id" context="{'group_by': 'picking_type_id'}"/>
+                </group>
+                <!-- Yeni filtreleri ve ayırıcıyı ekleyin -->
+                <separator/>
+                <filter string="Last Week to Future Arrival Dates"
+                        name="filter_last_week_arrival"
+                        domain="[('arrival_date', '>=', (context_today()-relativedelta(days=7)).strftime('%Y-%m-%d')),
+                                ('arrival_date', '<=', context_today().strftime('%Y-%m-%d'))]"/>
+            </xpath>
+        </field>
+    </record>
     <record id="transportation_follow_up" model="ir.actions.act_window">
         <field name="name">Transportation Follow Up</field>
         <field name="res_model">stock.move</field>
