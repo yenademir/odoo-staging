@@ -12,7 +12,7 @@ class SaleOrder(models.Model):
         ("fullyinvoiced", "Fully Invoiced"),
         ("partiallyinvoice", "Partially Invoiced"),
         ("nothinginvoiced", "Nothing Invoiced")
-    ], string="Invoice Report", compute='_compute_invoice_report', store=True),
+    ], string="Invoice Report", compute='_compute_invoice_report', store=True)    
     lost=fields.Many2one("crm.lost.reason",string="Lost Reason")
     lost_reason=fields.Many2one("crm.lost.reason",string="Lost Reason")
     project_sales=fields.Many2one("project.project",string="Project Number", store=True)
@@ -24,8 +24,13 @@ class SaleOrder(models.Model):
     document_numbers = fields.Char(string='Document Numbers', compute='_compute_document_numbers')
     transportation_codes = fields.Char(string="Transportation Codes", compute='_compute_transportation_codes')
     date_done_list = fields.Char(string="Effective Date", compute='_compute_date_done_list')
-    edespatch_date_list = fields.Char(string="EDespatch-Date", compute='_compute_edespatch_date_list')   
     tax_selection = fields.Many2one("account.tax", string="Tax Selection",help="Select taxes to confirm and apply to all order lines." ,store=True)
+    edespatch_date_list = fields.Char(string="EDespatch-Date", compute='_compute_edespatch_date_list')
+    invoice_report = fields.Selection([
+        ("fullyinvoiced", "Fully Invoiced"),
+        ("partiallyinvoice", "Partially Invoiced"),
+        ("nothinginvoiced", "Nothing Invoiced")
+    ], string="Invoice Report", compute='_compute_invoice_report', store=True)   
 
     def _compute_edespatch_date_list(self):
         for order in self:
@@ -35,7 +40,7 @@ class SaleOrder(models.Model):
                 order.edespatch_date_list = edespatch_dates_str
             else:
                 order.edespatch_date_list = ''
-                
+    
     @api.depends('order_line.product_uom_qty', 'order_line.qty_invoiced')
     def _compute_invoice_report(self):
         for order in self:
@@ -65,6 +70,36 @@ class SaleOrder(models.Model):
 
             order.invoice_report = invoice_status
 
+
+    @api.depends('order_line.product_uom_qty', 'order_line.qty_invoiced')
+    def _compute_invoice_report(self):
+        for order in self:
+            # Varsayılan olarak "nothinginvoiced" varsayalım
+            invoice_status = "nothinginvoiced"
+            partially_invoiced = False
+            fully_invoiced = True
+
+            for line in order.order_line:
+                if line.qty_invoiced > 0:
+                    if line.qty_invoiced < line.product_uom_qty:
+                        partially_invoiced = True
+                        fully_invoiced = False
+                        break  # En az bir satır kısmen faturalandırıldıysa döngüden çık
+                    else:
+                        # Bu satır tamamen faturalandırıldı, döngü devam eder
+                        invoice_status = "fullyinvoiced"
+                else:
+                    fully_invoiced = False  # Eğer qty_invoiced 0 ise tamamen faturalandırılmamıştır
+
+            if partially_invoiced:
+                invoice_status = "partiallyinvoice"
+            elif fully_invoiced:
+                invoice_status = "fullyinvoiced"
+            else:
+                invoice_status = "nothinginvoiced"
+
+            order.invoice_report = invoice_status
+            
     def _compute_document_numbers(self):
         for order in self:
             pickings = self.env['stock.picking'].search([('sale_id', '=', order.id)])
@@ -85,6 +120,15 @@ class SaleOrder(models.Model):
             else:
                 order.transportation_codes = ''
 
+    def tax_button(self):
+        tax_to_clear_ids = self.env.ref('__export__.account_tax_125_7615b3b3').id
+        for order in self:
+            if order.tax_selection.id in tax_to_clear_ids:
+                for line in order.order_line:
+                    line.tax_id = [(5, 0, 0)]
+            else:
+                for line in order.order_line:
+                    line.tax_id = [(6, 0, [order.tax_selection.id])]
 
     def _compute_date_done_list(self):
         for order in self:
@@ -212,10 +256,10 @@ class SaleOrder(models.Model):
 
         return res
 
-    @api.onchange('delivery_date')
-    def _onchange_delivery_date(self):
+    @api.onchange('commitment_date')
+    def _onchange_commitment_date(self):
         for line in self.order_line:
-            line.product_delivery_date = self.delivery_date
+            line.product_delivery_date = self.commitment_date
 
     @api.depends('user_id')
     def _compute_is_current_user(self):
@@ -230,31 +274,13 @@ class SaleOrder(models.Model):
     def print_proposal_form(self):
         # id'si 2298 olan raporu indir
         return self.env.ref('__export__.ir_act_report_xml_2298_852ac486').report_action(self)
-        
-    def tax_button(self):
-        # Vergi referanslarını al
-        tax_to_clear_ids = [
-            self.env.ref('__export__.account_tax_125_7615b3b3').id,
-            self.env.ref('__export__.account_tax_208_e1b8c54a').id
-        ]
-        for order in self:
-            # Eğer seçilen vergi, boşaltılacak vergi ID'lerinden biriyse
-            if order.tax_selection.id in tax_to_clear_ids:
-                # Tüm satış siparişi satırlarındaki vergileri temizle
-                for line in order.order_line:
-                    line.tax_id = [(5, 0, 0)]
-            else:
-                # Aksi takdirde, seçilen vergiyi tüm satırlara uygula
-                for line in order.order_line:
-                    line.tax_id = [(6, 0, [order.tax_selection.id])]
-                    
-class SaleOrderLine(models.Model):
+
+    class SaleOrderLine(models.Model):
         _inherit = 'sale.order.line'
 
         product_delivery_date = fields.Date(string="Product Delivery Date")
 
 
-#Intercompany & autofill
 
 class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
