@@ -4,7 +4,7 @@ from datetime import datetime
 class SaleOrder(models.Model):
     _inherit="sale.order"
     
-    delivery_date_diff = fields.Float(string='YENA Teslim Performası', readonly=True, compute="_compute_delivery_date_diff")
+    delivery_date_diff = fields.Float(string='YENA Delivery Performance', readonly=True, store="True", compute="_compute_delivery_date_diff")
 
     @api.depends('commitment_date', 'picking_ids.arrival_date')
     def _compute_delivery_date_diff(self):
@@ -35,7 +35,7 @@ class SaleOrder(models.Model):
 class PurchaseOrder(models.Model):
     _inherit="purchase.order"
     
-    delivery_date_diff = fields.Float(string='Delivery Performance', readonly=True, compute="_compute_delivery_date_diff")
+    delivery_date_diff = fields.Float(string='Delivery Performance', readonly=True, store="True", compute="_compute_delivery_date_diff")
     
     @api.depends('delivery_date', 'picking_ids.edespatch_date')
     def _compute_delivery_date_diff(self):
@@ -61,7 +61,7 @@ class PurchaseOrder(models.Model):
 
 class BatchTransfer(models.Model):
     _inherit = 'stock.picking.batch'
-    transit_time = fields.Float(string='Transit Time', readonly=True, compute="_compute_transit_time")
+    transit_time = fields.Float(string='Transit Time', readonly=True, store="True", compute="_compute_transit_time")
 
     @api.depends('picking_ids.arrival_date', 'picking_ids.edespatch_date')
     def _compute_transit_time(self):
