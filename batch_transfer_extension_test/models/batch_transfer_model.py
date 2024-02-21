@@ -1,11 +1,11 @@
 from odoo import api, fields, models
-from datetime import datetime
+
 
 class StockPickingBatch(models.Model):
     _inherit = 'stock.picking.batch'
     _description = "Batch Transfer"
     _order = "name desc"
-    edespatch_date = fields.Datetime(string="Despatch Date", store=True)
+    edespatch_date = fields.Datetime(string="Real Departure Date", store=True)
     situation = fields.Selection(
         [("to_be_planned", "To Be Planned"),
          ("on_the_way", "On The Way"),
@@ -38,8 +38,7 @@ class StockPickingBatch(models.Model):
     transportation_code = fields.Char(
         string='Transportation Code',
         inverse='_inverse_transportation_code'
-    )
-    logistic_company = fields.Many2one('res.partner', inverse='_inverse_logistic_company', string='Logistic Company', domain=[('is_company', '=', True)])
+    )    
     import_decleration_number = fields.Char(string='Custom Decleration No', inverse='_inverse_import_decleration_number', store=True)
     edespatch_carrier_id = fields.Many2one('res.partner', string='Carrier Partner', domain=[('industry_id.id', '=', 139)], inverse='_inverse_edespatch_carrier_id')
     transport_type = fields.Selection([
@@ -124,35 +123,27 @@ class StockPickingBatch(models.Model):
         for picking in self.picking_ids:
             if hasattr(picking, 'action_despatch_send'):
                 picking.action_despatch_send()
-                
+
     @api.depends('picking_ids.edespatch_state')
     def _compute_edespatch_state(self):
         for batch in self:
             states = set(picking.edespatch_state for picking in batch.picking_ids)
-            
+
             if len(states) == 1:
                 batch.edespatch_state = states.pop()
             else:
                 batch.edespatch_state = 'different'
-
-    def action_done(self):
-        res = super(StockPickingBatch, self).action_done()
-        self.arrival_date = datetime.now().date()
-        return res
-        
-    @api.model
-    def create(self, vals):
-        # İlk olarak batch oluşturulur
-        batch = super(StockPickingBatch, self).create(vals)
-        # Varsayılan değerler ile picking güncellenir
-        default_values = {
-            'edespatch_number_sequence': batch.edespatch_number_sequence.id,
-            'edespatch_profile': batch.edespatch_profile,
-            'edespatch_sender_id': batch.edespatch_sender_id.id,
-            'edespatch_postbox_id': batch.edespatch_postbox_id.id
-        }
-        batch.picking_ids.write(default_values)
-        return batch
+                
+    @api.onchange('edespatch_delivery_type')
+    def _onchange_edespatch_delivery_type(self):
+        if self.edespatch_delivery_type == 'edespatch':
+            sender = self.env['edespatch.sender'].search([('name', '=', 'urn:mail:irsaliyegb@yenaengineering.nl')], limit=1)
+            postbox = self.env['edespatch.postbox'].search([('name', '=', 'urn:mail:irsaliyepk@gib.gov.tr')], limit=1)
+            number_sequence = self.env['ir.sequence'].search([('name', '=', 'E-Despatch DespatchAdvice Numbering Sequence')], limit=1)
+            
+            self.edespatch_sender_id = sender.id if sender else False
+            self.edespatch_postbox_id = postbox.id if postbox else False
+            self.edespatch_number_sequence = number_sequence.id if number_sequence else False
 
     @api.model
     def create(self, vals):
@@ -167,7 +158,7 @@ class StockPickingBatch(models.Model):
         }
         batch.picking_ids.write(default_values)
         return batch
-
+    
     @api.depends('picking_ids.edespatch_number_sequence')
     def _inverse_edespatch_number_sequence(self):
         for batch in self:
@@ -187,11 +178,6 @@ class StockPickingBatch(models.Model):
     def _inverse_edespatch_postbox_id(self):
         for batch in self:
             batch.picking_ids.write({'edespatch_postbox_id': batch.edespatch_postbox_id.id})
-
-    @api.depends('picking_ids.logistic_company')
-    def _inverse_logistic_company(self):
-        for batch in self:
-            batch.picking_ids.write({'logistic_company': batch.logistic_company})
             
     @api.depends('picking_ids.edespatch_carrier_id')
     def _inverse_edespatch_carrier_id(self):
