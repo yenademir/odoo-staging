@@ -109,8 +109,6 @@ class ResPartner(models.Model):
     def action_view_stock_moves(self):
         self.ensure_one()
        
-
-        # Define the domain to filter stock moves by the products related to the current partner as customer
         domain = [('customer', '=', self.id)]
         return {
             'type': 'ir.actions.act_window',
