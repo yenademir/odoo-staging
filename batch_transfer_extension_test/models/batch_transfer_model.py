@@ -190,9 +190,7 @@ class StockPickingBatch(models.Model):
         for batch in self:
             batch.picking_ids.write({'transportation_code': batch.transportation_code})
 
-    def _inverse_logistic_company(self):
-        for batch in self:
-            batch.picking_ids.write({'logistic_company': batch.logistic_company})
+
 
     def _inverse_situation(self):
         for batch in self:
