@@ -42,7 +42,6 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='date_order']" position="after">
                 <field name="quotation_time_diff" optional="show"/>
-                <field name="date_order" optional="hide"/>
             </xpath>
         </field>
     </record>
