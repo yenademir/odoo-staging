@@ -12,6 +12,7 @@
         'security/ir.model.access.csv',
         'reports/packaging_preparation_report.xml',
         'reports/packaging_preparation_report_delivery.xml',
+        'reports/packaging_preparation_report_customs.xml',
     ],
     'installable': True,
     'auto_install': False,
