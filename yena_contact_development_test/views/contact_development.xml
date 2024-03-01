@@ -61,22 +61,6 @@
                             <field name="storing" widget="radio" options="{'horizontal': true}" />
                             <field name="storing_note" nolabel="1" colspan="2" placeholder="Örn.: Stok alanı var mı, Kaç metrekare"/>
                         </group>
-                        <group col="4">
-                            <field name="shipment_between_countries" widget="radio" options="{'horizontal': true}" />
-                            <field name="shipment_between_countries_note" nolabel="1" colspan="2" placeholder="Örn.: Hangi ülkelere çalışıyor, Hangi firmalar ile çalışıyor"/>
-                        </group>
-                        <group col="4">
-                            <field name="export_operation" widget="radio" options="{'horizontal': true}" />
-                            <field name="export_operation_note" nolabel="1" colspan="2" placeholder="Örn.: Hangi ülkelere çalışıyor, Hangi firmalar ile çalışıyor"/>
-                        </group>
-                        <group col="4">
-                            <field name="import_operation" widget="radio" options="{'horizontal': true}" />
-                            <field name="import_operation_note" nolabel="1" colspan="2" placeholder="Örn.: Hangi ülkelere çalışıyor, Hangi firmalar ile çalışıyor"/>
-                        </group>
-                        <group col="4">
-                            <field name="customs_clearance" widget="radio" options="{'horizontal': true}" />
-                            <field name="customs_clearance_note" nolabel="1" colspan="2" placeholder="Örn.: Hangi ülkelere çalışıyor, Hangi firmalar ile çalışıyor"/>
-                        </group>
                         <group>
                             <group>
                                 <label for="door_width"/>
@@ -146,22 +130,6 @@
                             <field name="storing" widget="radio" options="{'horizontal': true}" />
                             <field name="storing_note" nolabel="1" colspan="2" placeholder="Örn.: Stok alanı var mı, Kaç metrekare"/>
                         </group>
-                        <group col="4">
-                            <field name="shipment_between_countries" widget="radio" options="{'horizontal': true}" />
-                            <field name="shipment_between_countries_note" nolabel="1" colspan="2" placeholder="Örn.: Hangi ülkelere çalışıyor, Hangi firmalar ile çalışıyor"/>
-                        </group>
-                        <group col="4">
-                            <field name="export_operation" widget="radio" options="{'horizontal': true}" />
-                            <field name="export_operation_note" nolabel="1" colspan="2" placeholder="Örn.: Hangi ülkelere çalışıyor, Hangi firmalar ile çalışıyor"/>
-                        </group>
-                        <group col="4">
-                            <field name="import_operation" widget="radio" options="{'horizontal': true}" />
-                            <field name="import_operation_note" nolabel="1" colspan="2" placeholder="Örn.: Hangi ülkelere çalışıyor, Hangi firmalar ile çalışıyor"/>
-                        </group>
-                        <group col="4">
-                            <field name="customs_clearance" widget="radio" options="{'horizontal': true}" />
-                            <field name="customs_clearance_note" nolabel="1" colspan="2" placeholder="Örn.: Hangi ülkelere çalışıyor, Hangi firmalar ile çalışıyor"/>
-                        </group>
                         <group>
                             <field name="blue_collar_number" />
                             <field name="white_collar_number" />
@@ -213,10 +181,19 @@
             <xpath expr="//field[@name='industry_id']" position="replace"/>
 
             <xpath expr="//field[@name='contact_status']" position="after">
-                <field name="industry_id" attrs="{'invisible': ['|', '|', ('is_company', '=', False), ('contact_type', '=', 'potential_vendor'), ('contact_type', '=', False)], 'required': [('contact_type', '=', 'potential_customer')]}" options="{'no_create': True}"/>
-                <field name="vendor_type" attrs="{'invisible': ['|', '|', ('is_company', '=', False), ('contact_type', '=', 'potential_customer'), ('contact_type', '=', False) ], 'required': [('contact_type', '=', 'potential_vendor')]}" />
+                <field name="is_customer" invisible="1"/>
+                <field name="is_vendor" invisible="1"/>
+                <field name="industry_id" attrs="{'invisible': ['|', '|', ('is_company', '=', False), ('contact_type', '=', 'potential_vendor'), ('contact_type', '=', False),('is_customer', '=', False)], 'required': [('contact_type', '=', 'potential_customer'),]}" options="{'no_create': True}"/>
+                <field name="vendor_type" attrs="{'invisible': ['|', '|', ('is_company', '=', False), ('contact_type', '=', 'potential_customer'), ('contact_type', '=', False),('is_vendor', '=', False) ], 'required': [('contact_type', '=', 'potential_vendor')]}" />
                 <field name="type_of_material" attrs="{'invisible': ['|', '|', ('is_company', '=', False), ('contact_type', '=', 'potential_customer'), ('vendor_type', '!=', 'material')], 'required': [('vendor_type', '=', 'material')]}" widget="many2many_tags"/>
             </xpath>
+
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="nationality_id" attrs="{'invisible': [('type', '!=', 'driver')], }"/>
+            </xpath>
+            <!--<xpath expr="//field[@name='nationality_id']" position="attrs">
+                <attribute name="attrs">{'invisible': [('type', '!=', 'driver')]}</attribute>
+            </xpath>-->
 
             <!--<xpath expr="//field[@name='lang']" position="replace"/>
             <xpath expr="//label[@for='lang']" position="replace"/>
