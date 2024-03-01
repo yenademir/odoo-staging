@@ -43,7 +43,9 @@
             <xpath expr="//field[@name='date_order']" position="after">
                 <field name="delivery_date_diff"/>
                 <field name="quotation_time_diff" optional="show"/>
-                <field name="date_order" optional="hide"/>
+            </xpath>
+            <xpath expr="//field[@name='date_order']" position="attributes">
+                <attribute name="optional">hide</attribute>
             </xpath>
         </field>
     </record>
