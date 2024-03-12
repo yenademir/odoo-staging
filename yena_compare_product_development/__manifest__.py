@@ -6,7 +6,7 @@
     'website': "https://yenaengineering.nl",
     'category': 'Project',
     'license': 'LGPL-3',
-    'depends': ['project','sale'],
+    'depends': ['project','sale','purchase'],
     'data': [
         'views/compare_product.xml',
         'security/ir.model.access.csv',
