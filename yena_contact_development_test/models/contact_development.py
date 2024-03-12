@@ -77,9 +77,6 @@ class ResPartner(models.Model):
         ('driver','Driver'),
                          ])
     
-    driver_tc_no=fields.Char(string="TC No")
-    
-    
     vendor_type = fields.Selection(
         [
             ('material', 'Material Supplier'),
