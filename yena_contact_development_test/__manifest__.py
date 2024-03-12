@@ -4,7 +4,7 @@
     'summary': "All Development about res.partner",
     'author': "Alperen Alihan ER",
     'website': "https://yenaengineering.nl",
-    'category': 'Contact,
+    'category': 'Contact',
     'license': 'LGPL-3',
     'depends': ['base', 'account', 'contacts', 'l10n_tr_stock_edespatch'],
     'data': [
