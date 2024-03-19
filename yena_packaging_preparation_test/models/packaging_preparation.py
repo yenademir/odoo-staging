@@ -530,7 +530,7 @@ class PackagingPreparationDeliveryReportXlsx(models.AbstractModel):
             start_row = row
             for prep in preparations:
                 if blanket_order_line_exists:
-                    blanket_order_line = prep.purchase_order_line_id.blanket_order_line.display_name if prep.purchase_order_line_id.blanket_order_line else ""
+                    blanket_order_line = prep.purchase_order_line_id.blanket_order_line.partner_ref if prep.purchase_order_line_id.blanket_order_line else ""
                     sheet.write(row, 2, prep.customer_reference or '', centered_format)
                     sheet.write(row, 3, blanket_order_line or '', centered_format)
                     sheet.write(row, 4, prep.product_id.display_name or '', centered_format)
