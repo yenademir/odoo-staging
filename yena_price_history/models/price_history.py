@@ -36,15 +36,15 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
     sale_price_history_ids = fields.One2many(
-        'sale.price.history', 
-        'product_id',
+        comodel_name='sale.price.history',
+        inverse_name='product_id',
         string='Sale History Lines'
     )
     purchase_price_history_ids = fields.One2many(
-        'purchase.price.history', 
-        'product_id',
+        comodel_name='purchase.price.history',
+        inverse_name='product_id',
         string='Purchase History Lines',
-  
+ 
     )
     
     def action_compute_price_history(self):
