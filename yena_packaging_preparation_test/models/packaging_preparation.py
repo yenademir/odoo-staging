@@ -520,7 +520,7 @@ class PackagingDeliveryReportXlsx(models.AbstractModel):
         for batch in batches:
             total_quantity=0
             for prep in batch.packaging_preparation_ids:
-                blanket_order_line = prep.purchase_order_line_id.blanket_order_line if prep.purchase_order_line_id.blanket_order_line else ""
+                blanket_order_line = str(prep.purchase_order_line_id.blanket_order_line) if prep.purchase_order_line_id.blanket_order_line else ""
                 customer_reference = str(prep.customer_reference) if prep.customer_reference else ""
                 pallet_no = prep.pallet_no if isinstance(prep.pallet_no, int) else 0
                 if pallet_no not in pallet_prep_ids:
