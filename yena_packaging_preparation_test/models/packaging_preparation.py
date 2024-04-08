@@ -864,6 +864,7 @@ class PackagingBillOfLadingReportXlsx(models.AbstractModel):
                 for line in [l for l in batch.packaging_preparation_ids if l.product_id.customer.name == customer_name]:
                     volume = line.width * line.length * line.height
                     pallet_no = line.pallet_no
+                    unique_pallet_nos.add(pallet_no)
 
                     
                     
@@ -892,7 +893,6 @@ class PackagingBillOfLadingReportXlsx(models.AbstractModel):
                             product_length = data['length']
                             product_height = data['height']
                             calculated_volume = product_width * product_length * product_height
-                            unique_pallet_nos.add(pallet_no)
                             if calculated_volume == volume:
                                 volume_text = f"{product_width}x{product_length}x{product_height}mm"
                                 stackable_text = "İstiflenebilir" if stackable_by_pallet_customer_specific[pallet_no] else "İstiflenemez"
