@@ -4,6 +4,7 @@ from io import BytesIO
 from datetime import datetime
 from collections import defaultdict
 import re
+import math 
 
 class PackagingPreparation(models.Model):
     _name = 'packaging.preparation'
@@ -1170,10 +1171,11 @@ class PackagingProposalFormReportXlsx(models.AbstractModel):
                 row += 1
                 
                 all_pallet_infos = "\n".join(pallet_infos) 
-                all_pallet_infos_len=len(pallet_infos)*1.1
+                all_pallet_infos_len = len(pallet_infos) * 1.2
+                rounded_result = math.ceil(all_pallet_infos_len)
                 sheet.merge_range(row, 0, row + all_pallet_infos_len, 1, "Kap Ölçüleri", merge_format12)
                 sheet.merge_range(row, 2, row + all_pallet_infos_len, 8, all_pallet_infos, merge_format10)
-                row += all_pallet_infos_len+1
+                row += rounded_result+1
                 sheet.merge_range(row, 0, row +1, 1, "İstiflenme Durumları", merge_format12)
                 sheet.merge_range(row, 2, row +1, 8, summary_text, merge_format10)
                 row+=2
