@@ -1170,7 +1170,7 @@ class PackagingProposalFormReportXlsx(models.AbstractModel):
                 row += 1
                 
                 all_pallet_infos = "\n".join(pallet_infos) 
-                all_pallet_infos_len=len(pallet_infos)*2-4
+                all_pallet_infos_len=len(pallet_infos)*1.1
                 sheet.merge_range(row, 0, row + all_pallet_infos_len, 1, "Kap Ölçüleri", merge_format12)
                 sheet.merge_range(row, 2, row + all_pallet_infos_len, 8, all_pallet_infos, merge_format10)
                 row += all_pallet_infos_len+1
