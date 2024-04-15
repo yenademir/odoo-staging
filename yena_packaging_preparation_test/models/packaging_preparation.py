@@ -806,7 +806,7 @@ class PackagingBillOfLadingReportXlsx(models.AbstractModel):
             sheet.insert_image('A3:K5', 'YENA_logo.png', {'image_data': image_data, 'x_scale': 0.18, 'y_scale': 0.18})
         row += 1
         
-for batch in batches:
+        for batch in batches:
            
             product_descriptions = set()
             total_net_weight = 0.0
