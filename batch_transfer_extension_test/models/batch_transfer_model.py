@@ -359,3 +359,10 @@ class Picking(models.Model):
         store=True,
         readonly=False
     )
+
+    def _create_backorder(self, backorder_moves=[]):
+        """ Backorder oluştururken 'transportation_code' alanını kopyalamayacak şekilde düzenlenmiştir. """
+        backorder_picking = super(StockPicking, self)._create_backorder(backorder_moves)
+        if backorder_picking:
+            backorder_picking.transportation_code = '-'
+        return backorder_picking
