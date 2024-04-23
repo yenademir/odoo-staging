@@ -119,6 +119,12 @@ class StockPickingBatch(models.Model):
         store=True, 
     )
     
+    def copy(self, default=None):
+        default = dict(default or {})
+        # 'transportation_code' alanını kopyalamamak için varsayılan değerini boş bırak
+        default['transportation_code'] = None
+        return super(StockPickingBatch, self).copy(default=default)
+        
     def set_transportation_code(self):
         for batch in self:
             transportation_code = batch.transportation_code
