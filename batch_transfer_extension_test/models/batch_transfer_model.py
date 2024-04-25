@@ -361,7 +361,7 @@ class Picking(models.Model):
     )
     
     def write(self, vals):
-        res = super(StockPicking, self).write(vals)
+        res = super().write(vals)
         if 'batch_id' in vals:
             for record in self:
                 if record.batch_id:
