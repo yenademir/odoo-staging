@@ -123,7 +123,6 @@ class StockPickingBatch(models.Model):
     def write(self, vals):
         res = super(StockPickingBatch, self).write(vals)
         if 'situation' in vals:
-            # 'situation' alanı güncellendiğinde, tüm bağlı 'stock.picking' kayıtlarını güncelle
             for record in self:
                 record.picking_ids.write({'situation': vals['situation']})
         return res
