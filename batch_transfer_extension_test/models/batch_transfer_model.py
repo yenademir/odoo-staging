@@ -118,13 +118,6 @@ class StockPickingBatch(models.Model):
         inverse='_inverse_driver_ids',
         store=True, 
     )
-    
-    def write(self, vals):
-        res = super(StockPickingBatch, self).write(vals)
-        if 'situation' in vals:
-            for record in self:
-                record.picking_ids.write({'situation': vals['situation']})
-        return res
         
     def copy(self, default=None):
         default = dict(default or {})
@@ -366,6 +359,14 @@ class Picking(models.Model):
         store=True,
         readonly=False
     )
+    
+    def write(self, vals):
+        res = super(StockPicking, self).write(vals)
+        if 'batch_id' in vals:
+            for record in self:
+                if record.batch_id:
+                    record.situation = record.batch_id.situation
+        return res
 
     def _create_backorder(self):
         backorder_picking = super()._create_backorder()
