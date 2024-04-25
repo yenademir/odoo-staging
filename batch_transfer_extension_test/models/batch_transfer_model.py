@@ -119,7 +119,6 @@ class StockPickingBatch(models.Model):
         store=True, 
     )
     
-    @api.model
     def write(self, vals):
         res = super(StockPickingBatch, self).write(vals)
         if 'situation' in vals:
