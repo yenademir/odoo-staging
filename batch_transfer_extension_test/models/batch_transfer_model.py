@@ -119,6 +119,15 @@ class StockPickingBatch(models.Model):
         store=True, 
     )
     
+    @api.model
+    def write(self, vals):
+        res = super(StockPickingBatch, self).write(vals)
+        if 'situation' in vals:
+            # 'situation' alanı güncellendiğinde, tüm bağlı 'stock.picking' kayıtlarını güncelle
+            for record in self:
+                record.picking_ids.write({'situation': vals['situation']})
+        return res
+        
     def copy(self, default=None):
         default = dict(default or {})
         # 'transportation_code' alanını kopyalamamak için varsayılan değerini boş bırak
