@@ -130,7 +130,6 @@ class SaleOrder(models.Model):
                 for line in order.order_line:
                     line.tax_id = [(6, 0, [order.tax_selection.id])]
 
-
     def _compute_date_done_list(self):
         for order in self:
             pickings = self.env['stock.picking'].search([('sale_id', '=', order.id)])
@@ -140,7 +139,7 @@ class SaleOrder(models.Model):
                 order.date_done_list = date_dones_str
             else:
                 order.date_done_list = ''
-
+    @api.model
     def create(self, vals):
 
         company_id = vals.get('company_id', False)
