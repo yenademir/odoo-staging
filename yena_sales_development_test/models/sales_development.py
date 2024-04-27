@@ -141,7 +141,6 @@ class SaleOrder(models.Model):
             else:
                 order.date_done_list = ''
 
-    @api.model
     def create(self, vals):
 
         company_id = vals.get('company_id', False)
@@ -157,14 +156,16 @@ class SaleOrder(models.Model):
 
         record = super().create(vals)
 
-        if not record.customer_reference:
-            return record
+        return record
+        
+    def create_project_button(self):
+        if not self.customer_reference:
+            return
 
-        # satış oluşturulduktan sonra bir proje oluştur.
         project_vals = {
-            'name': record.name + '-' + record.customer_reference,
-            'partner_id': record.partner_id.id,
-            'company_id': 2,
+            'name': self.name + '-' + self.customer_reference,
+            'partner_id': self.partner_id.id,
+            'company_id': 2,  # `id` değerini kullanın
         }
         project = self.env['project.project'].create(project_vals)
 
@@ -172,13 +173,11 @@ class SaleOrder(models.Model):
         analytic_account_id = project.analytic_account_id.id if project.analytic_account_id else None
 
         # Son olarak, satışa analitik hesabı ve proje ID'yi ekleyin.
-        record.write({
+        self.write({
             'analytic_account_id': analytic_account_id,
             'project_sales': project.id,
-            'company_id': 2,
+            'company_id':2,
         })
-
-        return record
 
     def action_confirm(self):
         # C-Delivery Date kontrolü
