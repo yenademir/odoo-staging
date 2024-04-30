@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+<t t-name="MaterialTypeImageWidgetTemplate">
+    <img t-att-src="imageUrl" style="max-width: 16px; max-height: 16px; background-color:#714b67"/>
+</t>
+</template>
