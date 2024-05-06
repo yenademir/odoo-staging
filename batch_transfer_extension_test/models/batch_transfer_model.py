@@ -131,10 +131,12 @@ class StockPickingBatch(models.Model):
             res = super(StockPickingBatch, self).action_done()
             self.send_batch_transfer_email()
             return res
+        
     def _compute_sale_numbers(self):
         for batch in self:
             sale_orders = batch.picking_ids.mapped('sale_id')
             batch.sale_numbers = ', '.join(sale_orders.mapped('name'))
+            
     def _compute_customer_countries(self):
         for batch in self:
             countries = batch.customer_ids.mapped('country_id').mapped('name')
