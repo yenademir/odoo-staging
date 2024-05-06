@@ -140,7 +140,7 @@ class StockPickingBatch(models.Model):
             countries = batch.customer_ids.mapped('country_id').mapped('name')
             unique_countries = list(set(countries))
             batch.unique_countries=', '.join(unique_countries)
-
+    #Canlı ile farklı addon olduğundan dolayı aşağıdaki fonksiyon güncellenecek!
     def send_batch_transfer_email(self):
         template = self.env.ref('batch_transfer_extension_test.mail_template_batch_transfer_done')   
         if self.picking_type_id.id == 2:
