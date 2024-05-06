@@ -127,11 +127,6 @@ class StockPickingBatch(models.Model):
         default['transportation_code'] = None
         return super(StockPickingBatch, self).copy(default=default)
 
-    def action_done(self):
-            res = super(StockPickingBatch, self).action_done()
-            self.send_batch_transfer_email()
-            return res
-        
     def _compute_sale_numbers(self):
         for batch in self:
             sale_orders = batch.picking_ids.mapped('sale_id')
@@ -142,7 +137,12 @@ class StockPickingBatch(models.Model):
             countries = batch.customer_ids.mapped('country_id').mapped('name')
             unique_countries = list(set(countries))
             batch.unique_countries=', '.join(unique_countries)
-    #Canlı ile farklı addon olduğundan dolayı aşağıdaki fonksiyon güncellenecek!
+            
+    def action_done(self):
+            res = super(StockPickingBatch, self).action_done()
+            self.send_batch_transfer_email()
+            return res
+
     def send_batch_transfer_email(self):
         template = self.env.ref('batch_transfer_extension_test.mail_template_batch_transfer_done')   
         template.send_mail(self.id, force_send=True)
