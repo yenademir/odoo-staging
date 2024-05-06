@@ -46,16 +46,16 @@ class SaleOrder(models.Model):
 
     def update_price_history(self):
         self.ensure_one()
-        SalePriceHistory = self.env['sale.price.history']
-        PurchasePriceHistory = self.env['purchase.price.history']
+        existing_sale_price_histories = set(self.env['sale.price.history'].search([('order_id', 'in', self.ids)]).mapped(lambda r: (r.product_id.id, r.order_id.id)))
+        existing_purchase_price_histories = set(self.env['purchase.price.history'].search([('order_id', 'in', self.ids)]).mapped(lambda r: (r.product_id.id, r.order_id.id)))
+
         sale_price_history_data = []
         purchase_price_history_data = []
 
         for line in self.order_line:
-            # İlgili satış siparişleri için tarihçe güncellemesi
             sale_orders = self.env['sale.order.line'].search([('product_id', '=', line.product_id.id), ('state', 'in', ['sale', 'done', 'cancel'])])
             for sale_order in sale_orders:
-                if not SalePriceHistory.search([('product_id', '=', sale_order.product_id.id), ('order_id', '=', sale_order.order_id.id)]):
+                if (sale_order.product_id.id, sale_order.order_id.id) not in existing_sale_price_histories:
                     sale_price_history_data.append((0, 0, {
                         'product_id': sale_order.product_id.id,
                         'order_id': sale_order.order_id.id,
@@ -67,10 +67,10 @@ class SaleOrder(models.Model):
                         'status': sale_order.state,
                     }))
 
-            # İlgili satın alma siparişleri için tarihçe güncellemesi
+            # Satın alma siparişleri için tarihçe güncellemesi
             purchase_orders = self.env['purchase.order.line'].search([('product_id', '=', line.product_id.id), ('state', 'in', ['purchase', 'done', 'cancel'])])
             for purchase_order in purchase_orders:
-                if not PurchasePriceHistory.search([('product_id', '=', purchase_order.product_id.id), ('order_id', '=', purchase_order.order_id.id)]):
+                if (purchase_order.product_id.id, purchase_order.order_id.id) not in existing_purchase_price_histories:
                     purchase_price_history_data.append((0, 0, {
                         'product_id': purchase_order.product_id.id,
                         'order_id': purchase_order.order_id.id,
@@ -81,7 +81,7 @@ class SaleOrder(models.Model):
                         'status': purchase_order.state,
                     }))
 
-        self.write({  
+        self.write({
             'sale_price_history_ids': sale_price_history_data,
             'purchase_price_history_ids': purchase_price_history_data,
         })
