@@ -1,0 +1,87 @@
+from odoo import models, fields,api
+ 
+class SalePriceHistory(models.Model):
+    _name = 'sale.price.history'
+    _description = 'Sale Price History'
+    
+    order_id = fields.Many2one('sale.order', string='Order Reference')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', string='Customer')
+    price = fields.Float(string='Price')
+    cancelled_reasons=fields.Char(string="Cancelled Reasons")
+    lost_reason=fields.Char(string="Lost Reasons")
+    date = fields.Date(string='Date')
+    status = fields.Selection([
+        ('draft', 'Quotation'),
+        ('sent', 'Quotation Sent'),
+        ('sale', 'Sales Order'),
+        ('done', 'Done'),
+        ('cancel', 'Cancelled'),
+    ], string='Status')
+ 
+class PurchasePriceHistory(models.Model):
+    _name = 'purchase.price.history'
+    _description = 'Purchase Price History'
+    
+    order_id = fields.Many2one('sale.order', string='Order Reference')
+    product_id = fields.Many2one('product.product', string='Product')
+    partner_id = fields.Many2one('res.partner', string='Supplier')
+    price = fields.Float(string='Price')
+    cancelled_reasons=fields.Char(string="Cancelled Reasons")
+
+    date = fields.Date(string='Date')
+    status = fields.Selection([
+        ('draft', 'RFQ'),
+        ('sent', 'RFQ Sent'),
+        ('purchase', 'Purchase Order'),
+        ('done', 'Done'),
+        ('cancel', 'Cancelled'),
+    ], string='Status')
+    
+class SaleOrder(models.Model):
+    _inherit = 'sale.order'
+
+    sale_price_history_ids = fields.One2many('sale.price.history', 'order_id', string='Sale Price History')
+    purchase_price_history_ids = fields.One2many('purchase.price.history', 'order_id', string='Purchase Price History')
+
+    def update_price_history(self):
+        self.ensure_one()
+        SalePriceHistory = self.env['sale.price.history']
+        PurchasePriceHistory = self.env['purchase.price.history']
+        sale_price_history_data = []
+        purchase_price_history_data = []
+
+        for line in self.order_line:
+            # İlgili satış siparişleri için tarihçe güncellemesi
+            sale_orders = self.env['sale.order.line'].search([('product_id', '=', line.product_id.id), ('state', 'in', ['sale', 'done', 'cancel'])])
+            for sale_order in sale_orders:
+                if not SalePriceHistory.search([('product_id', '=', sale_order.product_id.id), ('order_id', '=', sale_order.order_id.id)]):
+                    sale_price_history_data.append((0, 0, {
+                        'product_id': sale_order.product_id.id,
+                        'order_id': sale_order.order_id.id,
+                        'partner_id': sale_order.order_id.partner_id.id,
+                        'price': sale_order.price_unit,
+                        'cancelled_reasons': sale_order.order_id.quota_cancel_reason_id.name if sale_order.order_id.quota_cancel_reason_id else '',
+                        'lost_reason': sale_order.order_id.lost_reason.name if sale_order.order_id.lost_reason else '',
+                        'date': sale_order.order_id.date_order,
+                        'status': sale_order.state,
+                    }))
+
+            # İlgili satın alma siparişleri için tarihçe güncellemesi
+            purchase_orders = self.env['purchase.order.line'].search([('product_id', '=', line.product_id.id), ('state', 'in', ['purchase', 'done', 'cancel'])])
+            for purchase_order in purchase_orders:
+                if not PurchasePriceHistory.search([('product_id', '=', purchase_order.product_id.id), ('order_id', '=', purchase_order.order_id.id)]):
+                    purchase_price_history_data.append((0, 0, {
+                        'product_id': purchase_order.product_id.id,
+                        'order_id': purchase_order.order_id.id,
+                        'partner_id': purchase_order.order_id.partner_id.id,
+                        'price': purchase_order.price_unit,
+                        'cancelled_reasons': purchase_order.order_id.cancel_reason_id.name if purchase_order.order_id.cancel_reason_id else '',
+                        'date': purchase_order.order_id.date_order,
+                        'status': purchase_order.state,
+                    }))
+
+        self.write({  
+            'sale_price_history_ids': sale_price_history_data,
+            'purchase_price_history_ids': purchase_price_history_data,
+        })
