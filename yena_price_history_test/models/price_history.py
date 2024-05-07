@@ -59,8 +59,9 @@ class SaleOrder(models.Model):
         for line in self.order_line:
             sale_orders = self.env['sale.order.line'].search([('product_id', '=', line.product_id.id), ('state', 'in', ['sale', 'done', 'cancel'])])
             for sale_order in sale_orders:
-                 if sale_order.order_id.partner_id.id == 63532:
-                    continue
+                if sale_order.order_id.partner_id.id == 63532:
+                   continue
+                 
                 if (sale_order.product_id.id, sale_order.order_id.id) not in existing_sale_price_histories:
                     sale_price_history_data.append((0, 0, {
                         'product_id': sale_order.product_id.id,
@@ -80,6 +81,7 @@ class SaleOrder(models.Model):
             for purchase_order in purchase_orders:
                 if pruchase_order.order_id.partner_id.id == 1:
                    continue
+                 
                 if (purchase_order.product_id.id, purchase_order.order_id.id) not in existing_purchase_price_histories:
                     purchase_price_history_data.append((0, 0, {
                         'product_id': purchase_order.product_id.id,
