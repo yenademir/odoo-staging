@@ -9,7 +9,7 @@
             <xpath expr="//page[@name='customer_signature']" position="after">
                 <page name="price_history" string="Price History">
                 <button name="update_price_history" string="Geçmişi Listele" type="object" class="oe_highlight"/>
-
+                <button name="delete_price_history" string="Geçmişi Sil" type="object" class="oe_highlight"/>
                 <group string="Satış Fiyat Geçmişi">
                     <field name="sale_price_history_ids">
                         <tree editable="bottom">
