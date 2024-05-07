@@ -79,7 +79,7 @@ class SaleOrder(models.Model):
             # Satın alma siparişleri için tarihçe güncellemesi
             purchase_orders = self.env['purchase.order.line'].search([('product_id', '=', line.product_id.id), ('state', 'in', ['purchase', 'done', 'cancel'])])
             for purchase_order in purchase_orders:
-                if pruchase_order.order_id.partner_id.id == 1:
+                if purchase_order.order_id.partner_id.id == 1:
                    continue
                  
                 if (purchase_order.product_id.id, purchase_order.order_id.id) not in existing_purchase_price_histories:
