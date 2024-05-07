@@ -16,7 +16,7 @@
                             <field name="product_id"/>
                             <field name="project_number" optional="hide"/>
                             <field name="weight"/>
-                            <field name="order_id" optional="hide"/>
+                            <field name="order_name" optional="hide"/>
                             <field name="partner_id"/>
                             <field name="status"/>
                             <field name="price"/>
@@ -33,7 +33,7 @@
                             <field name="product_id"/>
                             <field name="project_number" optional="hide"/>
                             <field name="weight"/>
-                            <field name="order_id" optional="hide"/>
+                            <field name="order_name" optional="hide"/>
                             <field name="partner_id"/>
                             <field name="status"/>
                             <field name="price"/>
