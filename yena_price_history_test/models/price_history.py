@@ -3,8 +3,8 @@ from odoo import models, fields,api
 class SalePriceHistory(models.Model):
     _name = 'sale.price.history'
     _description = 'Sale Price History'
-    
-    order_id = fields.Many2one('sale.order', string='Order Reference')
+        
+    order_id = fields.Char(string='Order Number')
     product_id = fields.Many2one('product.product', string='Product')
     partner_id = fields.Many2one('res.partner', string='Customer')
     price = fields.Float(string='Price')
@@ -25,7 +25,7 @@ class PurchasePriceHistory(models.Model):
     _name = 'purchase.price.history'
     _description = 'Purchase Price History'
     
-    order_id = fields.Many2one('sale.order', string='Order Reference')
+    order_id = fields.Char(string='Order Number')
     product_id = fields.Many2one('product.product', string='Product')
     partner_id = fields.Many2one('res.partner', string='Supplier')
     price = fields.Float(string='Price')
@@ -65,7 +65,7 @@ class SaleOrder(models.Model):
                 if (sale_order.product_id.id, sale_order.order_id.id) not in existing_sale_price_histories:
                     sale_price_history_data.append((0, 0, {
                         'product_id': sale_order.product_id.id,
-                        'order_id': sale_order.order_id.id,
+                        'order_id': sale_order.order_id.name,
                         'weight': sale_order.product_id.weight,
                         'project_number': sale_order.order_id.project_sales.id,
                         'partner_id': sale_order.order_id.partner_id.id,
@@ -85,7 +85,7 @@ class SaleOrder(models.Model):
                 if (purchase_order.product_id.id, purchase_order.order_id.id) not in existing_purchase_price_histories:
                     purchase_price_history_data.append((0, 0, {
                         'product_id': purchase_order.product_id.id,
-                        'order_id': purchase_order.order_id.id,
+                        'order_id': purchase_order.order_id.name,
                         'weight': purchase_order.product_id.weight,
                         'project_number': purchase_order.order_id.project_purchase.id,
                         'partner_id': purchase_order.order_id.partner_id.id,
