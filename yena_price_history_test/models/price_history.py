@@ -81,7 +81,7 @@ class SaleOrder(models.Model):
                         'product_id': purchase_order.product_id.id,
                         'order_id': purchase_order.order_id.id,
                         'weight': purchase_order.product_id.weight,
-                        'project_number': sale_order.order_id.project_purchase.id,
+                        'project_number': purchase_order.order_id.project_purchase.id,
                         'partner_id': purchase_order.order_id.partner_id.id,
                         'price': purchase_order.price_unit,
                         'cancelled_reasons': purchase_order.order_id.cancel_reason_id.name if purchase_order.order_id.cancel_reason_id else '',
