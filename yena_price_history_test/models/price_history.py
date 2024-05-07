@@ -49,7 +49,19 @@ class SaleOrder(models.Model):
 
     sale_price_history_ids = fields.One2many('sale.price.history', 'order_id', string='Sale Price History')
     purchase_price_history_ids = fields.One2many('purchase.price.history', 'order_id', string='Purchase Price History')
-
+    
+    def delete_price_history(self):
+       self.ensure_one()  # İşlemi yalnızca tek bir kayıt üzerinde gerçekleştiriyoruz.
+       
+       # İlgili sale.price.history kayıtlarını bul ve sil
+       sale_price_histories = self.env['sale.price.history'].search([('order_id', '=', self.id)])
+       sale_price_histories.unlink()
+       
+       # İlgili purchase.price.history kayıtlarını bul ve sil
+       purchase_price_histories = self.env['purchase.price.history'].search([('order_id', '=', self.id)])
+       purchase_price_histories.unlink()
+   
+       return True
     def update_price_history(self):
         self.ensure_one()
         existing_sale_price_histories = set(self.env['sale.price.history'].search([('order_id', 'in', self.ids)]).mapped(lambda r: (r.product_id.id, r.order_id.id)))
