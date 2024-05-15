@@ -4,7 +4,7 @@
         <record id="view_blanket_order_form_inherit" model="ir.ui.view">
             <field name="name">purchase.blanket.order.form.inherit</field>
             <field name="model">purchase.blanket.order</field>
-            <field name="inherit_id" ref="purchase_blanket_order.view_purchase_blanket_order_form"/>
+            <field name="inherit_id" ref="purchase_blanket_order.view_purchase_blanket_order_form" />
             <field name="arch" type="xml">
                 <!--<xpath expr="//field[@name='taxes_id']" position="attributes">
                     <attribute name="invisible">1</attribute>
@@ -14,30 +14,34 @@
                     <attribute name="invisible">1</attribute>
                 </xpath>-->
                 <xpath expr="//field[@name='taxes_id']" position="after">
-                    <field name="ordered_subtotal" optional="hide"/>
-                    <field name="remaining_subtotal" optional="hide"/>
-                    <field name="invoiced_subtotal" optional="hide"/>
-                    <field name="remaining_invoice_subtotal" optional="hide"/>
+                    <field name="ordered_subtotal" optional="hide" />
+                    <field name="remaining_subtotal" optional="hide" />
+                    <field name="invoiced_subtotal" optional="hide" />
+                    <field name="remaining_invoice_subtotal" optional="hide" />
                 </xpath>
                 <xpath expr="//field[@name='amount_tax']" position="after">
-                    <field name="ordered_total"/>
-                    <field name="remaining_total"/>
-                    <field name="invoiced_total"/>
-                    <field name="remaining_invoice_total"/>
+                    <field name="ordered_total" />
+                    <field name="remaining_total" />
+                    <field name="invoiced_total" />
+                    <field name="remaining_invoice_total" />
+                </xpath>
+                <xpath expr="//field[@name='payment_term_id']" position="after">
+                    <field name="project_purchase_blanket_order" widget="many2many_tags" />
                 </xpath>
             </field>
         </record>
+
         <record id="view_blanket_order_tree_inherited" model="ir.ui.view">
             <field name="name">purchase.blanket.order.tree.inherited</field>
             <field name="model">purchase.blanket.order</field>
-            <field name="inherit_id" ref="purchase_blanket_order.view_purchase_blanket_order_tree"/>
+            <field name="inherit_id" ref="purchase_blanket_order.view_purchase_blanket_order_tree" />
             <field name="arch" type="xml">
                 <field name="validity_date" position="after">
-                    <field name="ordered_total"/>
-                    <field name="remaining_total"/>
-                    <field name="invoiced_total"/>
-                    <field name="remaining_invoice_total"/>
-                    <field name="amount_untaxed"/>
+                    <field name="ordered_total" />
+                    <field name="remaining_total" />
+                    <field name="invoiced_total" />
+                    <field name="remaining_invoice_total" />
+                    <field name="amount_untaxed" />
                 </field>
             </field>
         </record>
@@ -47,25 +51,38 @@
         <record id="purchase_blanket_order_line_tree_inherit" model="ir.ui.view">
             <field name="name">purchase.blanket.order.line.tree.inherit</field>
             <field name="model">purchase.blanket.order.line</field>
-            <field name="inherit_id" ref="purchase_blanket_order.purchase_blanket_order_line_tree"/>
+            <field name="inherit_id" ref="purchase_blanket_order.purchase_blanket_order_line_tree" />
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='remaining_uom_qty']" position="after">
-                    <field name="state"/>
+                    <field name="state" />
+                    <field name="project_purchase_blanket_order_line" widget="many2many_tags" />
                 </xpath>
             </field>
         </record>
+
         <record id="view_purchase_blanket_order_pivot" model="ir.ui.view">
             <field name="name">purchase.blanket.order.pivot</field>
             <field name="model">purchase.blanket.order</field>
             <field name="arch" type="xml">
                 <pivot string="Purchase Blanket Orders">
-                    <field name="ordered_total" type="measure"/>
-                    <field name="remaining_total" type="measure"/>
-                    <field name="invoiced_total" type="measure"/>
-                    <field name="remaining_invoice_total" type="measure"/>
+                    <field name="ordered_total" type="measure" />
+                    <field name="remaining_total" type="measure" />
+                    <field name="invoiced_total" type="measure" />
+                    <field name="remaining_invoice_total" type="measure" />
                 </pivot>
             </field>
         </record>
 
+        <record id="purchase_blanket_order.purchase_blanket_order_line_search" model="ir.ui.view">
+            <field name="name">purchase.blanket.order.line.search</field>
+            <field name="model">purchase.blanket.order.line</field>
+            <field name="arch" type="xml">
+                <search string="Blanket Order Line">
+                    <field name="product_id" />
+                    <field name="project_purchase_name" />
+                    <field name="partner_ref" />
+                </search>
+            </field>
+        </record>
     </data>
 </odoo>
