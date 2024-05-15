@@ -74,14 +74,15 @@
         </record>
 
         <record id="purchase_blanket_order.purchase_blanket_order_line_search" model="ir.ui.view">
-            <field name="name">purchase.blanket.order.line.search</field>
+            <field name="name">purchase.blanket.order.line.search.inherit</field>
             <field name="model">purchase.blanket.order.line</field>
+            <field name="inherit_id" ref="purchase_blanket_order.purchase_blanket_order_line_search"/>
             <field name="arch" type="xml">
-                <search string="Blanket Order Line">
+                <xpath expr="//search" position="inside">
                     <field name="product_id" />
                     <field name="project_purchase_name" />
                     <field name="partner_ref" />
-                </search>
+                </xpath>
             </field>
         </record>
     </data>
