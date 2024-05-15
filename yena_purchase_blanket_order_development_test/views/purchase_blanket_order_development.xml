@@ -73,7 +73,7 @@
             </field>
         </record>
 
-        <record id="purchase_blanket_order.view_purchase_blanket_order_search" model="ir.ui.view">
+        <record id="purchase_blanket_order.purchase_blanket_order_line_search" model="ir.ui.view">
             <field name="name">purchase.blanket.order.line.search</field>
             <field name="model">purchase.blanket.order.line</field>
             <field name="arch" type="xml">
