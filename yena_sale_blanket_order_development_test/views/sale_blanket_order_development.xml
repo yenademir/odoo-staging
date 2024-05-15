@@ -78,7 +78,7 @@
                 </pivot>
             </field>
         </record>
-        <record id="purchase_blanket_order.purchase_blanket_order_line_search" model="ir.ui.view">
+        <record id="sale_blanket_order.sale_blanket_order_line_search" model="ir.ui.view">
             <field name="name">sale.blanket.order.line.search</field>
             <field name="model">sale.blanket.order.line</field>
             <field name="arch" type="xml">
