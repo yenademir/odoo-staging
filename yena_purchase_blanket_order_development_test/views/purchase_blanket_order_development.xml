@@ -69,15 +69,16 @@
             </field>
         </record>
 
-        <record id="purchase_blanket_order.purchase_blanket_order_line_search_test" model="ir.ui.view">
-            <field name="name">purchase.blanket.order.line.search.test</field>
-            <field name="model">purchase.blanket.order.line</field>
-            <field name="arch" type="xml">
-                <search string="Blanket Order Line">
-                    <field name="product_id" string="Product"/>
-                    <field name="partner_ref" string="Partner Reference"/>
-                </search>
-            </field>
-        </record>
+<record id="purchase_blanket_order.purchase_blanket_order_line_search_test" model="ir.ui.view">
+    <field name="name">purchase.blanket.order.line.search.test</field>
+    <field name="model">purchase.blanket.order.line</field>
+    <field name="arch" type="xml">
+        <search string="Blanket Order Line">
+            <field name="product_id" string="Product"/>
+            <field name="partner_ref" string="Partner Reference"/>
+        </search>
+    </field>
+</record>
+
     </data>
 </odoo>
