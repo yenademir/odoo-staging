@@ -399,7 +399,17 @@
             </form>
         </field>
     </record>
-    
+    <record id="purchase_blanket_order_line_search" model="ir.ui.view">
+        <field name="name">purchase.blanket.order.line.search</field>
+        <field name="model">purchase.blanket.order.line</field>
+        <field name="arch" type="xml">
+            <search string="Search Purchase Blanket Order Line">
+                    <field name="product_id" />
+                    <field name="project_purchase_name" />
+                    <field name="partner_ref" />
+            </search>
+        </field>
+    </record>
     <record
         id="act_open_purchase_blanket_order_lines_view_tree"
         model="ir.actions.act_window"
