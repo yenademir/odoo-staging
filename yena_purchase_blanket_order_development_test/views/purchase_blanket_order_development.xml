@@ -6,13 +6,7 @@
             <field name="model">purchase.blanket.order</field>
             <field name="inherit_id" ref="purchase_blanket_order.view_purchase_blanket_order_form" />
             <field name="arch" type="xml">
-                <!--<xpath expr="//field[@name='taxes_id']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                    <attribute name="required">0</attribute>
-                </xpath>
-                <xpath expr="//field[@name='amount_tax']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>-->
+                
                 <xpath expr="//field[@name='taxes_id']" position="after">
                     <field name="ordered_subtotal" optional="hide" />
                     <field name="remaining_subtotal" optional="hide" />
@@ -45,9 +39,11 @@
                 </field>
             </field>
         </record>
+
         <record id="purchase_blanket_order.act_open_purchase_blanket_order_view" model="ir.actions.act_window">
             <field name="view_mode">tree,form,pivot,graph</field>
         </record>
+
         <record id="purchase_blanket_order_line_tree_inherit" model="ir.ui.view">
             <field name="name">purchase.blanket.order.line.tree.inherit</field>
             <field name="model">purchase.blanket.order.line</field>
@@ -70,6 +66,18 @@
                     <field name="invoiced_total" type="measure" />
                     <field name="remaining_invoice_total" type="measure" />
                 </pivot>
+            </field>
+        </record>
+
+        <record id="purchase_blanket_order.purchase_blanket_order_line_search" model="ir.ui.view">
+            <field name="name">purchase.blanket.order.line.search</field>
+            <field name="model">purchase.blanket.order.line</field>
+            <field name="arch" type="xml">
+                <search string="Blanket Order Line">
+                    <field name="product_id" />
+                    <field name="project_purchase_name" />
+                    <field name="partner_ref" />
+                </search>
             </field>
         </record>
     </data>
