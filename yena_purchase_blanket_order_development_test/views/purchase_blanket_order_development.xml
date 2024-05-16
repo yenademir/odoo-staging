@@ -75,7 +75,6 @@
             <field name="arch" type="xml">
                 <search string="Blanket Order Line">
                     <field name="product_id" string="Product"/>
-                    <field name="project_purchase_name" string="Project Purchase Name"/>
                     <field name="partner_ref" string="Partner Reference"/>
                 </search>
             </field>
