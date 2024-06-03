@@ -105,6 +105,19 @@ class StockMove(models.Model):
     edespatch_date=fields.Datetime(related='picking_id.edespatch_date',string="Actual Departure Date")
     airtag_url = fields.Char(string='Airtag Link', related='picking_id.batch_id.airtag_url', store=True, readonly=True)
     vehicle_type_id = fields.Many2one(string='Vehicle Type', related='picking_id.batch_id.vehicle_type_id', store=True, readonly=True)
+    sales_cost = fields.Float(string='Sales Cost', compute='_compute_sales_cost', store=True)
+
+    @api.depends('product_uom_qty', 'move_id.group_id')
+    def _compute_sales_cost(self):
+        for line in self:
+            sales_order_line = self.env['sale.order.line'].search([
+                ('order_id', '=', line.move_id.group_id.id),
+                ('product_id', '=', line.product_id.id)
+            ], limit=1)
+            if sales_order_line:
+                line.sales_cost = line.product_uom_qty * sales_order_line.price_unit
+            else:
+                line.sales_cost = 0.0
     
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
@@ -134,19 +147,6 @@ class ProductTemplate(models.Model):
     hs_code_description = fields.Char(string="HS Code Description", store=True)
     description_sale_en = fields.Char(string="Sale Description English", store=True)
     customer_description = fields.Char(string="Customer Description", store=True)
-    sales_cost = fields.Float(string='Sales Cost', compute='_compute_sales_cost', store=True)
-
-    @api.depends('product_uom_qty', 'move_id.group_id')
-    def _compute_sales_cost(self):
-        for line in self:
-            sales_order_line = self.env['sale.order.line'].search([
-                ('order_id', '=', line.move_id.group_id.id),
-                ('product_id', '=', line.product_id.id)
-            ], limit=1)
-            if sales_order_line:
-                line.sales_cost = line.product_uom_qty * sales_order_line.price_unit
-            else:
-                line.sales_cost = 0.0
 
 
     @api.model
