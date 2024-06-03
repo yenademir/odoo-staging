@@ -107,17 +107,18 @@ class StockMove(models.Model):
     vehicle_type_id = fields.Many2one(string='Vehicle Type', related='picking_id.batch_id.vehicle_type_id', store=True, readonly=True)
     sales_cost = fields.Float(string='Sales Cost', compute='_compute_sales_cost', store=True)
 
-    @api.depends('product_uom_qty', 'move_id.group_id')
+    @api.depends('move_line_ids.product_uom_qty', 'move_line_ids.product_id')
     def _compute_sales_cost(self):
-        for line in self:
-            sales_order_line = self.env['sale.order.line'].search([
-                ('order_id', '=', line.move_id.group_id.id),
-                ('product_id', '=', line.product_id.id)
-            ], limit=1)
-            if sales_order_line:
-                line.sales_cost = line.product_uom_qty * sales_order_line.price_unit
-            else:
-                line.sales_cost = 0.0
+        for move in self:
+            total_sales_cost = 0.0
+            for line in move.move_line_ids:
+                sales_order_line = self.env['sale.order.line'].search([
+                    ('order_id', '=', move.group_id.id),
+                    ('product_id', '=', line.product_id.id)
+                ], limit=1)
+                if sales_order_line:
+                    total_sales_cost += line.product_uom_qty * sales_order_line.price_unit
+            move.sales_cost = total_sales_cost
     
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
