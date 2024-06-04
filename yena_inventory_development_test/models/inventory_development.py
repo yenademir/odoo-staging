@@ -105,20 +105,20 @@ class StockMove(models.Model):
     edespatch_date=fields.Datetime(related='picking_id.edespatch_date',string="Actual Departure Date")
     airtag_url = fields.Char(string='Airtag Link', related='picking_id.batch_id.airtag_url', store=True, readonly=True)
     vehicle_type_id = fields.Many2one(string='Vehicle Type', related='picking_id.batch_id.vehicle_type_id', store=True, readonly=True)
-    sales_cost = fields.Float(string='Sales Cost', compute='_compute_sales_cost', store=True)
+    sales_cost = fields.Float(string='Sales Cost', compute='_compute_sales_cost')
 
-    @api.depends('move_line_ids.product_uom_qty', 'move_line_ids.product_id')
+    @api.depends('state', 'product_id', 'product_uom_qty')
     def _compute_sales_cost(self):
         for move in self:
-            total_sales_cost = 0.0
-            for line in move.move_line_ids:
-                sales_order_line = self.env['sale.order.line'].search([
-                    ('order_id', '=', move.group_id.id),
-                    ('product_id', '=', line.product_id.id)
-                ], limit=1)
-                if sales_order_line:
-                    total_sales_cost += line.product_uom_qty * sales_order_line.price_unit
-            move.sales_cost = total_sales_cost
+            if move.state == 'done':
+                sale_order_lines = self.env['sale.order.line'].search([('product_id', '=', move.product_id.id)])
+                if sale_order_lines:
+                    sale_order_line = sale_order_lines[0]
+                    move.sales_cost = move.product_uom_qty * sale_order_line.price_unit
+                else:
+                    move.sales_cost = 0.0
+            else:
+                move.sales_cost = 0.0
     
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
