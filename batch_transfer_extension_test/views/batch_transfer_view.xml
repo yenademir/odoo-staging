@@ -40,17 +40,18 @@
                 <field name="airtag_url" widget="url" options="{'no_open': True}" readonly="1" />
                 <field name="import_decleration_number"/>
             </xpath>
-            <xpath expr="//notebook/page[3]" position="after">
-                <page string="Drivers" name="driver_ids"
-                attrs="{'invisible': [('edespatch_delivery_type', '!=', 'edespatch')]}" >
-                    <field name="driver_ids" domain="[('type','=','driver')]" context="{}">
-                        <tree create="true" edit="false" delete="true" editable="bottom" string="Drivers">
-                            <field name="function"/>
-                            <field name="name"/>
-                        </tree>
-                    </field>
-                </page>
-            </xpath> 
+<xpath expr="//notebook/page[3]" position="after">
+    <page string="Drivers" name="driver_ids"
+    attrs="{'invisible': [('edespatch_delivery_type', '!=', 'edespatch')]}" >
+        <field name="driver_ids" domain="[('type','=','driver')]" context="{'search_default_customer': 0}">
+            <tree create="true" edit="false" delete="true" editable="bottom" string="Drivers">
+                <field name="function"/>
+                <field name="name"/>
+            </tree>
+        </field>
+    </page>
+</xpath>
+
             <xpath expr="//notebook/page[4]" position="after">
                 <page string="Transport" name="transport_info" attrs="{'invisible': [('edespatch_delivery_type', '!=', 'edespatch')]}">
                     <group>
