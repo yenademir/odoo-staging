@@ -117,6 +117,7 @@ class StockPickingBatch(models.Model):
         string='Drivers',
         inverse='_inverse_driver_ids',
         store=True, 
+        domain=[('type', '=', 'driver')],
     )
     sale_numbers = fields.Char(compute='_compute_sale_numbers', string='Sale Numbers')
     unique_countries = fields.Char(compute='_compute_customer_countries', string='Customer Countries')
