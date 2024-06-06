@@ -15,3 +15,9 @@ class HsCode(models.Model):
     customs_description_tr = fields.Char(string="Customs Description(Türkçe)",)
     customs_description_en = fields.Char(string="Customs Description(English)")
     example_description = fields.Char(string="Well-known Example Product",)
+    
+class CoatingType(models.Model):
+    _name = 'coating.type'
+    _description = 'Coating Type'
+
+    name = fields.Char('Name', required=True)
