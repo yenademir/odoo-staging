@@ -65,7 +65,7 @@
                             <field name="shipment_between_countries" widget="radio" options="{'horizontal': true}" />
                             <field name="shipment_between_countries_note" nolabel="1" colspan="2" placeholder="Örn.: Hangi ülkelere çalışıyor, Hangi firmalar ile çalışıyor"/>
                         </group>-->
-                        <group col="4">
+                        <!--<group col="4">
                             <field name="export_operation" widget="radio" options="{'horizontal': true}" />
                             <field name="export_operation_note" nolabel="1" colspan="2" placeholder="Örn.: Hangi ülkelere çalışıyor, Hangi firmalar ile çalışıyor"/>
                         </group>
@@ -76,7 +76,7 @@
                         <group col="4">
                             <field name="customs_clearance" widget="radio" options="{'horizontal': true}" />
                             <field name="customs_clearance_note" nolabel="1" colspan="2" placeholder="Örn.: Hangi ülkelere çalışıyor, Hangi firmalar ile çalışıyor"/>
-                        </group>
+                        </group>-->
                         <group>
                             <group>
                                 <label for="door_width"/>
