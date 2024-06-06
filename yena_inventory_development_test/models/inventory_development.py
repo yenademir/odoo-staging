@@ -123,16 +123,7 @@ class StockMove(models.Model):
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
-    coating = fields.Selection([
-        ("hot_dip_galvanized", "Hot Dip Galvanized"),
-        ("electrogalvanized", "Electrogalvanized"),
-        ("centrifugal_galvanise", "Centrifugal galvanise"),
-        ("electrostatic_powder_coating_red", "Electrostatic powder coating Red"),
-        ("epoxy_coating", "Epoxy Coating"),
-        ("uncoated", "Uncoated"),
-        ("electrostatic_powder_coating_black", "Electrostatic powder coating Black"),
-        ("shop_primer", "Shop Primer")
-    ], string="Coating")
+    coating = fields.Many2many('coating.type', string="Coatings")
     material = fields.Many2many('product.yena_material', string="Material")
     min_order_qty = fields.Char(string="Min. Order Quantity")
     customer = fields.Many2one('res.partner', domain=[('is_company', '=', True)], string="Customer")
