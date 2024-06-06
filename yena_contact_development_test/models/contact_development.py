@@ -121,6 +121,8 @@ class ResPartner(models.Model):
     @api.constrains('phone', 'mobile', 'email')
     def _check_contact_info(self):
         for record in self:
+            if record.type == 'driver':
+                continue
             if not record.phone and not record.mobile and not record.email:
                 raise ValidationError(_('You must fill at least one of the following: Phone, Mobile or Email!'))
 
