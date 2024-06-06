@@ -124,7 +124,7 @@
                     <group string="Technical Documents">
                         <field name="weight" string="Theoretical Weight"/>
                         <field name="material" widget="many2many_tags"/>
-                        <field name="coating"/>
+                        <field name="coating" widget="many2many_tags"/>
                         <field name="technical_drawing" filename='technical_drawing_filename'/>
                         <field name="technical_drawing_url" invisible="1"/>
                         <field name="technical_drawing_link" attrs="{'invisible': [('technical_drawing_url', '=', False)]}"/>
